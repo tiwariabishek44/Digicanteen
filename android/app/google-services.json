@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1086541433915",
+    "project_id": "merocanteen",
+    "storage_bucket": "merocanteen.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1086541433915:android:aa443d32caa1cea08ea01e",
+        "android_client_info": {
+          "package_name": "com.example.merocanteen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBNYL9dshT-ux0o41Y6GBLe3XwTMvims10"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
