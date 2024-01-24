@@ -17,12 +17,14 @@ class UserModel {
 
   factory UserModel.fromMap(Map<String, dynamic> json) {
     return UserModel(
-      userid: json['userid'],
-      name: json['name'],
-      email: json['email'],
-      phone: json['phone'],
-      groupid: json['groupid'],
-      classes: json['classes'],
+      userid:
+          json['userid'] ?? '', // Provide a default value if 'userid' is null
+      name: json['name'] ?? '',
+      email: json['email'] ?? '',
+      phone: json['phone']?.toString() ??
+          '', // Convert to String and provide default value
+      groupid: json['groupid'] ?? '',
+      classes: json['classes'] ?? '',
     );
   }
 

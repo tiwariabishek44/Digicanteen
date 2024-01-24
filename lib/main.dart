@@ -1,14 +1,19 @@
-
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:merocanteen/app/widget/splash_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 void main() async {
+  // Initialize the Nepali locale data
+  initializeDateFormatting('ne_NP');
   WidgetsFlutterBinding.ensureInitialized();
 
   Platform.isAndroid
@@ -27,81 +32,85 @@ void main() async {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  ConnectivityResult _connectionStatus = ConnectivityResult.none;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Check initial connectivity status
+    initConnectivity().then(_updateConnectionStatus);
+
+    // Subscribe to connectivity changes
+    _connectivitySubscription =
+        Connectivity().onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<ConnectivityResult> initConnectivity() async {
+    late ConnectivityResult result;
+    try {
+      result = await Connectivity().checkConnectivity();
+    } on PlatformException catch (e) {
+      print(e.toString());
+      return ConnectivityResult.none;
+    }
+    return result;
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    setState(() {
+      _connectionStatus = result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ResponsiveSizer(
       builder: (context, orientation, screenType) {
-        return GetMaterialApp(
-          // Use GetMaterialApp instead of MaterialApp
-          title: 'Hamro Canteen',
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: SplashScreen(),
+        // Use Builder to get context inside the builder
+        return Builder(
+          builder: (context) {
+            return GetMaterialApp(
+              title: 'Hamro Canteen',
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              // Check connectivity status to determine which screen to show
+              home: _connectionStatus == ConnectivityResult.none
+                  ? OfflineScreen()
+                  : SplashScreen(),
+            );
+          },
         );
       },
     );
   }
 }
- 
 
-// //  // import 'package:flutter/material.dart';
-// // import 'dart:developer';
-
-// // import 'package:flutter/material.dart';
-// // import 'package:get/get.dart';
-// // import 'package:cloud_firestore/cloud_firestore.dart';
-// // import 'package:merocanteen/app/widget/customized_button.dart';
-
-// // class UserNameController extends GetxController {
-// //   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-// //   var isloading = false.obs;
-
-// //   Future<void> checkUsername(String inputUsername) async {
-// //     try {
-// //       QuerySnapshot usernameSnapshot = await _firestore
-// //           .collection('studentusername')
-// //           .where('username', isEqualTo: inputUsername)
-// //           .get();
-
-// //       if (usernameSnapshot.docs.isNotEmpty) {
-// //         var doc = usernameSnapshot.docs.first;
-// //         bool isOccupied = doc['isOccupied'];
-
-// //         if (isOccupied) {
-// //           // Username is occupied
-// //           log('Username Status    Username is already occupied');
-// //         } else {
-// //           log("user name is not occupied");
-// //           // Username is available
-// //         }
-// //       } else {
-// //         // Username does not exist
-// //         log("User doesnot exit");
-// //       }
-// //     } catch (e) {
-// //       log(" Try exit error");
-// //     }
-// //   }
-
-// //   Future<void> uploadUsernames(List<String> usernames) async {
-// //     try {
-// //       isloading(true);
-// //       for (String username in usernames) {
-// //         await _firestore.collection('studentusername').add({
-// //           'username': username,
-// //           'isOccupied':
-// //               false, // You can set initial occupation status as true or false
-// //         });
-// //       }
-// //       isloading(true);
-
-// //       print('Usernames uploaded successfully');
-// //     } catch (e) {
-// //       print('Error uploading usernames: $e');
-// //     }
-// //   }
-// // }
- 
+class OfflineScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Text(
+          'No Internet Connection',
+          style: TextStyle(fontSize: 24),
+        ),
+      ),
+    );
+  }
+}

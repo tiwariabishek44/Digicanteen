@@ -5,17 +5,29 @@ import 'package:flutter/material.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/allproducts/homeSCreen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_page.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/class_wise_analysis.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/order_cancel.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand_supply.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement.dart';
 import 'package:intl/intl.dart';
+import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
+import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
 class DshBoard extends StatelessWidget {
   final loginContorller = Get.put(LoginController());
+  final salseContorlller = Get.put(SalsesController());
 
   @override
   Widget build(BuildContext context) {
+    salseContorlller.fetchOrderss();
+    salseContorlller.fetchSalesORders();
     DateTime currentDate = DateTime.now();
-    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+
+    NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
+
+    String formattedDate =
+        DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +61,21 @@ class DshBoard extends StatelessWidget {
             padding: const EdgeInsets.all(8.0),
             child: GestureDetector(
               onTap: () {
-                loginContorller.vendorLogOut();
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return LogoutConfirmationDialog(
+                      isbutton: true,
+                      heading: 'Alert',
+                      subheading: "Do you want to logout of the application?",
+                      firstbutton: "Yes",
+                      secondbutton: 'No',
+                      onConfirm: () {
+                        loginContorller.vendorLogOut();
+                      },
+                    );
+                  },
+                );
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -77,83 +103,104 @@ class DshBoard extends StatelessWidget {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: [
-              GridView.count(
-                crossAxisCount: 3,
-                shrinkWrap: true,
-                physics: NeverScrollableScrollPhysics(),
-                children: [
-                  buildClickableIcon(
-                    icon: Icons.restaurant_menu,
-                    label: 'Canteen Meal',
-                    onTap: () {
-                      // Handle click for Menu Management
-                      Get.to(() => VHomePage());
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.shopping_cart,
-                    label: 'Order Management',
-                    onTap: () {
-                      // Handle click for Order Management
-                      Get.to(() => OrderRequirement());
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.analytics,
-                    label: 'Analytics',
-                    onTap: () {
-                      // Handle click for Analytics\
-                      Get.to(() => AnalyticsPage());
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.people,
-                    label: 'Employee Management',
-                    onTap: () {
-                      // Handle click for Employee Management
-                      print('Employee Management clicked!');
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.feedback,
-                    label: 'Feedback & Ratings',
-                    onTap: () {
-                      // Handle click for Feedback & Ratings
-                      print('Feedback & Ratings clicked!');
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.notifications,
-                    label: 'Notifications',
-                    onTap: () {
-                      // Handle click for Notifications
-                      print('Notifications clicked!');
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.money,
-                    label: 'Expense Tracking',
-                    onTap: () {
-                      // Handle click for Expense Tracking
-                      print('Expense Tracking clicked!');
-                    },
-                  ),
-                  buildClickableIcon(
-                    icon: Icons.card_giftcard,
-                    label: 'Customer Engagement',
-                    onTap: () {
-                      // Handle click for Customer Engagement
-                      print('Customer Engagement clicked!');
-                    },
-                  ),
-                ],
+              Obx(() => Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.blue,
+                          Color.fromARGB(255, 219, 183, 183)
+                        ],
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * 1,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Daily Sales',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20, // Adjust the font size as needed
+                            ),
+                          ),
+                          SizedBox(height: 8), // Add spacing between the texts
+                          Text(
+                            "Rs. " +
+                                salseContorlller.grandTotal.value
+                                    .toInt()
+                                    .toString(),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 54, // Adjust the font size as needed
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  shrinkWrap: true,
+                  childAspectRatio: 1.3,
+                  physics: NeverScrollableScrollPhysics(),
+                  children: [
+                    buildClickableIcon(
+                      icon: Icons.restaurant_menu,
+                      label: 'Canteen Meal',
+                      onTap: () {
+                        // Handle click for Menu Management
+                        Get.to(() => VHomePage());
+                      },
+                    ),
+                    buildClickableIcon(
+                      icon: Icons.production_quantity_limits,
+                      label: 'Orders Req.',
+                      onTap: () {
+                        // Handle click for Order Management
+                        Get.to(() => OrderRequirement());
+                      },
+                    ),
+                    buildClickableIcon(
+                      icon: Icons.analytics,
+                      label: 'Analytics',
+                      onTap: () {
+                        // Handle click for Analytics\
+                        Get.to(() => AnalyticsPage());
+                      },
+                    ),
+                    buildClickableIcon(
+                      icon: Icons.class_,
+                      label: 'Class Analysis',
+                      onTap: () {
+                        // Handle click for Analytics\
+                        Get.to(() => Classanalytics());
+                      },
+                    ),
+                    buildClickableIcon(
+                      icon: Icons.cancel_presentation,
+                      label: 'Order Cancel',
+                      onTap: () {
+                        // Handle click for Analytics\
+                        Get.to(() => OrderCancel());
+                      },
+                    ),
+                  ],
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: const Align(
                     alignment: Alignment.topLeft,
                     child: Text(
-                      "Demand & Supply",
+                      "Sales Report",
                       style:
                           TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     )),
@@ -174,33 +221,34 @@ class DshBoard extends StatelessWidget {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        margin: EdgeInsets.all(8.0),
-        padding: EdgeInsets.all(5.0),
-        decoration: BoxDecoration(
-          border: Border.all(color: secondaryColor),
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15.0),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 40,
-              color: Color.fromARGB(255, 24, 20, 19),
-            ),
-            SizedBox(height: 8.0),
-            Center(
-              child: Text(
-                label,
-                style: TextStyle(
-                  color: const Color.fromARGB(255, 59, 57, 57),
-                  fontWeight: FontWeight.bold,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: secondaryColor),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(5.0),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 30,
+                color: Color.fromARGB(255, 24, 20, 19),
+              ),
+              SizedBox(height: 8.0),
+              Center(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: const Color.fromARGB(255, 59, 57, 57),
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

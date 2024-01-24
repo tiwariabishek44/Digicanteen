@@ -1,15 +1,19 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/physics.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
 class AnalyticsController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   RxMap<String, List<Items>> orders = <String, List<Items>>{}.obs;
-  RxMap<String, List<Items>> unCheckoutOrders = <String, List<Items>>{}.obs;
+  RxMap<String, List<Items>> chekcoutOrders = <String, List<Items>>{}.obs;
   RxMap<String, int> totalQuantityPerProductOrders = <String, int>{}.obs;
-  RxMap<String, int> totalQuantityPerProductUnCheckoutOrders =
+  RxMap<String, int> totalQuantityPerProductCheckoutOrders =
       <String, int>{}.obs;
 
   var isloading = false.obs;
@@ -23,10 +27,19 @@ class AnalyticsController extends GetxController {
 
   Future<void> fetchOrders() async {
     try {
+      orders.clear();
+      chekcoutOrders.clear();
+      totalQuantityPerProductOrders.clear();
+      totalQuantityPerProductCheckoutOrders.clear();
       isloading(true);
       DateTime currentDate = DateTime.now();
-      String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
 
+      // Convert the Gregorian date to Nepali date
+      NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
+
+      // Format the Nepali date as "dd/MM/yyyy("
+      String formattedDate =
+          DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
       // Fetch checkout orders
       QuerySnapshot ordersSnapshot = await _firestore
           .collection('orders')
@@ -43,108 +56,20 @@ class AnalyticsController extends GetxController {
         }
       });
 
-      // Fetch uncheckout orders
-      QuerySnapshot unCheckoutOrdersSnapshot = await _firestore
-          .collection('orders')
-          .where('date', isEqualTo: "$formattedDate")
-          .where('checkout', isEqualTo: 'false')
-          .get();
-
-      unCheckoutOrdersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
-
-        if (!unCheckoutOrders.containsKey(item.classs)) {
-          unCheckoutOrders[item.classs] = [item];
-        } else {
-          unCheckoutOrders[item.classs]?.add(item);
-        }
-      });
-
-      calculateTotalQuantityOrders();
-      calculateTotalQuantityUnCheckoutOrders();
-      isloading(false);
-    } catch (e) {
-      isloading(false);
-
-      // Handle errors
-      print("Error fetching orders: $e");
-    }
-  }
-
-  void calculateTotalQuantityOrders() {
-    orders.forEach((productName, itemList) {
-      int totalQuantity = itemList.fold<int>(
-        0,
-        (previousValue, element) => previousValue + element.quantity,
-      );
-      totalQuantityPerProductOrders[productName] = totalQuantity;
-    });
-  }
-
-  void calculateTotalQuantityUnCheckoutOrders() {
-    unCheckoutOrders.forEach((productName, itemList) {
-      int totalQuantity = itemList.fold<int>(
-        0,
-        (previousValue, element) => previousValue + element.quantity,
-      );
-      totalQuantityPerProductUnCheckoutOrders[productName] = totalQuantity;
-    });
-  }
-}
-
-class DemandSupplyController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  RxMap<String, List<Items>> orders = <String, List<Items>>{}.obs;
-  RxMap<String, List<Items>> unCheckoutOrders = <String, List<Items>>{}.obs;
-  RxMap<String, int> totalQuantityPerProductOrders = <String, int>{}.obs;
-  RxMap<String, int> totalQuantityPerProductUnCheckoutOrders =
-      <String, int>{}.obs;
-
-  var isloading = false.obs;
-  var ismorning = true.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchOrders();
-  }
-
-  Future<void> fetchOrders() async {
-    try {
-      isloading(true);
-      DateTime currentDate = DateTime.now();
-      String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-
       // Fetch checkout orders
-      QuerySnapshot ordersSnapshot = await _firestore
-          .collection('orders')
-          .where('date', isEqualTo: "$formattedDate")
-          .get();
-
-      ordersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
-
-        if (!orders.containsKey(item.productName)) {
-          orders[item.productName] = [item];
-        } else {
-          orders[item.classs]?.add(item);
-        }
-      });
-
-      // Fetch uncheckout orders
       QuerySnapshot unCheckoutOrdersSnapshot = await _firestore
           .collection('orders')
           .where('date', isEqualTo: "$formattedDate")
-          .where('checkout', isEqualTo: 'false')
+          .where('checkout', isEqualTo: 'true')
           .get();
 
       unCheckoutOrdersSnapshot.docs.forEach((DocumentSnapshot document) {
         Items item = Items.fromMap(document.data() as Map<String, dynamic>);
 
-        if (!unCheckoutOrders.containsKey(item.classs)) {
-          unCheckoutOrders[item.productName] = [item];
+        if (!chekcoutOrders.containsKey(item.classs)) {
+          chekcoutOrders[item.classs] = [item];
         } else {
-          unCheckoutOrders[item.productName]?.add(item);
+          chekcoutOrders[item.classs]?.add(item);
         }
       });
 
@@ -170,12 +95,12 @@ class DemandSupplyController extends GetxController {
   }
 
   void calculateTotalQuantityUnCheckoutOrders() {
-    unCheckoutOrders.forEach((productName, itemList) {
+    chekcoutOrders.forEach((productName, itemList) {
       int totalQuantity = itemList.fold<int>(
         0,
         (previousValue, element) => previousValue + element.quantity,
       );
-      totalQuantityPerProductUnCheckoutOrders[productName] = totalQuantity;
+      totalQuantityPerProductCheckoutOrders[productName] = totalQuantity;
     });
   }
 }

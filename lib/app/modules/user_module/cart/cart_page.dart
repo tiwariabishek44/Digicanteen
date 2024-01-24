@@ -17,6 +17,8 @@ class CartPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    cartcontroller.fetchOrdersByGroupID();
+
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -33,7 +35,6 @@ class CartPage extends StatelessWidget {
                 Expanded(
                   child: Obx(() {
                     if (cartcontroller.orders.value.isEmpty) {
-                      cartcontroller.fetchOrdersByGroupID();
                       return EmptyCartPage();
                     } else {
                       if (cartcontroller.isloading.value) {

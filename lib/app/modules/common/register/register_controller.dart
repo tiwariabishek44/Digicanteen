@@ -58,6 +58,7 @@ class RegisterController extends GetxController {
         email: emailcontroller.text,
         password: passwordcontroller.text,
       );
+
       await FirebaseFirestore.instance
           .collection('students')
           .doc(userCredential.user!.uid)
@@ -110,14 +111,14 @@ class RegisterController extends GetxController {
               .collection('studentusername')
               .doc(doc.id)
               .update({'isOccupied': true});
-          Get.snackbar('Username Status', 'Username has been occupied',
+          Get.snackbar('Occupy', 'Pin has been occupied',
               snackPosition: SnackPosition.BOTTOM);
         } else {
-          Get.snackbar('Username Status', 'Username is already occupied',
+          Get.snackbar('  Status', 'Pin is already occupied',
               snackPosition: SnackPosition.BOTTOM);
         }
       } else {
-        Get.snackbar('Username Status', 'Username does not exist',
+        Get.snackbar('  Status', 'Pin does not exist',
             snackPosition: SnackPosition.BOTTOM);
       }
     } catch (e) {

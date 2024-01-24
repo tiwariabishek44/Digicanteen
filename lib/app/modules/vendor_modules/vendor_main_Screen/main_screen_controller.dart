@@ -7,5 +7,5 @@ import 'package:merocanteen/app/modules/vendor_modules/dashboard/dashboard_page.
 class VendorScreenController extends GetxController {
   var currentTab = 0.obs;
   final PageStorageBucket bucket = PageStorageBucket();
-  Rx<Widget> currentScreen = Rx<Widget>(VHomePage());
+  Rx<Widget> currentScreen = Rx<Widget>(DshBoard());
 }

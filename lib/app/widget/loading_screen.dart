@@ -2,7 +2,8 @@ import 'dart:ui';
 import 'package:merocanteen/app/config/colors.dart';
 
 import 'package:flutter/material.dart';
- import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
 class LoadingScreen extends StatelessWidget {
   const LoadingScreen({
     super.key,
@@ -20,9 +21,9 @@ class LoadingScreen extends StatelessWidget {
           ),
         ),
         // Loading indicator
-          Center(
+        Center(
             child: SpinKitFadingCircle(
-          color: secondaryColor,
+          color: primaryColor,
         )),
       ],
     );

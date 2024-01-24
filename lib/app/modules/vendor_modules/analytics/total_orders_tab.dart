@@ -10,12 +10,12 @@ import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:intl/intl.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
-class OrderRequirement extends StatefulWidget {
+class TotalOrdersTab extends StatefulWidget {
   @override
-  State<OrderRequirement> createState() => _OrderRequirementState();
+  State<TotalOrdersTab> createState() => _TotalOrdersTabState();
 }
 
-class _OrderRequirementState extends State<OrderRequirement> {
+class _TotalOrdersTabState extends State<TotalOrdersTab> {
   final loginContorller = Get.put(LoginController());
 
   final orderRequestController = Get.put(OrderRequestContoller());
@@ -44,75 +44,7 @@ class _OrderRequirementState extends State<OrderRequirement> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime currentDate = DateTime.now();
-
-    NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
-
-    String formattedDate =
-        DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
-    orderRequestController.date.value = formattedDate;
-
     return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Order Requirement",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              formattedDate == dat
-                  ? Text(
-                      dat + "  (Today)", // Display Nepali date in the app bar
-                      style: TextStyle(fontSize: 16),
-                    )
-                  : Text(
-                      dat +
-                          "  (Tomorrow)", // Display Nepali date in the app bar
-                      style: TextStyle(fontSize: 16),
-                    ),
-            ],
-          ),
-        ),
-        actions: [
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert),
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(
-                  child: Text('Today'),
-                  value: 'Today',
-                ),
-                PopupMenuItem(
-                  child: Text('Tomorrow'),
-                  value: 'Tomorrow',
-                ),
-              ];
-            },
-            onSelected: (value) {
-              // Handle the selected option
-              if (value == 'Today') {
-                // Do something for Option 1
-                setState(() {
-                  dat = DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
-                  orderRequestController.fetchMeal(selectedIndex.toInt(), dat);
-                });
-              } else if (value == 'Tomorrow') {
-                NepaliDateTime tomorrow = nepaliDateTime.add(Duration(days: 1));
-                setState(() {
-                  dat = DateFormat('dd/MM/yyyy\'', 'en').format(tomorrow);
-                  orderRequestController.fetchMeal(selectedIndex.toInt(), dat);
-                });
-                // Do something for Option 2
-              }
-            },
-          ),
-        ],
-      ),
-      // Add the rest of your app content here
-
       body: Column(
         children: [
           Expanded(

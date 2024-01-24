@@ -31,7 +31,7 @@ class CartProductList extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    height: 19.h,
+                    height: 21.h,
                     padding: EdgeInsets.all(8.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -91,6 +91,14 @@ class CartProductList extends StatelessWidget {
                                           255, 134, 94, 94),
                                     ),
                                   ),
+                                  Text(
+                                    '${cartcontroller.orders[index].mealtime}',
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: const Color.fromARGB(
+                                          255, 134, 94, 94),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -127,8 +135,9 @@ class CartProductList extends StatelessWidget {
                                       ? IconButton(
                                           icon: Icon(Icons.delete),
                                           onPressed: () {
-                                            cartcontroller
-                                                .deleteItemFromOrder();
+                                            cartcontroller.deleteItemFromOrder(
+                                                cartcontroller
+                                                    .orders[index].id);
                                           }, // Implement delete functionality
                                         )
                                       : Container(),

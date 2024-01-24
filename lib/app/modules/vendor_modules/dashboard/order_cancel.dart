@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -13,14 +12,14 @@ import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class OrderPage extends StatelessWidget {
+class OrderCancel extends StatelessWidget {
   final ordercontroller = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Orders"),
+        title: Text("Orders Cancellation"),
       ),
       body: Column(
         children: [
@@ -205,6 +204,21 @@ class OrderPage extends StatelessWidget {
                                                     SizedBox(
                                                       width: 30,
                                                     ),
+                                                    IconButton(
+                                                      icon: Icon(Icons.delete),
+                                                      onPressed: () {
+                                                        ordercontroller
+                                                            .deleteIndividualFromOrder(
+                                                                ordercontroller
+                                                                    .orders[
+                                                                        index]
+                                                                    .id!,
+                                                                ordercontroller
+                                                                    .orders[
+                                                                        index]
+                                                                    .groupcod);
+                                                      }, // Implement delete functionality
+                                                    )
                                                   ],
                                                 ),
                                               )
@@ -221,17 +235,6 @@ class OrderPage extends StatelessWidget {
                                   ],
                                 );
                               },
-                            ),
-                            CustomizedButton(
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                ordercontroller.deleteGroupOrder(
-                                    ordercontroller.groupcod.text.trim());
-                              },
-                              buttonText:
-                                  "Check Out(${ordercontroller.groupcod.text})",
-                              buttonColor: primaryColor,
-                              textColor: Colors.white,
                             ),
                           ],
                         ),

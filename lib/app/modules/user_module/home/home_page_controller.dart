@@ -15,7 +15,7 @@ class HomepageContoller extends GetxController {
     super.onInit();
     fetchProducts();
     groupcontroler.fetchGroupMember();
-    groupcontroler.fetchGroupsByGroupId();
+    groupcontroler.fetchGroupByGroupId();
   }
 
   Future<void> fetchProducts() async {

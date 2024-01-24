@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:math';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/models/group_models.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
+import 'package:merocanteen/app/modules/user_module/profile/group/group.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 
 class GroupController extends GetxController {
@@ -27,86 +29,87 @@ class GroupController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    fetchGroupsByGroupId();
+    fetchGroupByGroupId();
     fetchAllStudent();
   }
 
 //--------------create a new grou-----------//
   Future<void> createNewGroup() async {
     isloading(true);
-    // Random random = Random();
-    int pin = 67.toInt();
-    // random.nextInt(10000);
-    String pinString = pin.toString().padLeft(4, '0');
 
     try {
-      // Check if the PIN already exists in the collection
-      DocumentSnapshot pinSnapshot =
-          await _firestore.collection('AssignedPins').doc(pinString).get();
+      String pinString;
 
-      if (pinSnapshot.exists) {
-        print('Pin $pinString is already taken!');
-      } else {
-        // If the PIN doesn't exist, upload it to the collection
-        await _firestore.collection('AssignedPins').doc(pinString).set({
-          'assigned': true,
-        });
+      // Loop until a unique PIN is generated
+      while (true) {
+        // Generate a random 4-digit PIN
+        Random random = Random();
+        int pin = random.nextInt(10000);
+        pinString = pin.toString().padLeft(4, '0');
 
-        String userId = _auth.currentUser!.uid;
-        Group newGroup = Group(
-          groupId: userId,
-          groupCode: pinString,
-          groupName: groupnameController.text.trim(),
-          moderator: logincontroller.user.value!.name,
-        );
-        await _firestore.collection('groups').add(newGroup.toJson());
-        final FirebaseFirestore firestore = FirebaseFirestore.instance;
-        final studentDocRef = firestore
-            .collection('students')
-            .doc(userId); // Replace 'vendors' with your collection name
+        // Check if the PIN already exists in the collection
+        DocumentSnapshot pinSnapshot =
+            await _firestore.collection('AssignedPins').doc(pinString).get();
 
-        await studentDocRef.update({'groupid': userId});
-        // log("this is group create");
-        logincontroller.fetchUserData();
-        isloading(false);
-        print('Pin $pinString uploaded successfully!');
+        if (!pinSnapshot.exists) {
+          // If the PIN doesn't exist, break out of the loop
+          break;
+        }
       }
+
+      // Upload the unique PIN to the 'AssignedPins' collection
+      await _firestore.collection('AssignedPins').doc(pinString).set({
+        'assigned': true,
+      });
+
+      String userId = _auth.currentUser!.uid;
+      Group newGroup = Group(
+        groupId: userId,
+        groupCode: pinString,
+        groupName: groupnameController.text.trim(),
+        moderator: logincontroller.user.value!.name,
+      );
+
+      // Add the new group to the 'groups' collection
+      await _firestore.collection('groups').add(newGroup.toJson());
+
+      // Update the user's 'groupid' field in the 'students' collection
+      final FirebaseFirestore firestore = FirebaseFirestore.instance;
+      final studentDocRef = firestore.collection('students').doc(userId);
+      await studentDocRef.update({'groupid': userId});
+
+      logincontroller.fetchUserData();
+      fetchGroupByGroupId();
+      fetchGroupMember();
+      Get.back();
+      isloading(false);
+      print('Pin $pinString uploaded successfully!');
     } catch (e) {
       isloading(false);
       print('Error: $e');
     }
   }
 
-  Future<void> fetchGroupsByGroupId() async {
+  Future<void> fetchGroupByGroupId() async {
     try {
-      isloading(true);
-
       final QuerySnapshot<Map<String, dynamic>> groupsSnapshot =
           await _firestore
               .collection('groups')
               .where('groupId', isEqualTo: storage.read("groupid"))
               .get();
+      currentGroup.value = null;
+      debugPrint(" the data is loaidng");
 
       if (groupsSnapshot.docs.isNotEmpty) {
-        final List<Group> filteredGroups = groupsSnapshot.docs
-            .map((doc) => Group.fromJson(doc.data()))
-            .toList();
-
-        // Assuming you only want the first group if there are multiple
-        currentGroup.value = filteredGroups.first;
-
-        fetchGroupMember();
+        final groupData = groupsSnapshot.docs.first.data();
+        currentGroup.value = Group.fromJson(groupData);
       } else {
         isloading(false);
-
-        print('No groups found for this group ID.');
-        // Clear the list if no groups are found
+        print('No group found for this group ID.');
       }
     } catch (e) {
       isloading(false);
-
-      print("Error fetching groups: $e");
-      // Handle error - show a snackbar, display an error message, etc.
+      print("Error fetching group: $e");
     }
   }
 
@@ -114,12 +117,12 @@ class GroupController extends GetxController {
   Future<void> fetchGroupMember() async {
     try {
       isloading(true);
-      if (logincontroller.user.value!.groupid.isNotEmpty) {
+      if (logincontroller.user != null) {
         final QuerySnapshot<Map<String, dynamic>> studentsSnapshot =
             await _firestore
                 .collection('students')
                 .where('groupid',
-                    isEqualTo: logincontroller.user.value!.groupid)
+                    isEqualTo: logincontroller.user.value?.groupid)
                 .get();
 
         if (studentsSnapshot.docs.isNotEmpty) {
@@ -148,24 +151,25 @@ class GroupController extends GetxController {
 
   Future<void> fetchAllStudent() async {
     try {
-      isloading(true);
-      final QuerySnapshot<Map<String, dynamic>> studentsSnapshot =
-          await _firestore
-              .collection('students')
-              .where('classes', isEqualTo: logincontroller.user.value!.classes)
-              .get();
+      if (logincontroller.user != null) {
+        final QuerySnapshot<Map<String, dynamic>> studentsSnapshot =
+            await _firestore
+                .collection('students')
+                .where('classes',
+                    isEqualTo: logincontroller.user.value?.classes)
+                .get();
 
-      students.clear();
+        students.clear();
 
-      final List<UserModel> members = studentsSnapshot.docs.map((doc) {
-        return UserModel.fromMap(doc.data());
-      }).toList();
+        final List<UserModel> members = studentsSnapshot.docs.map((doc) {
+          return UserModel.fromMap(doc.data());
+        }).toList();
 
-      students.assignAll(members);
+        students.assignAll(members);
+      }
 
       isloading(false);
     } catch (e) {
-      isloading(false);
       print("Error fetching group members: $e");
       // Handle error - show a snackbar, display an error message, etc.
     }
@@ -208,7 +212,6 @@ class GroupController extends GetxController {
       final studentDocRef = firestore.collection('students').doc(userid);
       // Update the document to delete a specific field (e.g., 'groupid')
       await studentDocRef.update({'groupid': ''});
-      log("student is delete");
 
       students.clear();
       fetchGroupMember();
@@ -218,7 +221,6 @@ class GroupController extends GetxController {
     } catch (e) {
       isloading(false);
       // Handle any errors here
-      log('Error deleting friend field: $e');
     }
   }
 }

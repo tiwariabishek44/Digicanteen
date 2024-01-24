@@ -27,7 +27,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
       alignment: Alignment.bottomCenter,
       insetPadding: EdgeInsets.zero,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.35,
+        height: MediaQuery.of(context).size.height * 0.3,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.white,

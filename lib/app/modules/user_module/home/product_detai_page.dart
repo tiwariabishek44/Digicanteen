@@ -174,35 +174,34 @@ class ProductDetailPage extends StatelessWidget {
                                                   price: product.price
                                                       .toInt()
                                                       .toString(),
-                                                  quantiti: 1.toString(),
                                                   onConfirm: () {
-                                                    Items newItem = Items(
-                                                        classs: user!.classes,
-                                                        date: formattedDate,
-                                                        checkout: 'false',
-                                                        customer: user!.name,
-                                                        groupcod:
-                                                            group!.groupCode,
-                                                        groupid: user.groupid,
-                                                        cid: user.userid,
-                                                        productName:
-                                                            product.name,
-                                                        price: product.price,
-                                                        quantity: 1,
-                                                        productImage:
-                                                            product.image);
-                                                    cartController
-                                                        .addItemToOrder(
-                                                            newItem);
+                                                    // Items newItem = Items(
+                                                    //     classs: user!.classes,
+                                                    //     date: formattedDate,
+                                                    //     checkout: 'false',
+                                                    //     customer: user!.name,
+                                                    //     groupcod:
+                                                    //         group!.groupCode,
+                                                    //     groupid: user.groupid,
+                                                    //     cid: user.userid,
+                                                    //     productName:
+                                                    //         product.name,
+                                                    //     price: product.price,
+                                                    //     quantity: 1,
+                                                    //     productImage:
+                                                    //         product.image);
+                                                    // cartController
+                                                    //     .addItemToOrder(
+                                                    //         newItem);
 
-                                                    Get.back();
-                                                    showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return CustomPopup();
-                                                      },
-                                                    );
+                                                    // Get.back();
+                                                    // showDialog(
+                                                    //   context: context,
+                                                    //   builder: (BuildContext
+                                                    //       context) {
+                                                    //     return CustomPopup();
+                                                    //   },
+                                                    // );
                                                   },
                                                 );
                                               },

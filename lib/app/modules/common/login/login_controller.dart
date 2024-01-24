@@ -67,7 +67,7 @@ class LoginController extends GetxController {
 
       DocumentSnapshot userSnapshot = await _firestore
           .collection('students')
-          .doc(_auth.currentUser!.uid)
+          .doc(storage.read('userId'))
           .get();
 
       if (userSnapshot.exists) {
@@ -105,6 +105,7 @@ class LoginController extends GetxController {
       await _auth.signInWithEmailAndPassword(
           email: emailcontroller.text, password: passwordcontroller.text);
       isloading(false);
+      storage.write('userId', _auth.currentUser!.uid);
       fetchUserData();
       Get.offAll(() => UserMainScreenView());
 
@@ -122,6 +123,7 @@ class LoginController extends GetxController {
       await _auth.signOut();
       clearTextControllers();
       user.value = null;
+      storage.remove('userId');
       storage.remove('groupid');
 
       Get.offAll(() => SplashScreen());

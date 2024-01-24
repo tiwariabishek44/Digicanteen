@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/home/home_page_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:merocanteen/app/widget/no_data_widget.dart';
@@ -8,20 +10,58 @@ import 'package:merocanteen/app/widget/product_gridview.dart';
 import 'package:merocanteen/app/widget/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   final homepagecontroller = Get.put(HomepageContoller());
+  final gropucontroller = Get.put(LoginController());
 
   Future<void> _refreshData() async {
     homepagecontroller
         .fetchProducts(); // Fetch data based on the selected category
+    gropucontroller.fetchUserData();
+  }
+
+  String dat = '';
+
+  @override
+  void initState() {
+    super.initState();
+    checkTimeAndSetDate();
+  }
+
+  void checkTimeAndSetDate() {
+    DateTime currentDate = DateTime.now();
+    NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
+    int currentHour = currentDate.hour;
+
+    if ((currentHour >= 15 && currentHour <= 23) ||
+        (currentHour >= 0 && currentHour < 1)) {
+      // After 4 pm but not after 1 am (next day)
+      NepaliDateTime tomorrow = nepaliDateTime.add(Duration(days: 1));
+      setState(() {
+        dat = DateFormat('dd/MM/yyyy\'', 'en').format(tomorrow);
+      });
+    } else if (currentHour >= 1) {
+      // 1 am or later
+      setState(() {
+        dat = DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
+      });
+    } else {
+      // Handle other cases if needed
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    LoginController().fetchUserData();
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: CustomTopBar(),
       body: RefreshIndicator(
         onRefresh: () => _refreshData(),
         child: Center(
@@ -39,29 +79,7 @@ class MyHomePage extends StatelessWidget {
                         children: [
                           Padding(
                             padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                  color: secondaryColor,
-                                  borderRadius: BorderRadius.circular(20)),
-                              height: MediaQuery.of(context).size.height * 0.3,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(20),
-                                child: CachedNetworkImage(
-                                  progressIndicatorBuilder:
-                                      (context, url, downloadProgress) =>
-                                          SpinKitFadingCircle(
-                                    color: secondaryColor,
-                                  ),
-                                  imageUrl:
-                                      'https://newspaperads.ads2publish.com/wp-content/uploads/2018/11/zomato-no-cooking-sunday-enjoy-50-off-ad-times-of-india-mumbai-25-11-2018.png' ??
-                                          '',
-                                  fit: BoxFit.fill,
-                                  errorWidget: (context, url, error) =>
-                                      Icon(Icons.error_outline, size: 40),
-                                ),
-                              ),
-                            ),
+                            child: CustomTopBar(),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -71,6 +89,7 @@ class MyHomePage extends StatelessWidget {
                             ),
                           ),
                           ProductGrid(
+                            dat: dat,
                             productList: homepagecontroller.products,
                           ),
                         ],

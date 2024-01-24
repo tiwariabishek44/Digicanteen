@@ -1,15 +1,18 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/intl.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
 import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
+import 'package:nepali_utils/nepali_utils.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
-class OrderConfirmationDialog extends StatelessWidget {
+class OrderConfirmationDialog extends StatefulWidget {
   final VoidCallback onConfirm;
-  final String quantiti;
   final String pname;
   final String image;
   final String price;
@@ -19,20 +22,75 @@ class OrderConfirmationDialog extends StatelessWidget {
       {required this.onConfirm,
       required this.date,
       required this.price,
-      required this.quantiti,
       required this.pname,
       required this.image,
       Key? key})
       : super(key: key);
+
+  @override
+  State<OrderConfirmationDialog> createState() =>
+      _OrderConfirmationDialogState();
+}
+
+class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
   final groupcontroller = Get.put(GroupController());
+  final cartcontroller = Get.put(CartController());
+  List<String> timeSlots = [
+    '8:30',
+    '9:30',
+    '11:30',
+    '12:30',
+    '1:30',
+  ];
+
+  bool isMealTimeSelectionVisible = false; // Add this variable
+
+  @override
+  void initState() {
+    super.initState();
+    checkTimeAndSetVisibility();
+  }
+
+  void checkTimeAndSetVisibility() {
+    DateTime currentDate = DateTime.now();
+    int currentHour = currentDate.hour;
+
+    if ((currentHour >= 16 && currentHour <= 24) ||
+        (currentHour >= 1 && currentHour < 8)) {
+      // After 4 pm but not after 8 am of the next day
+      setState(() {
+        isMealTimeSelectionVisible = true;
+      });
+    }
+  }
+
+  int selectedIndex = -1;
+  void showNoSelectionMessage() {
+    Get.snackbar(
+      'No Time Slot Selected',
+      'Please select a time slot',
+      backgroundColor: Colors.red, // Set your desired background color here
+      colorText: Colors.white, // Set the text color
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    DateTime currentDate = DateTime.now();
+    NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
+    String formattedDate = DateFormat.yMd().add_jm().format(nepaliDateTime);
+
+    int currentHour = currentDate.hour;
+
+    String dateMessage;
     return Dialog(
+      backgroundColor: Colors.transparent,
       alignment: Alignment.bottomCenter,
       insetPadding: EdgeInsets.zero,
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.45,
+        height: isMealTimeSelectionVisible
+            ? MediaQuery.of(context).size.height * 0.67
+            : MediaQuery.of(context).size.height * 0.37,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.white,
@@ -41,157 +99,262 @@ class OrderConfirmationDialog extends StatelessWidget {
             topRight: Radius.circular(20.0),
           ),
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Expanded(
-              flex: 3,
-              child: Obx(() {
-                if (groupcontroller.currentGroup.value == null) {
-                  groupcontroller.fetchGroupsByGroupId();
-                  return LoadingScreen();
-                } else {
-                  return Column(
-                    children: [
-                      SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                          'Group Code ${groupcontroller.currentGroup.value!.groupCode}  ',
-                          style: TextStyle(
-                              fontSize: 27.0,
-                              fontFamily: FontStyles.poppinBold,
-                              fontWeight: FontWeight.bold)),
-                      Center(
-                        child: Column(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 30.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                flex: 2,
+                child: Obx(() {
+                  if (groupcontroller.currentGroup.value == null) {
+                    groupcontroller.fetchGroupByGroupId();
+                    return LoadingScreen();
+                  } else {
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(
-                              'Your order is under group ${groupcontroller.currentGroup.value!.groupName}',
-                              style: TextStyle(
-                                  fontSize: 17,
-                                  color: Color.fromARGB(255, 119, 116, 116)),
-                              maxLines: 2,
-                            ),
+                            const Text('Group Code : ',
+                                style: TextStyle(
+                                    color: Color.fromARGB(255, 101, 100, 100),
+                                    fontSize: 22.0,
+                                    fontFamily: FontStyles.poppinBold,
+                                    fontWeight: FontWeight.bold)),
+                            Text(groupcontroller.currentGroup.value!.groupCode,
+                                style: TextStyle(
+                                    color:
+                                        const Color.fromARGB(255, 255, 90, 7),
+                                    fontSize: 27.0,
+                                    fontFamily: FontStyles.poppinBold,
+                                    fontWeight: FontWeight.bold))
                           ],
                         ),
-                      ),
-                    ],
-                  );
-                }
-              }),
-            ),
-            Expanded(
-                flex: 3,
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'Your order is under group ${groupcontroller.currentGroup.value!.groupName}',
+                                style: TextStyle(
+                                    fontSize: 17,
+                                    color: Color.fromARGB(255, 119, 116, 116)),
+                                maxLines: 2,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  }
+                }),
+              ),
+              Expanded(
+                flex: 2,
                 child: Container(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3.0),
-                    child: Row(children: [
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(20),
-                        child: CachedNetworkImage(
-                          progressIndicatorBuilder:
-                              (context, url, downloadProgress) =>
-                                  SpinKitFadingCircle(
-                            color: secondaryColor,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20)),
+                          height: 19.h,
+                          width: 36.w,
+                          child: CachedNetworkImage(
+                            imageUrl: widget.image ?? '',
+                            fit: BoxFit.cover,
+                            errorWidget: (context, url, error) =>
+                                Icon(Icons.error_outline, size: 40),
                           ),
-                          imageUrl: image ?? '',
-                          fit: BoxFit.fill,
-                          width: MediaQuery.of(context).size.width * 0.45,
-                          errorWidget: (context, url, error) =>
-                              Icon(Icons.error_outline, size: 40),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
+                      SizedBox(width: 16.0),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            flex: 8,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  widget.pname,
+                                  overflow: TextOverflow.clip,
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                                Text(
+                                  "Quantity:1-/plate",
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                                Text(
+                                  "Price: Rs." + widget.price,
+                                  style: TextStyle(fontSize: 17),
+                                ),
+                                Text(
+                                  "For: " + widget.date,
+                                  style: TextStyle(fontSize: 17),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              isMealTimeSelectionVisible
+                  ? Expanded(
+                      flex: 3,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              pname,
-                              overflow: TextOverflow.clip,
-                              style: TextStyle(fontSize: 17),
-                            ),
-                            Text(
-                              "Quantity: " + quantiti + " /plate",
-                              style: TextStyle(fontSize: 17),
-                            ),
-                            Text(
-                              "Price: Rs." + price,
-                              style: TextStyle(fontSize: 17),
-                            ),
-                            Text(
-                              "For: " + date,
-                              style: TextStyle(fontSize: 17),
-                            )
-                          ],
-                        ),
-                      )
-                    ]),
-                  ),
-                )),
-            Expanded(
-              flex: 2,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 15.0),
-                child: true
-                    ? Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            GestureDetector(
-                              onTap: onConfirm,
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                decoration: BoxDecoration(
-                                  color: secondaryColor,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Center(
-                                    child: Text(
-                                  'Confirm',
-                                  style: TextStyle(
-                                      color: Colors.white70,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold),
-                                )),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Select Meal Time:- ${cartcontroller.mealTime.value}",
+                                style: TextStyle(fontSize: 20),
                               ),
                             ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.back();
-                              },
-                              child: Container(
-                                width: MediaQuery.of(context).size.width * 0.45,
-                                decoration: BoxDecoration(
-                                  color:
-                                      const Color.fromARGB(255, 238, 235, 235),
-                                  borderRadius: BorderRadius.circular(10),
+                            Container(
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GridView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 3,
+                                          crossAxisSpacing: 8.0,
+                                          mainAxisSpacing: 8.0,
+                                          childAspectRatio: 3),
+                                  itemCount: timeSlots.length,
+                                  itemBuilder: (context, index) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          selectedIndex = index;
+                                          cartcontroller.mealTime.value =
+                                              timeSlots[selectedIndex];
+                                        });
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: secondaryColor),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          color: selectedIndex == index
+                                              ? Color.fromARGB(
+                                                  255, 187, 188, 189)
+                                              : const Color.fromARGB(
+                                                  255, 247, 245, 245),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            timeSlots[index],
+                                            style: TextStyle(
+                                                fontSize: 18.0,
+                                                color: Color.fromARGB(
+                                                    255, 84, 82, 82)),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
-                                child: Center(
-                                    child: Text(
-                                  'Cancle',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                )),
                               ),
-                            )
+                            ),
                           ],
                         ),
-                      )
-                    : Container(),
-              ),
-            ),
-            Expanded(
-              flex: 1,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(),
-              ),
-            ),
-          ],
+                      ),
+                    )
+                  : Container(
+                      child: Text("Order Time is schedule from 4 pm to 8 am"),
+                    ),
+              isMealTimeSelectionVisible
+                  ? Expanded(
+                      flex: 1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 15.0, vertical: 7),
+                        child: true
+                            ? Container(
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.back();
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 238, 235, 235),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        )),
+                                      ),
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        if (selectedIndex == -1) {
+                                          showNoSelectionMessage();
+                                        } else {
+                                          widget.onConfirm();
+                                        }
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.4,
+                                        decoration: BoxDecoration(
+                                          color: secondaryColor,
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                        child: Center(
+                                            child: Text(
+                                          'Confirm',
+                                          style: TextStyle(
+                                              color: Colors.white70,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : Container(),
+                      ),
+                    )
+                  : SizedBox(
+                      height: 1,
+                    ),
+            ],
+          ),
         ),
       ),
     );

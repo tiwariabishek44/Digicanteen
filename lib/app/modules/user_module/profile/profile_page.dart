@@ -103,12 +103,6 @@ class ProfilePage extends StatelessWidget {
             },
           ),
           CustomListTile(
-            color: Colors.purple,
-            leadingIcon: Icons.remove_shopping_cart_outlined,
-            title: "Red List",
-            onTap: () {},
-          ),
-          CustomListTile(
             color: Colors.green,
             leadingIcon: Icons.feedback_outlined,
             title: "Feedback",

@@ -9,6 +9,9 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/models/cart_models.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand_supply.dart';
+import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement_controller.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 
 class OrderController extends GetxController {
@@ -65,6 +68,41 @@ class OrderController extends GetxController {
     }
   }
 
+  Future<void> deleteIndividualFromOrder(String id, String groupcod) async {
+    try {
+      isloading(true);
+
+      final CollectionReference orders = _firestore.collection('orders');
+
+      QuerySnapshot querySnapshot =
+          await orders.where('id', isEqualTo: id).get();
+
+      // Delete each document in the query result
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
+      }
+
+      // Fetch updated cart items after deletion
+
+      // Assuming fetchOrdersByGroupID uses 'groupid' internally, you might need to retrieve it
+      // from the deleted document or have it available elsewhere.
+      // For now, let's assume groupid is available globally or as an argument to this method.
+      await fetchOrdersByGroupID(groupcod);
+
+      isloading(false);
+    } catch (e) {
+      isloading(false);
+
+      // Handle errors if any
+      print('Error deleting item from orders: $e');
+      Get.snackbar(
+        'Error',
+        'Failed to delete item from orders. Please try again later.',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
   Future<void> deleteGroupOrder(String groupcod) async {
     try {
       isloading(true);
@@ -82,6 +120,9 @@ class OrderController extends GetxController {
       }
 
       // Fetch updated cart items after updating checkout
+      OrderRequestContoller()
+          .fetchOrders('8:30', OrderRequestContoller().date.value);
+
       fetchOrdersByGroupID(groupcod);
 
       isloading(false);

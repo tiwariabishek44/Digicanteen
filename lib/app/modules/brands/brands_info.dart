@@ -1,6 +1,3 @@
-
-
-import 'package:flutter/material.dart';
 class Brand {
   final String name;
   final List<Category> categories;
@@ -301,7 +298,7 @@ List<Brand> dummyBrands = [
       ),
     ],
   ),
- Brand(
+  Brand(
     name: 'rahul',
     categories: [
       Category(
@@ -459,10 +456,10 @@ List<Brand> dummyBrands = [
     ],
   ),
 
- Brand(
+  Brand(
     name: 'abishek',
     categories: [
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -481,7 +478,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -500,7 +497,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -560,11 +557,10 @@ List<Brand> dummyBrands = [
     ],
   ),
 
-
   Brand(
     name: 'Unilever',
     categories: [
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -583,7 +579,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -640,7 +636,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -659,7 +655,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -716,7 +712,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -735,7 +731,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -792,7 +788,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(
@@ -811,7 +807,7 @@ List<Brand> dummyBrands = [
           ),
         ],
       ),
-       Category(
+      Category(
         name: 'Soap',
         products: [
           Product(

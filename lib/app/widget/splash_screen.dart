@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             SpinKitFadingCircle(
-              color: secondaryColor,
+              color: primaryColor,
             )
           ],
         ),

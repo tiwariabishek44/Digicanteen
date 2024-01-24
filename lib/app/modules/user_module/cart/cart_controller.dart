@@ -14,9 +14,8 @@ class CartController extends GetxController {
   final storage = GetStorage();
   final RxList<Items> orders = <Items>[].obs;
   final RxList<Items> ordersHistory = <Items>[].obs;
-
+  var mealTime = ''.obs;
   var totalamoutn = 0.obs;
-  var quantity = 1.obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
@@ -42,25 +41,23 @@ class CartController extends GetxController {
   }
 
   // Method to delete an item from the cart by its CID and groupID
-  Future<void> deleteItemFromOrder() async {
+
+  Future<void> deleteItemFromOrder(
+    String id,
+  ) async {
     try {
       isloading(true);
-      final user = logincontroller.user.value;
 
       final CollectionReference orders = _firestore.collection('orders');
 
-      QuerySnapshot querySnapshot = await orders
-          .where('cid', isEqualTo: user!.userid)
-          .where('groupid', isEqualTo: storage.read("groupid"))
-          .get();
+      QuerySnapshot querySnapshot =
+          await orders.where('id', isEqualTo: id).get();
 
-      // Assuming there's only one matching document, delete it
-      if (querySnapshot.docs.isNotEmpty) {
-        await orders.doc(querySnapshot.docs.first.id).delete();
+      // Delete each document in the query result
+      for (QueryDocumentSnapshot doc in querySnapshot.docs) {
+        await doc.reference.delete();
       }
-
-      // Fetch updated cart items after deletion
-      await fetchOrdersByGroupID();
+      fetchOrdersByGroupID();
 
       isloading(false);
     } catch (e) {
@@ -86,7 +83,6 @@ class CartController extends GetxController {
               .where('groupid', isEqualTo: storage.read("groupid"))
               .where('checkout', isEqualTo: "false")
               .get();
-      log('after the querry snapshot.');
 
       orders.clear();
 
@@ -96,7 +92,6 @@ class CartController extends GetxController {
 
       orders.assignAll(order);
       isloading(false);
-      log("-----order is fetched order lenght ${orders.length}");
     } catch (e) {
       isloading(false);
       print("Error fetching group members: $e");
@@ -108,8 +103,6 @@ class CartController extends GetxController {
 
   Future<void> fetchHistory() async {
     try {
-      isloading(true);
-      log("-----thid fetch order by gorup id is run");
       final QuerySnapshot<Map<String, dynamic>> studentsSnapshot =
           await _firestore
               .collection('orders')
@@ -129,24 +122,53 @@ class CartController extends GetxController {
       log("-----order is fetched order lenght ${orders.length}");
     } catch (e) {
       isloading(false);
-      print("Error fetching group members: $e");
       // Handle error - show a snackbar, display an error message, etc.
     }
   }
 
 //----to add the items in the cart or create new if new user---//
 
-  Future<void> addItemToOrder(Items item) async {
+  Future<void> addItemToOrder({
+    required String classs,
+    required String customer,
+    required String groupid,
+    required String cid,
+    required String productName,
+    required String productImage,
+    required double price,
+    required int quantity,
+    required String groupcod,
+    required String checkout,
+    required String mealtime,
+    required String date,
+  }) async {
     try {
+      DateTime now = DateTime.now();
+      String productId =
+          '${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}';
+
+      Items newItem = Items(
+        id: '${productId + customer + productName}',
+        mealtime: mealtime,
+        classs: classs,
+        date: date,
+        checkout: 'false',
+        customer: customer,
+        groupcod: groupcod,
+        groupid: groupid,
+        cid: cid,
+        productName: productName,
+        price: price,
+        quantity: quantity,
+        productImage: productImage,
+      );
+
       CollectionReference orders = _firestore.collection('orders');
 
-      await orders.add(
-          item.toMap()); // Assuming toMap() converts your Items class to a Map
-
-      // You can also perform additional actions after adding the item, if needed
+      await orders.add(newItem
+          .toMap()); // Assuming toMap() converts your Items class to a Map
 
       fetchOrdersByGroupID();
-      quantity.value = 1;
     } catch (e) {
       // If an error occurs during the process, you can handle it here
       print('Error adding item to orders: $e');

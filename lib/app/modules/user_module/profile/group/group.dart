@@ -35,7 +35,6 @@ class GroupPage extends StatelessWidget {
               onTap: () {
                 groupcontroller.deleteFriendField(userid);
                 groupcontroller.fetchAllStudent();
-
                 Navigator.of(context).pop();
               },
               child: Container(
@@ -62,6 +61,9 @@ class GroupPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    groupcontroller.fetchGroupByGroupId();
+    groupcontroller.fetchGroupMember();
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -69,11 +71,13 @@ class GroupPage extends StatelessWidget {
         elevation: 1,
       ),
       body: Obx(() {
-        if (storage.read("groupid").isEmpty) {
+        if (logincontroller.user.value!.groupid.isEmpty) {
           return CommunityCreation();
         } else {
-          groupcontroller.fetchGroupsByGroupId();
-          if (groupcontroller.currentGroup.value == null) {
+          if (groupcontroller.isloading.value ||
+              groupcontroller.currentGroup.value == null) {
+            groupcontroller.fetchGroupByGroupId();
+
             return LoadingScreen();
           } else {
             return SingleChildScrollView(
@@ -87,7 +91,7 @@ class GroupPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          "${groupcontroller.currentGroup.value!.groupName} | ${groupcontroller.currentGroup.value!.groupCode}",
+                          "${groupcontroller.currentGroup.value!.groupName} || ${groupcontroller.currentGroup.value!.groupCode}",
                           style: TextStyle(
                               fontSize: 18, fontWeight: FontWeight.w700),
                         ),
@@ -97,6 +101,7 @@ class GroupPage extends StatelessWidget {
                                 padding: EdgeInsets.only(right: 20.0),
                                 child: GestureDetector(
                                     onTap: () {
+                                      GroupController().fetchAllStudent();
                                       Get.to(() => FriendList());
                                     },
                                     child: Icon(Icons.add)),

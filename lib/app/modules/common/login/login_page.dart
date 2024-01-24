@@ -163,15 +163,35 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  CustomizedButton(
-                    onPressed: () {
-                      FocusScope.of(context).unfocus();
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: InkWell(
+                      onTap: () {
+                        FocusScope.of(context).unfocus();
 
-                      logincontroller.loginSubmit();
-                    },
-                    buttonText: "Login",
-                    buttonColor: Colors.black,
-                    textColor: Colors.white,
+                        logincontroller.loginSubmit();
+                      },
+                      child: Container(
+                          height: 55,
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              border: Border.all(width: 1, color: Colors.black),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                              child: logincontroller.isloading.value!
+                                  ? CircularProgressIndicator(
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                          Colors.white),
+                                    )
+                                  : Text(
+                                      'Login'!,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                      ),
+                                    ))),
+                    ),
                   ),
                   SizedBox(
                     height: 30,
