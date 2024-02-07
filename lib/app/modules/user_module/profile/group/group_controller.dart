@@ -19,9 +19,9 @@ class GroupController extends GetxController {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final RxList<UserModel> groupMembers = <UserModel>[].obs;
+  final RxList<UserDataResponse> groupMembers = <UserDataResponse>[].obs;
 
-  final RxList<UserModel> students = <UserModel>[].obs;
+  final RxList<UserDataResponse> students = <UserDataResponse>[].obs;
   Rx<Group?> currentGroup = Rx<Group?>(null);
 
   var isloading = false.obs;
@@ -128,8 +128,9 @@ class GroupController extends GetxController {
         if (studentsSnapshot.docs.isNotEmpty) {
           groupMembers.clear();
 
-          final List<UserModel> members = studentsSnapshot.docs.map((doc) {
-            return UserModel.fromMap(doc.data());
+          final List<UserDataResponse> members =
+              studentsSnapshot.docs.map((doc) {
+            return UserDataResponse.fromJson(doc.data());
           }).toList();
 
           groupMembers.assignAll(members);
@@ -161,8 +162,8 @@ class GroupController extends GetxController {
 
         students.clear();
 
-        final List<UserModel> members = studentsSnapshot.docs.map((doc) {
-          return UserModel.fromMap(doc.data());
+        final List<UserDataResponse> members = studentsSnapshot.docs.map((doc) {
+          return UserDataResponse.fromJson(doc.data());
         }).toList();
 
         students.assignAll(members);

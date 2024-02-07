@@ -9,6 +9,7 @@ import 'package:merocanteen/app/widget/loading_screen.dart';
 
 class CartPage extends StatelessWidget {
   final cartcontroller = Get.put(CartController());
+  final groupcontroller = Get.put(GroupController());
 
   Future<void> _refreshData() async {
     cartcontroller
@@ -47,7 +48,7 @@ class CartPage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "GroupCode : ${cartcontroller.orders.value![0].groupcod}",
+                                  "GroupCode : ${groupcontroller.currentGroup.value!.groupCode}",
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ),

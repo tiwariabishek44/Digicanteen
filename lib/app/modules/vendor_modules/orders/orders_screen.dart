@@ -230,7 +230,7 @@ class OrderPage extends StatelessWidget {
                               },
                               buttonText:
                                   "Check Out(${ordercontroller.groupcod.text})",
-                              buttonColor: primaryColor,
+                              buttonColor: AppColors.primaryColor,
                               textColor: Colors.white,
                             ),
                           ],

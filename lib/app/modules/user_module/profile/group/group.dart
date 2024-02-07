@@ -135,7 +135,7 @@ class GroupPage extends StatelessWidget {
                   Obx(() {
                     if (groupcontroller.groupMembers.value == '') {
                       return Container(
-                        color: primaryColor,
+                        color: AppColors.primaryColor,
                       );
                     } else {
                       return ListView.builder(

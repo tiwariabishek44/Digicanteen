@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/register/register_controller.dart';
 import 'package:merocanteen/app/widget/customized_button.dart';
@@ -110,19 +109,20 @@ class _RegisterPageState extends State<RegisterPage> {
                           padding: EdgeInsets.all(7.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8.0),
-                            border: Border.all(color: secondaryColor),
+                            border: Border.all(color: AppColors.secondaryColor),
                           ),
                           child: DropdownButton<String>(
                             value: _selectedOption,
                             hint: Text(
                               'Select a Class',
                               style: TextStyle(
-                                  color: secondaryColor, fontSize: 18),
+                                  color: AppColors.secondaryColor,
+                                  fontSize: 18),
                             ), // Initial hint
                             icon: Icon(Icons.arrow_drop_down),
                             iconSize: 36.0,
                             elevation: 8,
-                            style: TextStyle(color: secondaryColor),
+                            style: TextStyle(color: AppColors.secondaryColor),
                             underline: SizedBox(),
                             isExpanded: true,
                             onChanged: (String? newValue) {
@@ -153,14 +153,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.lock_outline),
                             labelText: 'Password',
-                            labelStyle: TextStyle(color: secondaryColor),
+                            labelStyle:
+                                TextStyle(color: AppColors.secondaryColor),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: secondaryColor, width: 1),
+                                    color: AppColors.secondaryColor, width: 1),
                                 borderRadius: BorderRadius.circular(10)),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: secondaryColor, width: 1),
+                                    color: AppColors.secondaryColor, width: 1),
                                 borderRadius: BorderRadius.circular(10)),
                             fillColor: Color.fromARGB(255, 255, 255, 255),
                             filled: true,
@@ -194,14 +195,15 @@ class _RegisterPageState extends State<RegisterPage> {
                           decoration: InputDecoration(
                             prefixIcon: Icon(Icons.lock_outline),
                             labelText: 'Confirm Password',
-                            labelStyle: TextStyle(color: secondaryColor),
+                            labelStyle:
+                                TextStyle(color: AppColors.secondaryColor),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: secondaryColor, width: 1),
+                                    color: AppColors.secondaryColor, width: 1),
                                 borderRadius: BorderRadius.circular(10)),
                             focusedBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                    color: secondaryColor, width: 1),
+                                    color: AppColors.secondaryColor, width: 1),
                                 borderRadius: BorderRadius.circular(10)),
                             fillColor: Color.fromARGB(255, 255, 255, 255),
                             filled: true,
@@ -240,14 +242,14 @@ class _RegisterPageState extends State<RegisterPage> {
                                   registercontroller.termsAndConditions.value =
                                       value!;
                                 },
-                                activeColor: primaryColor,
+                                activeColor: AppColors.primaryColor,
                                 checkColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(2.5),
                                 ),
                                 splashRadius: 1.5.h,
                                 side: const BorderSide(
-                                  color: primaryColor,
+                                  color: AppColors.primaryColor,
                                   style: BorderStyle.solid,
                                 ),
                               ),
@@ -259,10 +261,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 text: TextSpan(
                                   text: "I have read and accept the ",
                                   style: TextStyle(
-                                      fontSize: 16.sp,
-                                      fontWeight: FontWeight.w400,
-                                      color: Colors.black,
-                                      fontFamily: FontStyles.poppins),
+                                    fontSize: 16.sp,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.black,
+                                  ),
                                   children: [
                                     TextSpan(
                                       text: "Terms and Privacy Policy",
@@ -271,8 +273,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       style: TextStyle(
                                         fontSize: 15.5.sp,
                                         fontWeight: FontWeight.w500,
-                                        color: primaryColor,
-                                        fontFamily: FontStyles.poppins,
+                                        color: AppColors.primaryColor,
                                       ),
                                     ),
                                   ],

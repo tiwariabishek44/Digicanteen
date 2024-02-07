@@ -9,6 +9,8 @@ import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/register/register.dart';
 import 'package:merocanteen/app/modules/user_module/home/user_mainScreen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
+import 'package:merocanteen/app/repository/get_userdata_repository.dart';
+import 'package:merocanteen/app/service/api_client.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 import 'package:merocanteen/app/widget/splash_screen.dart';
 
@@ -27,7 +29,7 @@ class LoginController extends GetxController {
 
   FirebaseAuth _auth = FirebaseAuth.instance;
 
-  Rx<UserModel?> user = Rx<UserModel?>(null);
+  Rx<UserDataResponse?> user = Rx<UserDataResponse?>(null);
 
   @override
   void onInit() {
@@ -61,34 +63,32 @@ class LoginController extends GetxController {
     }
   }
 
+  final UserDataRepository userDataRepository = UserDataRepository();
+  final Rx<ApiResponse<UserDataResponse>> userDataResponse =
+      ApiResponse<UserDataResponse>.initial().obs;
   Future<void> fetchUserData() async {
     try {
-      user(null);
+      isloading(true);
+      userDataResponse.value = ApiResponse<UserDataResponse>.loading();
+      final userDataResult = await userDataRepository.getUserData(
+        {
+          'userid': storage.read('userId'),
+          // Add more filters as needed
+        },
+      );
+      if (userDataResult.status == ApiStatus.SUCCESS) {
+        log("----------this is the success t fetch the user data");
+        userDataResponse.value =
+            ApiResponse<UserDataResponse>.completed(userDataResult.response);
 
-      DocumentSnapshot userSnapshot = await _firestore
-          .collection('students')
-          .doc(storage.read('userId'))
-          .get();
-
-      if (userSnapshot.exists) {
-        // User data found in Firestore, update the user value in the controller
-        var userData = userSnapshot.data() as Map<String, dynamic>;
-        user.value = UserModel(
-          userid: userData['userid'] ?? "",
-          name: userData['name'] ?? "", // Fetch the user's name from Firestore
-          email: userData['email'] ?? "",
-          phone: userData['phone'] ?? "",
-          groupid: userData['groupid'] ?? "",
-          classes: userData['classes'] ?? "",
-        );
-        storage.write('groupid', userData['groupid']);
-      } else {
-        // User data not found
-        print("User data not found in Firestore");
+        log(userDataResponse.value.response!.first.classes);
       }
     } catch (e) {
-      // Handle data retrieval errors
-      print("Error fetching user data: $e");
+      isloading(false);
+
+      log('Error while getting data: $e');
+    } finally {
+      isloading(false);
     }
   }
 

@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/modules/vendor_modules/allproducts/homeSCreen.dart';
@@ -69,7 +68,7 @@ class VendorMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.dashboard_outlined,
                                   color: userController.currentTab.value == 0
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : Colors.black,
                                 ),
                                 Text(
@@ -77,10 +76,9 @@ class VendorMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: FontStyles.poppins,
                                       color:
                                           userController.currentTab.value == 0
-                                              ? primaryColor
+                                              ? AppColors.primaryColor
                                               : Colors.black),
                                 ),
                               ],
@@ -105,7 +103,7 @@ class VendorMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.shopping_cart_outlined,
                                   color: userController.currentTab.value == 1
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : Colors.black,
                                 ),
                                 Text(
@@ -113,10 +111,9 @@ class VendorMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: FontStyles.poppins,
                                       color:
                                           userController.currentTab.value == 1
-                                              ? primaryColor
+                                              ? AppColors.primaryColor
                                               : Colors.black),
                                 ),
                               ],
@@ -140,7 +137,7 @@ class VendorMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.search,
                                   color: userController.currentTab.value == 2
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : Colors.black,
                                 ),
                                 Text(
@@ -148,9 +145,8 @@ class VendorMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: FontStyles.poppins,
                                     color: userController.currentTab.value == 2
-                                        ? primaryColor
+                                        ? AppColors.primaryColor
                                         : Colors.black,
                                   ),
                                 ),

@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
@@ -75,9 +74,9 @@ class PriceUpdatePage extends StatelessWidget {
                             Text(
                               product.name, // Replace with actual product name
                               style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: FontStyles.poppins),
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             SizedBox(
                               height: 10,
@@ -108,20 +107,20 @@ class PriceUpdatePage extends StatelessWidget {
                                         suffixIcon: IconButton(
                                           icon: Icon(
                                             Icons.money,
-                                            color: secondaryColor,
+                                            color: AppColors.secondaryColor,
                                             size: 30,
                                           ),
                                           onPressed: () {},
                                         ),
                                         enabledBorder: OutlineInputBorder(
                                             borderSide: const BorderSide(
-                                                color: secondaryColor,
+                                                color: AppColors.secondaryColor,
                                                 width: 1),
                                             borderRadius:
                                                 BorderRadius.circular(10)),
                                         focusedBorder: OutlineInputBorder(
                                             borderSide: const BorderSide(
-                                                color: secondaryColor,
+                                                color: AppColors.secondaryColor,
                                                 width: 1),
                                             borderRadius:
                                                 BorderRadius.circular(10)),
@@ -129,8 +128,8 @@ class PriceUpdatePage extends StatelessWidget {
                                             Color.fromARGB(255, 255, 255, 255),
                                         filled: true,
                                         labelText: 'Enter the latest Price',
-                                        labelStyle:
-                                            TextStyle(color: secondaryColor),
+                                        labelStyle: TextStyle(
+                                            color: AppColors.secondaryColor),
                                         border: OutlineInputBorder(
                                           borderRadius:
                                               BorderRadius.circular(10),

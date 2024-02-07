@@ -1,4 +1,4 @@
-class UserModel {
+class UserDataResponse {
   final String userid;
   final String name;
   final String email;
@@ -6,7 +6,7 @@ class UserModel {
   final String groupid;
   final String classes;
 
-  UserModel({
+  UserDataResponse({
     required this.classes,
     required this.userid,
     required this.name,
@@ -15,8 +15,8 @@ class UserModel {
     required this.groupid,
   });
 
-  factory UserModel.fromMap(Map<String, dynamic> json) {
-    return UserModel(
+  factory UserDataResponse.fromJson(Map<String, dynamic> json) {
+    return UserDataResponse(
       userid:
           json['userid'] ?? '', // Provide a default value if 'userid' is null
       name: json['name'] ?? '',

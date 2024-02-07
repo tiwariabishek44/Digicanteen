@@ -52,6 +52,9 @@ dependencies:
   fl_chart: ^0.66.0
   fluttertoast: ^8.2.4
   nepali_utils: ^3.0.4
+  flutter_windowmanager: ^0.2.0
+  system_info_plus: ^0.0.5
+  google_fonts: ^6.1.0
 
 dev_dependencies:
   flutter_test:

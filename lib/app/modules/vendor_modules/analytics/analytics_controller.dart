@@ -5,13 +5,15 @@ import 'package:flutter/physics.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
 class AnalyticsController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  RxMap<String, List<Items>> orders = <String, List<Items>>{}.obs;
-  RxMap<String, List<Items>> chekcoutOrders = <String, List<Items>>{}.obs;
+  RxMap<String, List<OrderResponse>> orders =
+      <String, List<OrderResponse>>{}.obs;
+  RxMap<String, List<OrderResponse>> chekcoutOrders =
+      <String, List<OrderResponse>>{}.obs;
   RxMap<String, int> totalQuantityPerProductOrders = <String, int>{}.obs;
   RxMap<String, int> totalQuantityPerProductCheckoutOrders =
       <String, int>{}.obs;
@@ -47,7 +49,8 @@ class AnalyticsController extends GetxController {
           .get();
 
       ordersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
+        OrderResponse item =
+            OrderResponse.fromJson(document.data() as Map<String, dynamic>);
 
         if (!orders.containsKey(item.classs)) {
           orders[item.classs] = [item];
@@ -64,7 +67,8 @@ class AnalyticsController extends GetxController {
           .get();
 
       unCheckoutOrdersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
+        OrderResponse item =
+            OrderResponse.fromJson(document.data() as Map<String, dynamic>);
 
         if (!chekcoutOrders.containsKey(item.classs)) {
           chekcoutOrders[item.classs] = [item];

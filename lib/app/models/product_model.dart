@@ -10,4 +10,22 @@ class Product {
     required this.image,
     required this.price,
   });
+
+  factory Product.fromJson(Map<String, dynamic> json) {
+    return Product(
+      productId: json['productId'] ?? "",
+      name: json['name'] ?? "",
+      image: json['image'] ?? "",
+      price: json['price']?.toDouble() ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productId': productId,
+      'name': name,
+      'image': image,
+      'price': price,
+    };
+  }
 }

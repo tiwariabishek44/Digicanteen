@@ -1,5 +1,4 @@
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -47,9 +46,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                   children: [
                     Text(heading,
                         style: TextStyle(
-                            fontSize: 27.0,
-                            fontFamily: FontStyles.poppinBold,
-                            fontWeight: FontWeight.bold)),
+                            fontSize: 27.0, fontWeight: FontWeight.bold)),
                     SizedBox(height: 10),
                     Center(
                       child: Column(
@@ -82,7 +79,7 @@ class LogoutConfirmationDialog extends StatelessWidget {
                               child: Container(
                                 width: MediaQuery.of(context).size.width * 0.45,
                                 decoration: BoxDecoration(
-                                  color: secondaryColor,
+                                  color: AppColors.secondaryColor,
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Center(

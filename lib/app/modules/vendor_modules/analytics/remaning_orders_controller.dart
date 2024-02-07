@@ -3,14 +3,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
 class RemaningOrdersController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   var isLoading = false.obs;
-  RxList<Items> orderss = <Items>[].obs; // RxList to make it reactive
+  RxList<OrderResponse> orderss =
+      <OrderResponse>[].obs; // RxList to make it reactive
   RxDouble grandTotal = 0.0.obs; // RxDouble for the grand total
   List<String> timeSlots = [
     'All',
@@ -32,7 +33,8 @@ class RemaningOrdersController extends GetxController {
   }
 
 //--------------fetching the remaning orders---------------------//
-  RxMap<String, List<Items>> reamaningorders = <String, List<Items>>{}.obs;
+  RxMap<String, List<OrderResponse>> reamaningorders =
+      <String, List<OrderResponse>>{}.obs;
   RxMap<String, int> totalremaningOrders = <String, int>{}.obs;
 
   Future<void> fetchRemaningOreders(String mealtime) async {
@@ -67,7 +69,8 @@ class RemaningOrdersController extends GetxController {
       reamaningorders.clear();
 
       ordersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
+        OrderResponse item =
+            OrderResponse.fromJson(document.data() as Map<String, dynamic>);
 
         if (!reamaningorders.containsKey(item.productName)) {
           reamaningorders[item.productName] = [item];

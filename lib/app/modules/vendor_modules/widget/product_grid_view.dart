@@ -68,7 +68,7 @@ class VendorProductGrid extends StatelessWidget {
                           'Rs.${productList[index].price.toStringAsFixed(2)}/plate',
                           style: TextStyle(
                             fontSize: 14.0,
-                            color: secondaryColor,
+                            color: AppColors.secondaryColor,
                           ),
                         ),
                         // Additional information or description widgets can be added here

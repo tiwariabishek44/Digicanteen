@@ -7,7 +7,6 @@ import 'package:merocanteen/app/modules/user_module/cart/cart_page.dart';
 import 'package:merocanteen/app/modules/user_module/home/homepage.dart';
 import 'package:merocanteen/app/modules/user_module/home/user_screen_controller.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:merocanteen/app/modules/user_module/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -61,7 +60,7 @@ class UserMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.home,
                                   color: userController.currentTab.value == 0
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : const Color.fromARGB(255, 19, 18, 18),
                                 ),
                                 Text(
@@ -69,10 +68,9 @@ class UserMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: FontStyles.poppins,
                                       color:
                                           userController.currentTab.value == 0
-                                              ? primaryColor
+                                              ? AppColors.primaryColor
                                               : const Color.fromARGB(
                                                   255, 16, 16, 16)),
                                 ),
@@ -89,7 +87,6 @@ class UserMainScreenView extends StatelessWidget {
                         child: GestureDetector(
                           // splashColor: secondaryColor,
                           onTap: () {
-                            log(storage.read('groupid'));
                             userController.currentTab.value = 1;
                             userController.currentScreen.value = CartPage();
                           },
@@ -99,7 +96,7 @@ class UserMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.shopping_cart_outlined,
                                   color: userController.currentTab.value == 1
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : const Color.fromARGB(255, 29, 28, 28),
                                 ),
                                 Text(
@@ -107,9 +104,8 @@ class UserMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 13.sp,
                                     fontWeight: FontWeight.bold,
-                                    fontFamily: FontStyles.poppins,
                                     color: userController.currentTab.value == 1
-                                        ? primaryColor
+                                        ? AppColors.primaryColor
                                         : const Color.fromARGB(255, 29, 28, 28),
                                   ),
                                 ),
@@ -136,7 +132,7 @@ class UserMainScreenView extends StatelessWidget {
                                 Icon(
                                   Icons.person,
                                   color: userController.currentTab.value == 2
-                                      ? primaryColor
+                                      ? AppColors.primaryColor
                                       : const Color.fromARGB(255, 27, 26, 26),
                                 ),
                                 Text(
@@ -144,10 +140,9 @@ class UserMainScreenView extends StatelessWidget {
                                   style: TextStyle(
                                       fontSize: 13.sp,
                                       fontWeight: FontWeight.bold,
-                                      fontFamily: FontStyles.poppins,
                                       color:
                                           userController.currentTab.value == 2
-                                              ? primaryColor
+                                              ? AppColors.primaryColor
                                               : const Color.fromARGB(
                                                   255, 33, 31, 31)),
                                 ),

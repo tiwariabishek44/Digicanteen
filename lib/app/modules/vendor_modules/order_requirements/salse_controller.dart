@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 
 class SalsesController extends GetxController {
@@ -18,7 +18,8 @@ class SalsesController extends GetxController {
     fetchOrderss();
   }
 
-  RxList<Items> orderss = <Items>[].obs; // RxList to make it reactive
+  RxList<OrderResponse> orderss =
+      <OrderResponse>[].obs; // RxList to make it reactive
   RxDouble grandTotal = 0.0.obs; // RxDouble for the grand total
 
   Future<void> fetchOrderss() async {
@@ -43,7 +44,7 @@ class SalsesController extends GetxController {
 
       // Add each order to the orders list
       for (var doc in querySnapshot.docs) {
-        var order = Items.fromMap(doc.data() as Map<String, dynamic>);
+        var order = OrderResponse.fromJson(doc.data() as Map<String, dynamic>);
         orderss.add(order);
       }
 
@@ -61,7 +62,8 @@ class SalsesController extends GetxController {
   }
 
 //--------------fetching the remaning orders---------------------//
-  RxMap<String, List<Items>> salesOrder = <String, List<Items>>{}.obs;
+  RxMap<String, List<OrderResponse>> salesOrder =
+      <String, List<OrderResponse>>{}.obs;
   RxMap<String, int> totalSalesPerOrders = <String, int>{}.obs;
 
   Future<void> fetchSalesORders() async {
@@ -84,7 +86,8 @@ class SalsesController extends GetxController {
       salesOrder.clear();
 
       ordersSnapshot.docs.forEach((DocumentSnapshot document) {
-        Items item = Items.fromMap(document.data() as Map<String, dynamic>);
+        OrderResponse item =
+            OrderResponse.fromJson(document.data() as Map<String, dynamic>);
 
         if (!salesOrder.containsKey(item.productName)) {
           salesOrder[item.productName] = [item];

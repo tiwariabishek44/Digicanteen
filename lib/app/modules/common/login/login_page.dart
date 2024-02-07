@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/register/register.dart';
 import 'package:merocanteen/app/modules/brands/brand_page.dart';
@@ -61,15 +60,15 @@ class _LoginScreenState extends State<LoginScreen> {
                       decoration: InputDecoration(
                         prefixIcon: Icon(Icons.lock_outline),
                         labelText: 'Password',
-                        labelStyle: TextStyle(color: secondaryColor),
+                        labelStyle: TextStyle(color: AppColors.secondaryColor),
                         enabledBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: secondaryColor, width: 1),
+                          borderSide: const BorderSide(
+                              color: AppColors.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         focusedBorder: OutlineInputBorder(
-                          borderSide:
-                              const BorderSide(color: secondaryColor, width: 1),
+                          borderSide: const BorderSide(
+                              color: AppColors.secondaryColor, width: 1),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         fillColor: Color.fromARGB(255, 255, 255, 255),
@@ -82,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             _isPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off_outlined,
-                            color: secondaryColor,
+                            color: AppColors.secondaryColor,
                           ),
                           onPressed: () {
                             setState(() {
@@ -107,14 +106,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             onChanged: (value) {
                               logincontroller.termsAndConditions.value = value!;
                             },
-                            activeColor: primaryColor,
+                            activeColor: AppColors.primaryColor,
                             checkColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(2.5),
                             ),
                             splashRadius: 1.5.h,
                             side: const BorderSide(
-                              color: primaryColor,
+                              color: AppColors.primaryColor,
                               style: BorderStyle.solid,
                             ),
                           ),
@@ -126,10 +125,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             text: TextSpan(
                               text: "I have read and accept the ",
                               style: TextStyle(
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                  fontFamily: FontStyles.poppins),
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
+                              ),
                               children: [
                                 TextSpan(
                                   text: "Terms and Privacy Policy",
@@ -138,8 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   style: TextStyle(
                                     fontSize: 15.5.sp,
                                     fontWeight: FontWeight.w500,
-                                    color: primaryColor,
-                                    fontFamily: FontStyles.poppins,
+                                    color: AppColors.primaryColor,
                                   ),
                                 ),
                               ],

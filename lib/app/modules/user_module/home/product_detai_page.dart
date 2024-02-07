@@ -2,14 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/config/font_style.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
 import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
 import 'package:merocanteen/app/widget/custom_appbar.dart';
-import 'package:merocanteen/app/widget/custom_popup.dart';
 import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
 import 'package:merocanteen/app/widget/ordre_conformation.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -72,9 +70,9 @@ class ProductDetailPage extends StatelessWidget {
                             Text(
                               product.name, // Replace with actual product name
                               style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: FontStyles.poppins),
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             SizedBox(height: 10),
                             Text(

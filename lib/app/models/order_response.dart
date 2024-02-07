@@ -1,4 +1,4 @@
-class Items {
+class OrderResponse {
   final String id; // Add the id field
   final String classs;
   final String customer;
@@ -13,7 +13,7 @@ class Items {
   final String mealtime;
   final String date; // Store Nepali date as a formatted string
 
-  Items({
+  OrderResponse({
     required this.id, // Update the constructor to include id
     required this.mealtime,
     required this.classs,
@@ -47,8 +47,8 @@ class Items {
     };
   }
 
-  factory Items.fromMap(Map<String, dynamic> map) {
-    return Items(
+  factory OrderResponse.fromJson(Map<String, dynamic> map) {
+    return OrderResponse(
       id: map['id'], // Retrieve id from the map
       mealtime: map['mealtime'],
       classs: map['classs'],

@@ -24,24 +24,26 @@ class CustomizedTextfield extends StatelessWidget {
         validator: validator,
         controller: myController,
         decoration: InputDecoration(
-          suffixIcon: IconButton(
+          prefixIcon: IconButton(
             icon: Icon(
               icon,
-              color: secondaryColor,
+              color: AppColors.secondaryColor,
               size: 30,
             ),
             onPressed: () {},
           ),
           enabledBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: secondaryColor, width: 1),
+              borderSide:
+                  const BorderSide(color: AppColors.secondaryColor, width: 1),
               borderRadius: BorderRadius.circular(10)),
           focusedBorder: OutlineInputBorder(
-              borderSide: const BorderSide(color: secondaryColor, width: 1),
+              borderSide:
+                  const BorderSide(color: AppColors.secondaryColor, width: 1),
               borderRadius: BorderRadius.circular(10)),
           fillColor: Color.fromARGB(255, 255, 255, 255),
           filled: true,
           labelText: hintText,
-          labelStyle: TextStyle(color: secondaryColor),
+          labelStyle: TextStyle(color: AppColors.secondaryColor),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

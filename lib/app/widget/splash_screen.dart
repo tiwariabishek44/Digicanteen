@@ -36,7 +36,7 @@ class _SplashScreenState extends State<SplashScreen> {
           Get.offAll(() => UserMainScreenView());
         } else {
           // User is not authenticated, navigate to LoginScreen
-          Get.offAll(() => LoginOptionView());
+          Get.offAll(() => UserMainScreenView());
         }
       }
     });
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen> {
               ),
             ),
             SpinKitFadingCircle(
-              color: primaryColor,
+              color: AppColors.primaryColor,
             )
           ],
         ),

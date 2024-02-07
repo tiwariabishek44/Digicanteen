@@ -5,15 +5,18 @@ import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
+import 'package:merocanteen/app/repository/add_order_repository.dart';
+import 'package:merocanteen/app/repository/get_user_order_repository.dart';
+import 'package:merocanteen/app/service/api_client.dart';
 
 class CartController extends GetxController {
   var isloading = false.obs;
   final logincontroller = Get.put(LoginController());
   final storage = GetStorage();
-  final RxList<Items> orders = <Items>[].obs;
-  final RxList<Items> ordersHistory = <Items>[].obs;
+  final RxList<OrderResponse> orders = <OrderResponse>[].obs;
+  final RxList<OrderResponse> ordersHistory = <OrderResponse>[].obs;
   var mealTime = ''.obs;
   var totalamoutn = 0.obs;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -86,8 +89,8 @@ class CartController extends GetxController {
 
       orders.clear();
 
-      final List<Items> order = studentsSnapshot.docs.map((doc) {
-        return Items.fromMap(doc.data());
+      final List<OrderResponse> order = studentsSnapshot.docs.map((doc) {
+        return OrderResponse.fromJson(doc.data());
       }).toList();
 
       orders.assignAll(order);
@@ -113,8 +116,8 @@ class CartController extends GetxController {
 
       ordersHistory.clear();
 
-      final List<Items> order = studentsSnapshot.docs.map((doc) {
-        return Items.fromMap(doc.data());
+      final List<OrderResponse> order = studentsSnapshot.docs.map((doc) {
+        return OrderResponse.fromJson(doc.data());
       }).toList();
 
       ordersHistory.assignAll(order);
@@ -127,6 +130,28 @@ class CartController extends GetxController {
   }
 
 //----to add the items in the cart or create new if new user---//
+
+  final AddOrderRepository orderRepository = AddOrderRepository();
+  final Rx<ApiResponse<OrderResponse>> orderResponse =
+      ApiResponse<OrderResponse>.initial().obs;
+
+  Future<void> addProduct() async {
+    orderResponse.value = ApiResponse<OrderResponse>.loading();
+    final market = {};
+    log("--------------product image");
+    final addOrderResult = await orderRepository.addOrder(market);
+
+    if (addOrderResult.status == ApiStatus.SUCCESS) {
+      orderResponse.value =
+          ApiResponse<OrderResponse>.completed(addOrderResult.response);
+      log(" THS IS THE RESPONSE VALUE:${addOrderResult.status}");
+      // Navigate to home page or perform necessary actions upon successful login
+      Get.back();
+    } else {
+      orderResponse.value = ApiResponse<OrderResponse>.error(
+          addOrderResult.message ?? 'Error during product create Failed');
+    }
+  }
 
   Future<void> addItemToOrder({
     required String classs,
@@ -147,27 +172,37 @@ class CartController extends GetxController {
       String productId =
           '${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}';
 
-      Items newItem = Items(
-        id: '${productId + customer + productName}',
-        mealtime: mealtime,
-        classs: classs,
-        date: date,
-        checkout: 'false',
-        customer: customer,
-        groupcod: groupcod,
-        groupid: groupid,
-        cid: cid,
-        productName: productName,
-        price: price,
-        quantity: quantity,
-        productImage: productImage,
-      );
+      final newItem = {
+        "id": '${productId + customer + productName}',
+        "mealtime": mealtime,
+        "classs": classs,
+        "date": date,
+        "checkout": 'false',
+        "customer": customer,
+        "groupcod": groupcod,
+        "groupid": groupid,
+        "cid": cid,
+        "productName": productName,
+        "price": price,
+        "quantity": quantity,
+        "productImage": productImage,
+      };
 
-      CollectionReference orders = _firestore.collection('orders');
+      orderResponse.value = ApiResponse<OrderResponse>.loading();
 
-      await orders.add(newItem
-          .toMap()); // Assuming toMap() converts your Items class to a Map
+      log("--------------product image");
+      final addOrderResult = await orderRepository.addOrder(newItem);
 
+      if (addOrderResult.status == ApiStatus.SUCCESS) {
+        orderResponse.value =
+            ApiResponse<OrderResponse>.completed(addOrderResult.response);
+        log(" THS IS THE RESPONSE VALUE:${addOrderResult.status}");
+        // Navigate to home page or perform necessary actions upon successful login
+        Get.back();
+      } else {
+        orderResponse.value = ApiResponse<OrderResponse>.error(
+            addOrderResult.message ?? 'Error during product create Failed');
+      }
       fetchOrdersByGroupID();
     } catch (e) {
       // If an error occurs during the process, you can handle it here
@@ -179,7 +214,33 @@ class CartController extends GetxController {
       );
     }
   }
-//-----to fetch all the order items by pin by vender-------//
+
+//-------------fetch user orders-------------
+
+  final GetUserOrderRepository userDataRepository = GetUserOrderRepository();
+  final Rx<ApiResponse<OrderResponse>> userDataResponse =
+      ApiResponse<OrderResponse>.initial().obs;
+  Future<void> fetchUserOrder() async {
+    try {
+      isloading(true);
+      userDataResponse.value = ApiResponse<OrderResponse>.loading();
+      final userDataResult = await userDataRepository.getUserOrder(
+          'userid', storage.read('userId'));
+      if (userDataResult.status == ApiStatus.SUCCESS) {
+        log("----------this is the success t fetch the user data");
+        userDataResponse.value =
+            ApiResponse<OrderResponse>.completed(userDataResult.response);
+
+        log(userDataResponse.value.response!.length.toString());
+      }
+    } catch (e) {
+      isloading(false);
+
+      log('Error while getting data: $e');
+    } finally {
+      isloading(false);
+    }
+  }
 
   // Method to delete an item from the cart by its CID and groupID
 }

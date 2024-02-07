@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
@@ -73,7 +73,7 @@ class OrderHistoryPage extends StatelessWidget {
               return EmptyCartPage();
             } else {
               // Sort orders by date in descending order
-              List<Items> personalOrders = cartcontroller.ordersHistory
+              List<OrderResponse> personalOrders = cartcontroller.ordersHistory
                   .where((order) =>
                       order.cid == logincontroller.user.value!.userid)
                   .toList();
@@ -109,9 +109,10 @@ class OrderHistoryPage extends StatelessWidget {
               return EmptyCartPage();
             } else {
               // Group items by year, month, and date
-              Map<String, Map<String, List<Items>>> itemsByYearMonthDate = {};
+              Map<String, Map<String, List<OrderResponse>>>
+                  itemsByYearMonthDate = {};
 
-              for (Items item in cartcontroller.ordersHistory) {
+              for (OrderResponse item in cartcontroller.ordersHistory) {
                 // Parse the string date to a DateTime object
                 DateTime dateTime = DateFormat('dd/MM/yyyy').parse(item.date);
                 DateTime currentDate = DateTime.now();
@@ -143,8 +144,8 @@ class OrderHistoryPage extends StatelessWidget {
 
               // Sort the entries based on the date in descending order
               // Sort the entries based on the date in descending order
-              List<MapEntry<String, Map<String, List<Items>>>> sortedEntries =
-                  itemsByYearMonthDate.entries.toList()
+              List<MapEntry<String, Map<String, List<OrderResponse>>>>
+                  sortedEntries = itemsByYearMonthDate.entries.toList()
                     ..sort((a, b) {
                       // Check for null or empty date strings
                       if (a.key == null ||
@@ -212,7 +213,7 @@ class OrderHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget buildItemWidget(Items item) {
+  Widget buildItemWidget(OrderResponse item) {
     return Card(
       child: Container(
         height: 19.h,
@@ -310,7 +311,7 @@ class OrderHistoryPage extends StatelessWidget {
     );
   }
 
-  Widget persionalItems(Items item) {
+  Widget persionalItems(OrderResponse item) {
     return Card(
       child: Container(
         height: 19.h,

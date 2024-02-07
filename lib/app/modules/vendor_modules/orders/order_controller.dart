@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/models/cart_models.dart';
+import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
@@ -18,8 +18,8 @@ class OrderController extends GetxController {
   var isloading = false.obs;
   final logincontroller = Get.put(LoginController());
   final groupcod = TextEditingController();
-  final RxList<Items> orders = <Items>[].obs;
-  final RxList<Items> vendorOrder = <Items>[].obs;
+  final RxList<OrderResponse> orders = <OrderResponse>[].obs;
+  final RxList<OrderResponse> vendorOrder = <OrderResponse>[].obs;
 
   var totalamoutn = 0.obs;
   var quantity = 1.obs;
@@ -56,7 +56,7 @@ class OrderController extends GetxController {
       orders.clear(); // Clear the previous orders before adding new ones
 
       for (final doc in querySnapshot.docs) {
-        final item = Items.fromMap(doc.data() as Map<String, dynamic>);
+        final item = OrderResponse.fromJson(doc.data() as Map<String, dynamic>);
         orders.add(item);
       }
       isloading(false);

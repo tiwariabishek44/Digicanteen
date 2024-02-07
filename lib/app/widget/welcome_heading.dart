@@ -1,5 +1,4 @@
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -29,8 +28,7 @@ class WelcomeHeading extends StatelessWidget {
                 textAlign:
                     TextAlign.center, // Centers text within the container
                 style: TextStyle(
-                  color: secondaryColor,
-                  fontFamily: FontStyles.poppins,
+                  color: AppColors.secondaryColor,
                   fontSize: 23.sp, // Use screenutil for font sizing
                   fontWeight: FontWeight.bold,
                 ),
@@ -38,9 +36,8 @@ class WelcomeHeading extends StatelessWidget {
               Text(
                 subHeading,
                 style: TextStyle(
-                  color: secondaryColor,
+                  color: AppColors.secondaryColor,
                   fontSize: 17.sp, // Use screenutil for font sizing
-                  fontFamily: FontStyles.poppinSemiBold,
                 ),
               ),
             ],

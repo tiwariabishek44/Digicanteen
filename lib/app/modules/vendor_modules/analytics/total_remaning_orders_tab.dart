@@ -45,7 +45,7 @@ class _TotalRemaningOrdersTabState extends State<TotalRemaningOrdersTab> {
                       child: Container(
                         width: 100,
                         decoration: BoxDecoration(
-                          border: Border.all(color: secondaryColor),
+                          border: Border.all(color: AppColors.secondaryColor),
                           borderRadius: BorderRadius.circular(10),
                           color: selectedIndex == index
                               ? Color.fromARGB(255, 206, 207, 209)

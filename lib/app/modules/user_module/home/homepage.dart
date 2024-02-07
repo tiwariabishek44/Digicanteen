@@ -11,6 +11,7 @@ import 'package:merocanteen/app/widget/top_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nepali_utils/nepali_utils.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -39,22 +40,25 @@ class _MyHomePageState extends State<MyHomePage> {
     DateTime currentDate = DateTime.now();
     NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
     int currentHour = currentDate.hour;
+    setState(() {
+      dat = DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
+    });
 
-    if ((currentHour >= 15 && currentHour <= 23) ||
-        (currentHour >= 0 && currentHour < 1)) {
-      // After 4 pm but not after 1 am (next day)
-      NepaliDateTime tomorrow = nepaliDateTime.add(Duration(days: 1));
-      setState(() {
-        dat = DateFormat('dd/MM/yyyy\'', 'en').format(tomorrow);
-      });
-    } else if (currentHour >= 1) {
-      // 1 am or later
-      setState(() {
-        dat = DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
-      });
-    } else {
-      // Handle other cases if needed
-    }
+    // if ((currentHour >= 15 && currentHour <= 23) ||
+    //     (currentHour >= 0 && currentHour < 1)) {
+    //   // After 4 pm but not after 1 am (next day)
+    //   NepaliDateTime tomorrow = nepaliDateTime.add(Duration(days: 1));
+    //   setState(() {
+    //     dat = DateFormat('dd/MM/yyyy\'', 'en').format(tomorrow);
+    //   });
+    // } else if (currentHour >= 1) {
+    //   // 1 am or later
+    //   setState(() {
+    //     dat = DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
+    //   });
+    // } else {
+    //   // Handle other cases if needed
+    // }
   }
 
   @override
@@ -64,39 +68,41 @@ class _MyHomePageState extends State<MyHomePage> {
       backgroundColor: Colors.white,
       body: RefreshIndicator(
         onRefresh: () => _refreshData(),
-        child: Center(
-          child: Obx(() {
-            if (homepagecontroller.isloading.value) {
-              return LoadingScreen();
-            } else {
-              return homepagecontroller.products.isEmpty
-                  ? NoDataWidget(
-                      message: "There is no news",
-                      iconData: Icons.error_outline)
-                  : SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomTopBar(),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              "Popular Meals",
-                              style: TextStyle(fontSize: 20),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Center(
+            child: Obx(() {
+              if (homepagecontroller.isLoading.value) {
+                return LoadingScreen();
+              } else {
+                return homepagecontroller.allProductResponse.value == null
+                    ? NoDataWidget(
+                        message: "There is no news",
+                        iconData: Icons.error_outline)
+                    : SingleChildScrollView(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CustomTopBar(),
                             ),
-                          ),
-                          ProductGrid(
-                            dat: dat,
-                            productList: homepagecontroller.products,
-                          ),
-                        ],
-                      ),
-                    );
-            }
-          }),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Popular Meals",
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            ProductGrid(
+                              dat: dat,
+                            ),
+                          ],
+                        ),
+                      );
+              }
+            }),
+          ),
         ),
       ),
     );

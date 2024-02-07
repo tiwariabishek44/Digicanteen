@@ -36,7 +36,7 @@ class VHomePage extends StatelessWidget {
       backgroundColor: const Color.fromARGB(255, 251, 249, 249),
       body: Center(
         child: Obx(() {
-          if (homepagecontroller.isloading.value) {
+          if (homepagecontroller.isLoading.value) {
             return LoadingScreen();
           } else {
             return homepagecontroller.products.isEmpty

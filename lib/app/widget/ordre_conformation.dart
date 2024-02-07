@@ -2,7 +2,6 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
@@ -43,26 +42,26 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
     '1:30',
   ];
 
-  bool isMealTimeSelectionVisible = false; // Add this variable
+  bool isMealTimeSelectionVisible = true; // Add this variable
 
   @override
   void initState() {
     super.initState();
-    checkTimeAndSetVisibility();
+    // checkTimeAndSetVisibility();
   }
 
-  void checkTimeAndSetVisibility() {
-    DateTime currentDate = DateTime.now();
-    int currentHour = currentDate.hour;
+  // void checkTimeAndSetVisibility() {
+  //   DateTime currentDate = DateTime.now();
+  //   int currentHour = currentDate.hour;
 
-    if ((currentHour >= 16 && currentHour <= 24) ||
-        (currentHour >= 1 && currentHour < 8)) {
-      // After 4 pm but not after 8 am of the next day
-      setState(() {
-        isMealTimeSelectionVisible = true;
-      });
-    }
-  }
+  //   if ((currentHour >= 16 && currentHour <= 24) ||
+  //       (currentHour >= 1 && currentHour < 8)) {
+  //     // After 4 pm but not after 8 am of the next day
+  //     setState(() {
+  //       isMealTimeSelectionVisible = true;
+  //     });
+  //   }
+  // }
 
   int selectedIndex = -1;
   void showNoSelectionMessage() {
@@ -123,14 +122,12 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                                 style: TextStyle(
                                     color: Color.fromARGB(255, 101, 100, 100),
                                     fontSize: 22.0,
-                                    fontFamily: FontStyles.poppinBold,
                                     fontWeight: FontWeight.bold)),
                             Text(groupcontroller.currentGroup.value!.groupCode,
                                 style: TextStyle(
                                     color:
                                         const Color.fromARGB(255, 255, 90, 7),
                                     fontSize: 27.0,
-                                    fontFamily: FontStyles.poppinBold,
                                     fontWeight: FontWeight.bold))
                           ],
                         ),
@@ -248,8 +245,8 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: secondaryColor),
+                                          border: Border.all(
+                                              color: AppColors.secondaryColor),
                                           borderRadius:
                                               BorderRadius.circular(10),
                                           color: selectedIndex == index
@@ -330,7 +327,7 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                                             MediaQuery.of(context).size.width *
                                                 0.4,
                                         decoration: BoxDecoration(
-                                          color: secondaryColor,
+                                          color: AppColors.secondaryColor,
                                           borderRadius:
                                               BorderRadius.circular(10),
                                         ),

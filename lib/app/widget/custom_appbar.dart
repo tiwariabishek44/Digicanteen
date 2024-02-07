@@ -1,4 +1,3 @@
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -40,7 +39,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Text(
               title ?? '',
               style: TextStyle(
-                fontFamily: FontStyles.poppins,
                 fontSize: 21.sp, // Use screenutil for font sizing
                 fontWeight: FontWeight.bold,
               ),

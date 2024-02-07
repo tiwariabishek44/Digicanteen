@@ -225,7 +225,7 @@ class DshBoard extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: secondaryColor),
+            border: Border.all(color: AppColors.secondaryColor),
             color: Colors.white,
             borderRadius: BorderRadius.circular(5.0),
           ),

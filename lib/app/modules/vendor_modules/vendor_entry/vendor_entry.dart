@@ -1,6 +1,5 @@
 import 'package:flutter/gestures.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/config/font_style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/register/register.dart';
 import 'package:merocanteen/app/modules/brands/brand_page.dart';
