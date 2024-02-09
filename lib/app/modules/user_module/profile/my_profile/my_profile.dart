@@ -1,4 +1,3 @@
-import 'package:merocanteen/app/widget/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:flutter/material.dart';
@@ -41,12 +40,6 @@ class Myprofile extends StatelessWidget {
                             ),
                           ),
 
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            child: CustomAppBar(back: true),
-                          ),
                           // Add detailed description
                           // ... other product details and add to cart button
                         ],

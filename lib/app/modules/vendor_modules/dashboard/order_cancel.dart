@@ -209,14 +209,10 @@ class OrderCancel extends StatelessWidget {
                                                       onPressed: () {
                                                         ordercontroller
                                                             .deleteIndividualFromOrder(
-                                                                ordercontroller
-                                                                    .orders[
-                                                                        index]
-                                                                    .id!,
-                                                                ordercontroller
-                                                                    .orders[
-                                                                        index]
-                                                                    .groupcod);
+                                                          ordercontroller
+                                                              .orders[index]
+                                                              .id!,
+                                                        );
                                                       }, // Implement delete functionality
                                                     )
                                                   ],

@@ -69,15 +69,15 @@ class _VendorEntroState extends State<VendorEntro> {
                       myController: logincontroller.vendorCode,
                       hintText: "Enter Canteen Code",
                     ),
-                    CustomizedButton(
-                      onPressed: () {
-                        FocusScope.of(context).unfocus();
-                        logincontroller.vendorloginSubmit();
-                      },
-                      buttonText: "Continue",
-                      buttonColor: Colors.black,
-                      textColor: Colors.white,
-                    ),
+                    // CustomizedButton(
+                    //   onPressed: () {
+                    //     FocusScope.of(context).unfocus();
+                    //     logincontroller.vendorloginSubmit();
+                    //   },
+                    //   buttonText: "Continue",
+                    //   buttonColor: Colors.black,
+                    //   textColor: Colors.white,
+                    // ),
                   ],
                 ),
               ),

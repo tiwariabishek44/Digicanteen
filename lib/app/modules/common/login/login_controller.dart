@@ -5,13 +5,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:merocanteen/app/config/prefs.dart';
 import 'package:merocanteen/app/models/users_model.dart';
-import 'package:merocanteen/app/modules/common/register/register.dart';
+import 'package:merocanteen/app/modules/common/loginoption/login_option_controller.dart';
 import 'package:merocanteen/app/modules/user_module/home/user_mainScreen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
 import 'package:merocanteen/app/repository/get_userdata_repository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
-import 'package:merocanteen/app/widget/custom_snackbar.dart';
 import 'package:merocanteen/app/widget/splash_screen.dart';
 
 class LoginController extends GetxController {
@@ -19,6 +19,8 @@ class LoginController extends GetxController {
   // TextEditingController for the email field
   final emailcontroller = TextEditingController();
   final passwordcontroller = TextEditingController();
+  final loginOptionController = Get.put(LoginScreenController());
+
   final vendorCode = TextEditingController();
 
   var isloading = false.obs;
@@ -34,8 +36,6 @@ class LoginController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    checkInitialAuth();
-    fetchUserData();
   }
 
   void loginSubmit() {
@@ -44,25 +44,25 @@ class LoginController extends GetxController {
     }
   }
 
-//-----------------upload the username in the server----------//
-  Future<void> uploadUsernames(List<String> usernames) async {
+  //---------user login----------
+
+  Future<void> login() async {
     try {
       isloading(true);
-      for (String username in usernames) {
-        await _firestore.collection('studentusername').add({
-          'username': username,
-          'isOccupied':
-              false, // You can set initial occupation status as true or false
-        });
-      }
-      isloading(true);
+      await _auth.signInWithEmailAndPassword(
+          email: emailcontroller.text, password: passwordcontroller.text);
 
-      print('Usernames uploaded successfully');
+      saveDataLocally();
+      isloading(false);
     } catch (e) {
-      print('Error uploading usernames: $e');
+      isloading(false);
+      // Handle login errors
+      print("Login error: $e");
+      Get.snackbar("Login Failed", e.toString());
     }
   }
 
+//---------to fetch the user data------------
   final UserDataRepository userDataRepository = UserDataRepository();
   final Rx<ApiResponse<UserDataResponse>> userDataResponse =
       ApiResponse<UserDataResponse>.initial().obs;
@@ -92,51 +92,43 @@ class LoginController extends GetxController {
     }
   }
 
-  void checkInitialAuth() {
-    if (_auth.currentUser != null) {
-      String uid = _auth.currentUser!.uid;
-      fetchUserData();
-    }
+//-------- to save data locally
+
+  void saveDataLocally() {
+    storage.write(userId, _auth.currentUser!.uid);
+
+    storage.write(
+        userType, loginOptionController.isUser.value ? 'student' : 'canteen');
+
+    fetchUserData();
+
+    log("this is the user login option${storage.read(userType)}");
+    Get.offAll(() => UserMainScreenView());
   }
 
-  Future<void> login() async {
-    try {
-      isloading(true);
-      await _auth.signInWithEmailAndPassword(
-          email: emailcontroller.text, password: passwordcontroller.text);
-      isloading(false);
-      storage.write('userId', _auth.currentUser!.uid);
-      fetchUserData();
-      Get.offAll(() => UserMainScreenView());
-
-      clearTextControllers();
-    } catch (e) {
-      isloading(false);
-      // Handle login errors
-      print("Login error: $e");
-      Get.snackbar("Login Failed", e.toString());
+//-------to do auto login---------
+  bool autoLogin() {
+    log("AUTO LOGIN");
+    if (storage.read(userType) != null) {
+      // set a periodic timer to refresh token
+      return true;
     }
+    return false;
   }
 
+//--to do logout------------------
   Future<void> logout() async {
     try {
       await _auth.signOut();
-      clearTextControllers();
       user.value = null;
-      storage.remove('userId');
-      storage.remove('groupid');
-
+      storage.remove(userType);
+      storage.remove(userId);
       Get.offAll(() => SplashScreen());
     } catch (e) {
       // Handle logout errors
       print("Logout error: $e");
       Get.snackbar("Logout Failed", e.toString());
     }
-  }
-
-  void clearTextControllers() {
-    emailcontroller.clear();
-    passwordcontroller.clear();
   }
 
 //------------vendor/canteen login---------------//
@@ -152,8 +144,8 @@ class LoginController extends GetxController {
       isloading(true);
 
       if (vendorCode.text.trim() == '4455') {
-        storage.write('vendor', vendorCode.text.trim());
-        Get.offAll(() => VendorMainScreenView());
+        storage.write(userType, "canteen");
+        Get.offAll(() => CanteenMainScreenView());
         isloading(false);
         vendorCode.clear();
       } else {
@@ -173,7 +165,7 @@ class LoginController extends GetxController {
 
   Future<void> vendorLogOut() async {
     try {
-      storage.remove('vendor');
+      storage.remove(userType);
       vendorCode.clear();
 
       Get.offAll(() => SplashScreen());

@@ -20,12 +20,12 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final homepagecontroller = Get.put(HomepageContoller());
-  final gropucontroller = Get.put(LoginController());
+  final loginController = Get.put(LoginController());
 
   Future<void> _refreshData() async {
     homepagecontroller
         .fetchProducts(); // Fetch data based on the selected category
-    gropucontroller.fetchUserData();
+    loginController.fetchUserData();
   }
 
   String dat = '';
@@ -88,10 +88,40 @@ class _MyHomePageState extends State<MyHomePage> {
                               child: CustomTopBar(),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Popular Meals",
-                                style: TextStyle(fontSize: 20),
+                              padding: EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 70.w,
+                                child: Text(
+                                  "Today Special",
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              height: 30.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20.sp),
+                                color: Colors.amber,
+                              ),
+                              width: double.infinity,
+                            ),
+                            SizedBox(
+                              height: 3.h,
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Container(
+                                width: 70.w,
+                                child: Text(
+                                  "Popular Food Items",
+                                  maxLines: 2,
+                                  style: TextStyle(
+                                      fontSize: 22.sp,
+                                      fontWeight: FontWeight.w600),
+                                ),
                               ),
                             ),
                             ProductGrid(

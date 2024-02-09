@@ -222,17 +222,17 @@ class OrderPage extends StatelessWidget {
                                 );
                               },
                             ),
-                            CustomizedButton(
-                              onPressed: () {
-                                FocusScope.of(context).unfocus();
-                                ordercontroller.deleteGroupOrder(
-                                    ordercontroller.groupcod.text.trim());
-                              },
-                              buttonText:
-                                  "Check Out(${ordercontroller.groupcod.text})",
-                              buttonColor: AppColors.primaryColor,
-                              textColor: Colors.white,
-                            ),
+                            // CustomizedButton(
+                            //   onPressed: () {
+                            //     FocusScope.of(context).unfocus();
+                            //     ordercontroller.deleteGroupOrder(
+                            //         ordercontroller.groupcod.text.trim());
+                            //   },
+                            //   buttonText:
+                            //       "Check Out(${ordercontroller.groupcod.text})",
+                            //   buttonColor: AppColors.primaryColor,
+                            //   textColor: Colors.white,
+                            // ),
                           ],
                         ),
                       );

@@ -3,7 +3,6 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/register/register.dart';
 import 'package:merocanteen/app/modules/brands/brand_page.dart';
-import 'package:merocanteen/app/modules/common/register/user_entry.dart';
 import 'package:merocanteen/app/modules/user_module/home/user_mainScreen.dart';
 import 'package:merocanteen/app/widget/customized_button.dart';
 import 'package:merocanteen/app/widget/customized_textfield.dart';
@@ -92,61 +91,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  GestureDetector(
-                    onTap: () {
-                      logincontroller.termsAndConditions.value =
-                          !logincontroller.termsAndConditions.value;
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Obx(
-                          () => Checkbox(
-                            value: logincontroller.termsAndConditions.value,
-                            onChanged: (value) {
-                              logincontroller.termsAndConditions.value = value!;
-                            },
-                            activeColor: AppColors.primaryColor,
-                            checkColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(2.5),
-                            ),
-                            splashRadius: 1.5.h,
-                            side: const BorderSide(
-                              color: AppColors.primaryColor,
-                              style: BorderStyle.solid,
-                            ),
-                          ),
-                        ),
-                        Flexible(
-                          child: RichText(
-                            softWrap: true,
-                            maxLines: 2,
-                            text: TextSpan(
-                              text: "I have read and accept the ",
-                              style: TextStyle(
-                                fontSize: 16.sp,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.black,
-                              ),
-                              children: [
-                                TextSpan(
-                                  text: "Terms and Privacy Policy",
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {},
-                                  style: TextStyle(
-                                    fontSize: 15.5.sp,
-                                    fontWeight: FontWeight.w500,
-                                    color: AppColors.primaryColor,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
                   Align(
                     alignment: Alignment.centerRight,
                     child: Padding(
@@ -161,64 +105,42 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: InkWell(
-                      onTap: () {
+                  CustomButton(
+                      text: "Login",
+                      onPressed: () {
                         FocusScope.of(context).unfocus();
 
                         logincontroller.loginSubmit();
                       },
-                      child: Container(
-                          height: 55,
-                          width: MediaQuery.of(context).size.width,
-                          decoration: BoxDecoration(
-                              color: Colors.black,
-                              border: Border.all(width: 1, color: Colors.black),
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Center(
-                              child: logincontroller.isloading.value!
-                                  ? CircularProgressIndicator(
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white),
-                                    )
-                                  : Text(
-                                      'Login'!,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 20,
-                                      ),
-                                    ))),
-                    ),
-                  ),
+                      isLoading: logincontroller.isloading.value),
                   SizedBox(
                     height: 30,
                   ),
-                  const Padding(
+                  Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16.0),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
                         Expanded(
                           child: Divider(
-                            color: Color.fromARGB(255, 97, 96, 96),
+                            color: Color.fromARGB(255, 213, 213, 213),
                             height: 0.5,
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
                           child: Text(
                             'OR',
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              fontSize: 24,
+                              fontSize: 17.sp,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                         Expanded(
                           child: Divider(
-                            color: Color.fromARGB(255, 97, 96, 96),
+                            color: Color.fromARGB(255, 213, 213, 213),
                             height: 0.5,
                           ),
                         ),
@@ -234,14 +156,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.to(() => UserEntry());
+                          Get.to(() => RegisterPage());
                           // Handle navigation to registration page
                           // For example, Navigator.push(context, MaterialPageRoute(builder: (context) => YourRegistrationPage()));
                         },
                         child: Text(
                           "Register",
                           style: TextStyle(
-                            fontSize: 22,
+                            fontSize: 18.sp,
                             color: Color.fromARGB(255, 243, 124, 33),
                             fontWeight: FontWeight.bold,
                           ),

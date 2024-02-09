@@ -2,23 +2,16 @@ import 'dart:developer';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/models/order_response.dart';
-import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
+import 'package:merocanteen/app/modules/user_module/add%20product/add_product_controller.dart';
 import 'package:merocanteen/app/modules/user_module/home/home_page_controller.dart';
-import 'package:merocanteen/app/modules/user_module/home/product_detai_page.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:merocanteen/app/widget/custom_snackbar.dart';
-import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
 import 'package:merocanteen/app/widget/ordre_conformation.dart';
-import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:intl/intl.dart';
 
 // Define the reusable product grid widget
 class ProductGrid extends StatelessWidget {
@@ -31,13 +24,9 @@ class ProductGrid extends StatelessWidget {
   final productContorller = Get.put(HomepageContoller());
 
   final groupcontroller = Get.put(GroupController());
-
-  CartController cartController = Get.find<CartController>();
-
+  final addproductController = Get.put(AddProductController());
   @override
   Widget build(BuildContext context) {
-    groupcontroller.fetchGroupByGroupId();
-
     final user = logincontroller.user.value;
     // ignore: invalid_use_of_protected_member
     final group = groupcontroller.currentGroup.value;
@@ -48,7 +37,7 @@ class ProductGrid extends StatelessWidget {
           crossAxisCount: 2, // number of items in each row
           mainAxisSpacing: 20.0, // spacing between rows
           crossAxisSpacing: 20.0, // spacing between columns
-          childAspectRatio: 0.87),
+          childAspectRatio: 0.72),
       padding: EdgeInsets.all(8.0), // padding around the grid
       itemCount: productContorller
           .allProductResponse.value.response!.length, // total number of items
@@ -68,8 +57,8 @@ class ProductGrid extends StatelessWidget {
                         image: productContorller
                             .allProductResponse.value.response![index].image,
                         onConfirm: () {
-                          cartController.addItemToOrder(
-                              mealtime: cartController.mealTime.value,
+                          addproductController.addItemToOrder(
+                              mealtime: "addproductController.mealTime.value",
                               classs: user!.classes,
                               date: dat,
                               checkout: 'false',
@@ -110,7 +99,7 @@ class ProductGrid extends StatelessWidget {
           },
           child: Container(
             decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 235, 230, 230),
+                color: Color.fromARGB(255, 203, 200, 200),
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -123,7 +112,9 @@ class ProductGrid extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20)),
+                      topRight: Radius.circular(20),
+                      bottomRight: Radius.circular(20),
+                      bottomLeft: Radius.circular(20)),
                   child: CachedNetworkImage(
                     progressIndicatorBuilder:
                         (context, url, downloadProgress) => SpinKitFadingCircle(
@@ -148,10 +139,12 @@ class ProductGrid extends StatelessWidget {
                         children: [
                           Text(
                               "${productContorller.allProductResponse.value.response![index].name}",
-                              style: TextStyle(fontSize: 17)),
+                              style: TextStyle(
+                                  fontSize: 18.sp,
+                                  fontWeight: FontWeight.w600)),
                           Text(
                               "Rs ${productContorller.allProductResponse.value.response![index].price.toInt()}/plate",
-                              style: TextStyle(fontSize: 13)),
+                              style: TextStyle(fontSize: 17.sp)),
                         ]),
                   ))
             ]),

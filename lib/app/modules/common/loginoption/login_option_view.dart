@@ -39,15 +39,12 @@ class LoginOptionView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 20),
-                CustomizedButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    Get.to(() => LoginScreen());
-                  },
-                  buttonText: "As Student",
-                  buttonColor: Colors.black,
-                  textColor: Colors.white,
-                ),
+                CustomButton(
+                    text: 'Continue As Student',
+                    onPressed: () {
+                      Get.to(LoginScreen(), transition: Transition.rightToLeft);
+                    },
+                    isLoading: false),
                 SizedBox(
                   height: 10,
                 ),
@@ -84,15 +81,6 @@ class LoginOptionView extends StatelessWidget {
                 ),
                 SizedBox(
                   height: 10,
-                ),
-                CustomizedButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    Get.to(() => VendorEntro());
-                  },
-                  buttonText: "As Canteen",
-                  buttonColor: Colors.black,
-                  textColor: Colors.white,
                 ),
               ],
             ),

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:merocanteen/app/config/colors.dart';
-
 import 'package:responsive_sizer/responsive_sizer.dart';
+
+Duration duration = const Duration(milliseconds: 360);
 
 class AppStyles {
   static TextStyle get titleStyle {

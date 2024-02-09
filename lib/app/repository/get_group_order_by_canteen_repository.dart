@@ -2,7 +2,7 @@ import 'package:merocanteen/app/config/api_end_points.dart';
 import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/service/api_client.dart';
 
-class UserOrederRepository {
+class GetGroupOrederByCanteenRepository {
   Future<ApiResponse<OrderResponse>> getOrders(String groupId) async {
     final response = await ApiClient().getFirebaseData<OrderResponse>(
       collection: ApiEndpoints.orderCollection,

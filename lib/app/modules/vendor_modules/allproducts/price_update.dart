@@ -1,16 +1,11 @@
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/models/product_model.dart';
-import 'package:merocanteen/app/models/users_model.dart';
-import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/allproducts/price_update_controller.dart';
-import 'package:merocanteen/app/widget/custom_appbar.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:merocanteen/app/widget/custom_snackbar.dart';
+import 'package:merocanteen/app/widget/custom_app_bar.dart';
 import 'package:merocanteen/app/widget/customized_button.dart';
 import 'package:merocanteen/app/widget/customized_textfield.dart';
 import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
@@ -23,7 +18,7 @@ class PriceUpdatePage extends StatelessWidget {
     super.key,
     required this.product,
   });
-  CartController cartController = Get.find<CartController>();
+  OrderController cartController = Get.find<OrderController>();
   final priceController = Get.put(PriceUpdateController());
 
   @override
@@ -56,12 +51,6 @@ class PriceUpdatePage extends StatelessWidget {
                             ),
                           ),
 
-                          Positioned(
-                            top: 0,
-                            left: 0,
-                            right: 0,
-                            child: CustomAppBar(back: true),
-                          ),
                           // Add detailed description
                           // ... other product details and add to cart button
                         ],
@@ -137,15 +126,15 @@ class PriceUpdatePage extends StatelessWidget {
                                       ),
                                     ),
                                   ),
-                                  CustomizedButton(
-                                    onPressed: () {
-                                      FocusScope.of(context).unfocus();
-                                      priceController.priceSubmit();
-                                    },
-                                    buttonText: "Continue",
-                                    buttonColor: Colors.black,
-                                    textColor: Colors.white,
-                                  ),
+                                  // CustomizedButton(
+                                  //   onPressed: () {
+                                  //     FocusScope.of(context).unfocus();
+                                  //     priceController.priceSubmit();
+                                  //   },
+                                  //   buttonText: "Continue",
+                                  //   buttonColor: Colors.black,
+                                  //   textColor: Colors.white,
+                                  // ),
                                 ],
                               ),
                             ),

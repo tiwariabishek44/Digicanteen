@@ -6,10 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:merocanteen/app/models/group_models.dart';
+import 'package:merocanteen/app/models/group_api_response.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group.dart';
+import 'package:merocanteen/app/modules/user_module/group/group.dart';
+import 'package:merocanteen/app/repository/get_group_repository.dart';
+import 'package:merocanteen/app/service/api_client.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 
 class GroupController extends GetxController {
@@ -22,14 +24,14 @@ class GroupController extends GetxController {
   final RxList<UserDataResponse> groupMembers = <UserDataResponse>[].obs;
 
   final RxList<UserDataResponse> students = <UserDataResponse>[].obs;
-  Rx<Group?> currentGroup = Rx<Group?>(null);
+  Rx<GroupApiResponse?> currentGroup = Rx<GroupApiResponse?>(null);
 
   var isloading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchGroupByGroupId();
+    fetchGroupData();
     fetchAllStudent();
   }
 
@@ -63,7 +65,7 @@ class GroupController extends GetxController {
       });
 
       String userId = _auth.currentUser!.uid;
-      Group newGroup = Group(
+      GroupApiResponse newGroup = GroupApiResponse(
         groupId: userId,
         groupCode: pinString,
         groupName: groupnameController.text.trim(),
@@ -79,7 +81,6 @@ class GroupController extends GetxController {
       await studentDocRef.update({'groupid': userId});
 
       logincontroller.fetchUserData();
-      fetchGroupByGroupId();
       fetchGroupMember();
       Get.back();
       isloading(false);
@@ -90,26 +91,27 @@ class GroupController extends GetxController {
     }
   }
 
-  Future<void> fetchGroupByGroupId() async {
+//---------to fetch the group  data------------
+  final GetGroupRepository groupRepository = GetGroupRepository();
+  final Rx<ApiResponse<GroupApiResponse>> groupResponse =
+      ApiResponse<GroupApiResponse>.initial().obs;
+  Future<void> fetchGroupData() async {
     try {
-      final QuerySnapshot<Map<String, dynamic>> groupsSnapshot =
-          await _firestore
-              .collection('groups')
-              .where('groupId', isEqualTo: storage.read("groupid"))
-              .get();
-      currentGroup.value = null;
-      debugPrint(" the data is loaidng");
-
-      if (groupsSnapshot.docs.isNotEmpty) {
-        final groupData = groupsSnapshot.docs.first.data();
-        currentGroup.value = Group.fromJson(groupData);
-      } else {
-        isloading(false);
-        print('No group found for this group ID.');
+      isloading(true);
+      groupResponse.value = ApiResponse<GroupApiResponse>.loading();
+      final groupResult = await groupRepository.getGroupData(
+          logincontroller.userDataResponse.value.response!.first.groupid);
+      if (groupResult.status == ApiStatus.SUCCESS) {
+        debugPrint("----------this is the success t fetch the user data");
+        groupResponse.value =
+            ApiResponse<GroupApiResponse>.completed(groupResult.response);
       }
     } catch (e) {
       isloading(false);
-      print("Error fetching group: $e");
+
+      debugPrint('Error while getting data: $e');
+    } finally {
+      isloading(false);
     }
   }
 

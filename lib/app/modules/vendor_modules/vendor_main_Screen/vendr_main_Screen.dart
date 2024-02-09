@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,9 +13,9 @@ import 'package:merocanteen/app/modules/vendor_modules/dashboard/dashboard_page.
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/main_screen_controller.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class VendorMainScreenView extends StatelessWidget {
-  VendorMainScreenView({super.key});
-  final cartcontroller = Get.put(CartController());
+class CanteenMainScreenView extends StatelessWidget {
+  CanteenMainScreenView({super.key});
+  final cartcontroller = Get.put(OrderController());
 
   final userController = Get.put(VendorScreenController());
 

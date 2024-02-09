@@ -284,10 +284,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                       ),
 
-                      CustomizedButton(
-                        buttonText: "Register",
-                        buttonColor: Colors.black,
-                        textColor: Colors.white,
+                      CustomButton(
+                        isLoading: registercontroller.isregisterloading.value,
+                        text: "Register",
                         onPressed: () async {
                           FocusScope.of(context).unfocus();
                           registercontroller

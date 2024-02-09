@@ -52,6 +52,8 @@ class ApiClient {
         });
       }
 
+      log("this is inside the get method");
+
       final QuerySnapshot snapshot = await collectionRef.get();
       final List<Map<String, dynamic>> dataList = snapshot.docs
           .map((doc) => doc.data() as Map<String, dynamic>)
@@ -65,6 +67,67 @@ class ApiClient {
       log("Error occurred: $e\n$stackTrace", error: e);
       return ApiResponse.error("Failed to fetch data from Firebase");
     }
+  }
+
+  //--------------api call to update the data-----------
+
+  Future<SingleApiResponse<T>> update<T>({
+    required T Function(QuerySnapshot) responseType,
+    required Map<String, dynamic> filters,
+    required String collection,
+  }) async {
+    try {
+      log("Inside the update method");
+
+      // Construct the query based on the provided filters
+      Query collectionRef = FirebaseFirestore.instance.collection(collection);
+      filters.forEach((field, value) {
+        collectionRef = collectionRef.where(field, isEqualTo: value);
+      });
+
+      // Retrieve documents matching the filters
+      QuerySnapshot documentsSnapshot = await collectionRef.get();
+
+      // Update documents
+      WriteBatch batch = FirebaseFirestore.instance.batch();
+      documentsSnapshot.docs.forEach((doc) {
+        batch.update(doc.reference, {'isCheckout': true});
+      });
+      await batch.commit();
+
+      // Return a single response based on the provided response type function
+      return SingleApiResponse.completed(responseType(documentsSnapshot));
+    } catch (e, stackTrace) {
+      log("Error occurred: $e\n$stackTrace", error: e);
+      return SingleApiResponse.error("Failed to update documents");
+    }
+  }
+}
+
+class SingleApiResponse<T> {
+  ApiStatus status;
+  T? response;
+  String? message;
+
+  SingleApiResponse.initial([this.message])
+      : status = ApiStatus.INITIAL,
+        response = null;
+
+  SingleApiResponse.loading([this.message])
+      : status = ApiStatus.LOADING,
+        response = null;
+
+  SingleApiResponse.completed(this.response)
+      : status = ApiStatus.SUCCESS,
+        message = null;
+
+  SingleApiResponse.error([this.message])
+      : status = ApiStatus.ERROR,
+        response = null;
+
+  @override
+  String toString() {
+    return "Status : $status \nData : $response \nMessage : $message";
   }
 }
 

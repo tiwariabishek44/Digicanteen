@@ -1,5 +1,6 @@
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
+import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/modules/user_module/home/home_page_controller.dart';
 import 'package:merocanteen/app/widget/cart_product_list.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
@@ -7,23 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 
-class CartPage extends StatelessWidget {
-  final cartcontroller = Get.put(CartController());
-  final groupcontroller = Get.put(GroupController());
+class OrderPage extends StatelessWidget {
+  final orderContorller = Get.put(OrderController());
 
   Future<void> _refreshData() async {
-    cartcontroller
-        .fetchOrdersByGroupID(); // Fetch data based on the selected category
+    // Fetch data based on the selected category
   }
 
   @override
   Widget build(BuildContext context) {
-    cartcontroller.fetchOrdersByGroupID();
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Cart'),
+          title: Text('Order'),
         ),
         body: SizedBox(
           height: MediaQuery.of(context).size.height,
@@ -35,11 +32,12 @@ class CartPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Obx(() {
-                    if (cartcontroller.orders.value.isEmpty) {
-                      return EmptyCartPage();
+                    if (orderContorller.isLoading.value) {
+                      return LoadingScreen();
                     } else {
-                      if (cartcontroller.isloading.value) {
-                        return LoadingScreen();
+                      if (orderContorller
+                          .orderResponse.value.response!.isEmpty) {
+                        return EmptyCartPage();
                       } else {
                         return SingleChildScrollView(
                           child: Column(
@@ -48,7 +46,7 @@ class CartPage extends StatelessWidget {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  "GroupCode : ${groupcontroller.currentGroup.value!.groupCode}",
+                                  "GroupCode : ",
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ),

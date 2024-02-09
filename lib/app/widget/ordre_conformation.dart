@@ -4,8 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
+import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -33,7 +33,7 @@ class OrderConfirmationDialog extends StatefulWidget {
 
 class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
   final groupcontroller = Get.put(GroupController());
-  final cartcontroller = Get.put(CartController());
+  final cartcontroller = Get.put(OrderController());
   List<String> timeSlots = [
     '8:30',
     '9:30',
@@ -107,7 +107,6 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                 flex: 2,
                 child: Obx(() {
                   if (groupcontroller.currentGroup.value == null) {
-                    groupcontroller.fetchGroupByGroupId();
                     return LoadingScreen();
                   } else {
                     return Column(
@@ -216,10 +215,10 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                "Select Meal Time:- ${cartcontroller.mealTime.value}",
-                                style: TextStyle(fontSize: 20),
-                              ),
+                              // child: Text(
+                              // "Select Meal Time:- ${cartcontroller.mealTime.value}",
+                              // style: TextStyle(fontSize: 20),
+                              // ),
                             ),
                             Container(
                               child: Padding(
@@ -237,11 +236,11 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                                   itemBuilder: (context, index) {
                                     return GestureDetector(
                                       onTap: () {
-                                        setState(() {
-                                          selectedIndex = index;
-                                          cartcontroller.mealTime.value =
-                                              timeSlots[selectedIndex];
-                                        });
+                                        // setState(() {
+                                        //   selectedIndex = index;
+                                        //   cartcontroller.mealTime.value =
+                                        //       timeSlots[selectedIndex];
+                                        // });
                                       },
                                       child: Container(
                                         decoration: BoxDecoration(

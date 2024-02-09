@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/models/group_models.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:merocanteen/app/models/group_api_response.dart';
+import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 
 class CommunityCreation extends StatelessWidget {
   final GroupController groupController = Get.put(GroupController());
@@ -30,7 +30,6 @@ class CommunityCreation extends StatelessWidget {
             GestureDetector(
               onTap: () {
                 groupController.createNewGroup();
-                groupController.fetchGroupByGroupId();
 
                 Navigator.of(context).pop();
               },

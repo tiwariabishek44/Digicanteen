@@ -3,7 +3,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/cart/cart_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -12,18 +12,14 @@ import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderHistoryPage extends StatelessWidget {
-  final cartcontroller = Get.put(CartController());
+  final cartcontroller = Get.put(OrderController());
   final storage = GetStorage();
   final logincontroller = Get.put(LoginController());
 
-  Future<void> _refreshData() async {
-    cartcontroller.fetchHistory(); // Fetch data based on the selected category
-  }
+  Future<void> _refreshData() async {}
 
   @override
   Widget build(BuildContext context) {
-    cartcontroller.fetchHistory();
-
     return DefaultTabController(
       length: 2, // Number of tabs
       child: Scaffold(
@@ -63,34 +59,34 @@ class OrderHistoryPage extends StatelessWidget {
       child: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: double.infinity,
-        child: Obx(() {
-          if (cartcontroller.isloading.value) {
-            return LoadingScreen();
-          } else {
-            if (cartcontroller.ordersHistory.isEmpty ||
-                cartcontroller.ordersHistory.every((order) =>
-                    order.cid != logincontroller.user.value!.userid)) {
-              return EmptyCartPage();
-            } else {
-              // Sort orders by date in descending order
-              List<OrderResponse> personalOrders = cartcontroller.ordersHistory
-                  .where((order) =>
-                      order.cid == logincontroller.user.value!.userid)
-                  .toList();
+        // child: Obx(() {
+        //   if (or.isloading.value) {
+        //     return LoadingScreen();
+        //   } else {
+        //     if (cartcontroller.ordersHistory.isEmpty ||
+        //         cartcontroller.ordersHistory.every((order) =>
+        //             order.cid != logincontroller.user.value!.userid)) {
+        //       return EmptyCartPage();
+        //     } else {
+        //       // Sort orders by date in descending order
+        //       List<OrderResponse> personalOrders = cartcontroller.ordersHistory
+        //           .where((order) =>
+        //               order.cid == logincontroller.user.value!.userid)
+        //           .toList();
 
-              personalOrders.sort((a, b) => b.date.compareTo(a.date));
+        //       personalOrders.sort((a, b) => b.date.compareTo(a.date));
 
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: personalOrders.length,
-                itemBuilder: (context, index) {
-                  return persionalItems(personalOrders[index]);
-                },
-              );
-            }
-          }
-        }),
+        //       return ListView.builder(
+        //         shrinkWrap: true,
+        //         physics: ScrollPhysics(),
+        //         itemCount: personalOrders.length,
+        //         itemBuilder: (context, index) {
+        //           return persionalItems(personalOrders[index]);
+        //         },
+        //       );
+        //     }
+        //   }
+        // }),
       ),
     );
   }
@@ -101,114 +97,114 @@ class OrderHistoryPage extends StatelessWidget {
       child: SizedBox(
         height: MediaQuery.of(context).size.height,
         width: double.infinity,
-        child: Obx(() {
-          if (cartcontroller.isloading.value) {
-            return LoadingScreen();
-          } else {
-            if (cartcontroller.ordersHistory.isEmpty) {
-              return EmptyCartPage();
-            } else {
-              // Group items by year, month, and date
-              Map<String, Map<String, List<OrderResponse>>>
-                  itemsByYearMonthDate = {};
+        // child: Obx(() {
+        //   if (cartcontroller.isloading.value) {
+        //     return LoadingScreen();
+        //   } else {
+        //     if (cartcontroller.ordersHistory.isEmpty) {
+        //       return EmptyCartPage();
+        //     } else {
+        //       // Group items by year, month, and date
+        //       Map<String, Map<String, List<OrderResponse>>>
+        //           itemsByYearMonthDate = {};
 
-              for (OrderResponse item in cartcontroller.ordersHistory) {
-                // Parse the string date to a DateTime object
-                DateTime dateTime = DateFormat('dd/MM/yyyy').parse(item.date);
-                DateTime currentDate = DateTime.now();
+        //       for (OrderResponse item in cartcontroller.ordersHistory) {
+        //         // Parse the string date to a DateTime object
+        //         DateTime dateTime = DateFormat('dd/MM/yyyy').parse(item.date);
+        //         DateTime currentDate = DateTime.now();
 
-                NepaliDateTime nepaliDateTime =
-                    NepaliDateTime.fromDateTime(currentDate);
+        //         NepaliDateTime nepaliDateTime =
+        //             NepaliDateTime.fromDateTime(currentDate);
 
-                String formattedDate =
-                    DateFormat('dd/MM/yyyy', 'en').format(nepaliDateTime);
+        //         String formattedDate =
+        //             DateFormat('dd/MM/yyyy', 'en').format(nepaliDateTime);
 
-                String yearMonthKey = DateFormat('dd/MM/yyyy', 'en')
-                    .format(nepaliDateTime); // Year-month key
-                String dateKey = DateFormat('dd/MM/yyyy', 'en')
-                    .format(nepaliDateTime); // Year-month-date key
+        //         String yearMonthKey = DateFormat('dd/MM/yyyy', 'en')
+        //             .format(nepaliDateTime); // Year-month key
+        //         String dateKey = DateFormat('dd/MM/yyyy', 'en')
+        //             .format(nepaliDateTime); // Year-month-date key
 
-                // Initialize the month map if not present
-                itemsByYearMonthDate.putIfAbsent(formattedDate, () => {});
+        //         // Initialize the month map if not present
+        //         itemsByYearMonthDate.putIfAbsent(formattedDate, () => {});
 
-                // Initialize the year-month map if not present
-                itemsByYearMonthDate[yearMonthKey] ??= {};
+        //         // Initialize the year-month map if not present
+        //         itemsByYearMonthDate[yearMonthKey] ??= {};
 
-                // Initialize the date list if not present for the specific year-month
-                itemsByYearMonthDate[yearMonthKey]!
-                    .putIfAbsent(dateKey, () => []);
+        //         // Initialize the date list if not present for the specific year-month
+        //         itemsByYearMonthDate[yearMonthKey]!
+        //             .putIfAbsent(dateKey, () => []);
 
-                // Add the item to the corresponding date list within the year-month
-                itemsByYearMonthDate[yearMonthKey]![dateKey]!.add(item);
-              }
+        //         // Add the item to the corresponding date list within the year-month
+        //         itemsByYearMonthDate[yearMonthKey]![dateKey]!.add(item);
+        //       }
 
-              // Sort the entries based on the date in descending order
-              // Sort the entries based on the date in descending order
-              List<MapEntry<String, Map<String, List<OrderResponse>>>>
-                  sortedEntries = itemsByYearMonthDate.entries.toList()
-                    ..sort((a, b) {
-                      // Check for null or empty date strings
-                      if (a.key == null ||
-                          b.key == null ||
-                          a.key.isEmpty ||
-                          b.key.isEmpty) {
-                        return 0;
-                      }
+        //       // Sort the entries based on the date in descending order
+        //       // Sort the entries based on the date in descending order
+        //       List<MapEntry<String, Map<String, List<OrderResponse>>>>
+        //           sortedEntries = itemsByYearMonthDate.entries.toList()
+        //             ..sort((a, b) {
+        //               // Check for null or empty date strings
+        //               if (a.key == null ||
+        //                   b.key == null ||
+        //                   a.key.isEmpty ||
+        //                   b.key.isEmpty) {
+        //                 return 0;
+        //               }
 
-                      // Convert the date strings to DateTime objects for comparison
-                      DateTime dateTimeA, dateTimeB;
+        //               // Convert the date strings to DateTime objects for comparison
+        //               DateTime dateTimeA, dateTimeB;
 
-                      try {
-                        dateTimeA = DateFormat('dd/MM/yyyy').parse(a.key);
-                      } catch (e) {
-                        return 0; // Handle parsing error
-                      }
+        //               try {
+        //                 dateTimeA = DateFormat('dd/MM/yyyy').parse(a.key);
+        //               } catch (e) {
+        //                 return 0; // Handle parsing error
+        //               }
 
-                      try {
-                        dateTimeB = DateFormat('dd/MM/yyyy').parse(b.key);
-                      } catch (e) {
-                        return 0; // Handle parsing error
-                      }
+        //               try {
+        //                 dateTimeB = DateFormat('dd/MM/yyyy').parse(b.key);
+        //               } catch (e) {
+        //                 return 0; // Handle parsing error
+        //               }
 
-                      // Compare in descending order
-                      return dateTimeB.compareTo(dateTimeA);
-                    });
+        //               // Compare in descending order
+        //               return dateTimeB.compareTo(dateTimeA);
+        //             });
 
-              // ...
+        //       // ...
 
-              // Build UI based on grouped and sorted items
-              return SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    for (var yearMonthEntry in sortedEntries)
-                      for (var dateEntry in yearMonthEntry.value.entries)
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Display date as a sub-header
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                dateEntry.key,
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            // Display items for the date
-                            ...dateEntry.value.map((item) {
-                              return buildItemWidget(item);
-                            }).toList(),
-                          ],
-                        ),
-                  ],
-                ),
-              );
-            }
-          }
-        }),
+        //       // Build UI based on grouped and sorted items
+        //       return SingleChildScrollView(
+        //         child: Column(
+        //           crossAxisAlignment: CrossAxisAlignment.start,
+        //           children: [
+        //             for (var yearMonthEntry in sortedEntries)
+        //               for (var dateEntry in yearMonthEntry.value.entries)
+        //                 Column(
+        //                   crossAxisAlignment: CrossAxisAlignment.start,
+        //                   children: [
+        //                     // Display date as a sub-header
+        //                     Padding(
+        //                       padding: const EdgeInsets.all(8.0),
+        //                       child: Text(
+        //                         dateEntry.key,
+        //                         style: TextStyle(
+        //                           fontSize: 18,
+        //                           fontWeight: FontWeight.bold,
+        //                         ),
+        //                       ),
+        //                     ),
+        //                     // Display items for the date
+        //                     ...dateEntry.value.map((item) {
+        //                       return buildItemWidget(item);
+        //                     }).toList(),
+        //                   ],
+        //                 ),
+        //           ],
+        //         ),
+        //       );
+        //     }
+        //   }
+        // }),
       ),
     );
   }

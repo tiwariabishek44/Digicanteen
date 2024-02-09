@@ -68,7 +68,9 @@ class OrderController extends GetxController {
     }
   }
 
-  Future<void> deleteIndividualFromOrder(String id, String groupcod) async {
+  Future<void> deleteIndividualFromOrder(
+    String id,
+  ) async {
     try {
       isloading(true);
 
@@ -87,7 +89,6 @@ class OrderController extends GetxController {
       // Assuming fetchOrdersByGroupID uses 'groupid' internally, you might need to retrieve it
       // from the deleted document or have it available elsewhere.
       // For now, let's assume groupid is available globally or as an argument to this method.
-      await fetchOrdersByGroupID(groupcod);
 
       isloading(false);
     } catch (e) {
@@ -118,10 +119,6 @@ class OrderController extends GetxController {
           await orders.doc(doc.id).update({'checkout': 'true'});
         }
       }
-
-      // Fetch updated cart items after updating checkout
-      OrderRequestContoller()
-          .fetchOrders('8:30', OrderRequestContoller().date.value);
 
       fetchOrdersByGroupID(groupcod);
 

@@ -1,5 +1,5 @@
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group.dart';
+import 'package:merocanteen/app/modules/user_module/group/group.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -36,46 +36,46 @@ class CustomTopBar extends StatelessWidget implements PreferredSizeWidget {
           ],
         ),
         height: MediaQuery.of(context).size.height * 0.1,
-        // child: Row(children: [
-        //   Padding(
-        //     padding: const EdgeInsets.all(8.0),
-        //     child: CircleAvatar(
-        //       radius: 30, // Adjust the radius as needed for the circular view
-        //       backgroundImage: AssetImage(
-        //         'assets/logo.png', // Replace 'your_logo.png' with your logo file path
-        //       ),
-        //     ),
-        //   ),
-        //   Obx(() => Padding(
-        //         padding: const EdgeInsets.only(top: 15.0),
-        //         child: Column(
-        //           crossAxisAlignment: CrossAxisAlignment.start,
-        //           children: [
-        //             Text(
-        //               "Hi,${logincontroller.userDataResponse.value.response!}",
-        //               textAlign:
-        //                   TextAlign.center, // Centers text within the container
-        //               style: TextStyle(
-        //                 color: Color.fromARGB(255, 222, 215, 215),
-        //                 fontSize: 18.sp, // Use screenutil for font sizing
-        //                 fontWeight: FontWeight.bold,
-        //               ),
-        //             ),
-        //             Text(
-        //               "${logincontroller.userDataResponse.value.response}",
-        //               textAlign:
-        //                   TextAlign.center, // Centers text within the container
-        //               style: TextStyle(
-        //                 color: Color.fromARGB(255, 222, 215, 215),
-        //                 fontSize: 15.sp, // Use screenutil for font sizing
-        //                 fontWeight: FontWeight.bold,
-        //               ),
-        //             )
-        //           ],
-        //         ),
-        //       )),
-        //   Spacer(),
-        // ]),
+        child: Row(children: [
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              radius: 30, // Adjust the radius as needed for the circular view
+              backgroundImage: AssetImage(
+                'assets/logo.png', // Replace 'your_logo.png' with your logo file path
+              ),
+            ),
+          ),
+          Obx(() => Padding(
+                padding: const EdgeInsets.only(top: 15.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Hi,${logincontroller.userDataResponse.value.response!.first.name}",
+                      textAlign:
+                          TextAlign.center, // Centers text within the container
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 222, 215, 215),
+                        fontSize: 18.sp, // Use screenutil for font sizing
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "${logincontroller.userDataResponse.value.response!.first.classes}",
+                      textAlign:
+                          TextAlign.center, // Centers text within the container
+                      style: TextStyle(
+                        color: Color.fromARGB(255, 222, 215, 215),
+                        fontSize: 15.sp, // Use screenutil for font sizing
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  ],
+                ),
+              )),
+          Spacer(),
+        ]),
       ),
     );
   }

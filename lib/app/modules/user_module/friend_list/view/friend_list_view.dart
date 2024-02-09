@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:merocanteen/app/modules/user_module/profile/group/group_controller.dart';
+import 'package:merocanteen/app/modules/user_module/friend_list/friend_list_controller.dart';
+import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 
 class FriendList extends StatelessWidget {
-  final groupcontroller = Get.put(GroupController());
+  final friendListController = Get.put(FriendListController());
   void showAlreadyInGroupDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -24,12 +25,12 @@ class FriendList extends StatelessWidget {
         title: Text('Friend List'),
       ),
       body: Obx(() {
-        if (groupcontroller.students.value!.isEmpty) {
-          groupcontroller.fetchAllStudent();
+        if (friendListController.isLoading.value) {
           return LoadingScreen();
         } else {
           return ListView.builder(
-            itemCount: groupcontroller.students.value!.length,
+            itemCount:
+                friendListController.userDataResponse.value.response!.length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: Stack(
@@ -62,8 +63,8 @@ class FriendList extends StatelessWidget {
                       ),
                     ),
                     Obx(() {
-                      if (groupcontroller
-                          .students.value[index].groupid.isNotEmpty) {
+                      if (friendListController.userDataResponse.value
+                          .response![index].groupid.isNotEmpty) {
                         return Positioned(
                           bottom: 0,
                           right: 0,
@@ -92,14 +93,17 @@ class FriendList extends StatelessWidget {
                     })
                   ],
                 ),
-                title: Text('${groupcontroller.students.value![index].name}'),
-                onTap: () {
-                  groupcontroller.students.value[index].groupid.isNotEmpty
-                      ? showAlreadyInGroupDialog(context)
-                      : groupcontroller.addFriends(
-                          groupcontroller.students.value![index].userid);
-                },
-                trailing: groupcontroller.students.value![index].groupid == null
+                title: Text(
+                    '${friendListController.userDataResponse.value.response![index].name}'),
+                // onTap: () {
+                //  friendListController.userDataResponse.value.response![index].groupid.isNotEmpty
+                //       ? showAlreadyInGroupDialog(context)
+                //       : groupcontroller.addFriends(
+                //           groupcontroller.students.value![index].userid);
+                // },
+                trailing: friendListController
+                            .userDataResponse.value.response![index].groupid ==
+                        null
                     ? Icon(Icons.add)
                     : Text("."),
               );
