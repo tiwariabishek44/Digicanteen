@@ -102,6 +102,36 @@ class ApiClient {
       return SingleApiResponse.error("Failed to update documents");
     }
   }
+
+  Future<SingleApiResponse<void>> delete({
+    required Map<String, dynamic> filters,
+    required String collection,
+  }) async {
+    try {
+      log("Inside the delete method");
+
+      // Construct the query based on the provided filters
+      Query collectionRef = FirebaseFirestore.instance.collection(collection);
+      filters.forEach((field, value) {
+        collectionRef = collectionRef.where(field, isEqualTo: value);
+      });
+
+      // Retrieve documents matching the filters
+      QuerySnapshot documentsSnapshot = await collectionRef.get();
+
+      // Check if there are any documents to delete
+      if (documentsSnapshot.docs.isNotEmpty) {
+        // Delete the first document found matching the filter
+        await documentsSnapshot.docs.first.reference.delete();
+      }
+
+      // Return a successful response
+      return SingleApiResponse.completed(null);
+    } catch (e, stackTrace) {
+      log("Error occurred: $e\n$stackTrace", error: e);
+      return SingleApiResponse.error("Failed to delete document");
+    }
+  }
 }
 
 class SingleApiResponse<T> {
