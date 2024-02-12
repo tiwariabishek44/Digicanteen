@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
 
 import 'package:flutter/material.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/allproducts/homeSCreen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_page.dart';
@@ -11,8 +12,10 @@ import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
-import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
+import 'package:merocanteen/app/modules/vendor_modules/orders/orders_screen.dart';
+import 'package:merocanteen/app/widget/confirmation_dialog.dart';
 import 'package:nepali_utils/nepali_utils.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class DshBoard extends StatelessWidget {
   final loginContorller = Get.put(LoginController());
@@ -30,16 +33,9 @@ class DshBoard extends StatelessWidget {
         DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
 
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            radius: 30, // Adjust the radius as needed for the circular view
-            backgroundImage: AssetImage(
-              'assets/logo.png', // Replace 'your_logo.png' with your logo file path
-            ),
-          ),
-        ),
+        scrolledUnderElevation: 0,
         title: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
@@ -47,11 +43,11 @@ class DshBoard extends StatelessWidget {
             children: [
               Text(
                 "Dashboard",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: AppStyles.appbar,
               ),
               Text(
                 formattedDate, // Display Nepali date in the app bar
-                style: TextStyle(fontSize: 16),
+                style: AppStyles.listTilesubTitle,
               ),
             ],
           ),
@@ -64,7 +60,7 @@ class DshBoard extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
-                    return LogoutConfirmationDialog(
+                    return ConfirmationDialog(
                       isbutton: true,
                       heading: 'Alert',
                       subheading: "Do you want to logout of the application?",
@@ -100,7 +96,7 @@ class DshBoard extends StatelessWidget {
 
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: AppPadding.screenHorizontalPadding,
           child: Column(
             children: [
               Obx(() => Container(
@@ -115,18 +111,15 @@ class DshBoard extends StatelessWidget {
                       ),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * 1,
+                    height: 20.h,
+                    width: double.infinity,
                     child: Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             'Daily Sales',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 20, // Adjust the font size as needed
-                            ),
+                            style: AppStyles.topicsHeading,
                           ),
                           SizedBox(height: 8), // Add spacing between the texts
                           Text(
@@ -134,75 +127,100 @@ class DshBoard extends StatelessWidget {
                                 salseContorlller.grandTotal.value
                                     .toInt()
                                     .toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 54, // Adjust the font size as needed
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: AppStyles.mainHeading,
                           ),
                         ],
                       ),
                     ),
                   )),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GridView.count(
-                  crossAxisCount: 3,
-                  shrinkWrap: true,
-                  childAspectRatio: 1.3,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: [
-                    buildClickableIcon(
-                      icon: Icons.restaurant_menu,
-                      label: 'Canteen Meal',
-                      onTap: () {
-                        // Handle click for Menu Management
-                        Get.to(() => VHomePage());
-                      },
-                    ),
-                    buildClickableIcon(
-                      icon: Icons.production_quantity_limits,
-                      label: 'Orders Req.',
-                      onTap: () {
-                        // Handle click for Order Management
-                        Get.to(() => OrderRequirement());
-                      },
-                    ),
-                    buildClickableIcon(
-                      icon: Icons.analytics,
-                      label: 'Analytics',
-                      onTap: () {
-                        // Handle click for Analytics\
-                        Get.to(() => AnalyticsPage());
-                      },
-                    ),
-                    buildClickableIcon(
-                      icon: Icons.class_,
-                      label: 'Class Analysis',
-                      onTap: () {
-                        // Handle click for Analytics\
-                        Get.to(() => Classanalytics());
-                      },
-                    ),
-                    buildClickableIcon(
-                      icon: Icons.cancel_presentation,
-                      label: 'Order Cancel',
-                      onTap: () {
-                        // Handle click for Analytics\
-                        Get.to(() => OrderCancel());
-                      },
-                    ),
-                  ],
-                ),
+              SizedBox(
+                height: 1.h,
+              ),
+              GridView.count(
+                crossAxisCount: 3,
+                shrinkWrap: true,
+                childAspectRatio: 1.3,
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                physics: NeverScrollableScrollPhysics(),
+                children: [
+                  buildClickableIcon(
+                    icon: Icons.restaurant_menu,
+                    label: 'Canteen Meal',
+                    onTap: () {
+                      // Handle click for Menu Management
+                      Get.to(() => VHomePage(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  ),
+                  buildClickableIcon(
+                    icon: Icons.production_quantity_limits,
+                    label: 'Orders Req.',
+                    onTap: () {
+                      // Handle click for Order Management
+                      Get.to(() => OrderRequirement(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  ),
+                  buildClickableIcon(
+                    icon: Icons.analytics,
+                    label: 'Analytics',
+                    onTap: () {
+                      // Handle click for Analytics\
+                      Get.to(() => AnalyticsPage(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  ),
+                  buildClickableIcon(
+                    icon: Icons.class_,
+                    label: 'Class Analysis',
+                    onTap: () {
+                      // Handle click for Analytics\
+                      Get.to(() => Classanalytics(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  ),
+                  buildClickableIcon(
+                    icon: Icons.cancel_presentation,
+                    label: 'Order Pospond',
+                    onTap: () {
+                      // Handle click for Analytics\
+                      Get.to(() => OrderCancel(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  ),
+                  buildClickableIcon(
+                    icon: Icons.check,
+                    label: 'Order Checkout',
+                    onTap: () {
+                      // Handle click for Analytics\
+                      Get.to(() => OrderCheckoutPage(),
+                          transition: Transition.rightToLeft,
+                          duration: duration);
+                    },
+                  )
+                ],
+              ),
+              SizedBox(
+                height: 1.h,
+              ),
+              Divider(
+                height: 1.h,
+                thickness: 1.h,
+                color: AppColors.greyColor,
               ),
               Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: const Align(
+                padding: EdgeInsets.all(8.0),
+                child: Align(
                     alignment: Alignment.topLeft,
                     child: Text(
                       "Sales Report",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: AppStyles.topicsHeading,
                     )),
               ),
               DemandSupply(),
@@ -221,34 +239,31 @@ class DshBoard extends StatelessWidget {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: AppColors.secondaryColor),
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(5.0),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                icon,
-                size: 30,
-                color: Color.fromARGB(255, 24, 20, 19),
-              ),
-              SizedBox(height: 8.0),
-              Center(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    color: const Color.fromARGB(255, 59, 57, 57),
-                    fontWeight: FontWeight.bold,
-                  ),
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: AppColors.secondaryColor),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              size: 30,
+              color: Color.fromARGB(255, 24, 20, 19),
+            ),
+            SizedBox(height: 8.0),
+            Center(
+              child: Text(
+                label,
+                style: TextStyle(
+                  color: const Color.fromARGB(255, 59, 57, 57),
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

@@ -4,7 +4,7 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/models/group_api_response.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 
-class CommunityCreation extends StatelessWidget {
+class GroupCreation extends StatelessWidget {
   final GroupController groupController = Get.put(GroupController());
 
   void _showGroupNameDialog(BuildContext context) {
@@ -29,7 +29,7 @@ class CommunityCreation extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                groupController.createNewGroup();
+                // groupController.createNewGroup();
 
                 Navigator.of(context).pop();
               },

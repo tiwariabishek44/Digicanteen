@@ -3,36 +3,38 @@ import 'package:get/get.dart';
 import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/repository/get_user_order_repository.dart';
+import 'package:merocanteen/app/repository/order_history_respository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
 
-class OrderController extends GetxController {
+class HistoryController extends GetxController {
   final loginController = Get.put(LoginController());
   var isLoading = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-    fetchOrders();
+    fetchGroupHistoryOrders();
 
-    log("----ORDER CONTROLLER IS INITILIZE");
+    log("----History order is  IS INITILIZE");
   }
 
-  final orderRepository = UserOrederRepository();
-  final Rx<ApiResponse<OrderResponse>> orderResponse =
+  final orderHistoryRepository = OrderHistoryRepository();
+
+  final Rx<ApiResponse<OrderResponse>> orderHistoryResponse =
       ApiResponse<OrderResponse>.initial().obs;
-  Future<void> fetchOrders() async {
+  Future<void> fetchGroupHistoryOrders() async {
     try {
       isLoading(true);
-      orderResponse.value = ApiResponse<OrderResponse>.loading();
-      final orderResult = await orderRepository.getOrders(
+      orderHistoryResponse.value = ApiResponse<OrderResponse>.loading();
+      final orderResult = await orderHistoryRepository.getGroupHistory(
           loginController.userDataResponse.value.response!.first.groupid);
       if (orderResult.status == ApiStatus.SUCCESS) {
-        orderResponse.value =
+        orderHistoryResponse.value =
             ApiResponse<OrderResponse>.completed(orderResult.response);
         log('----orders is been fetch');
 
         log("this is the all product response  " +
-            orderResponse.value.response!.length.toString());
+            orderHistoryResponse.value.response!.length.toString());
       }
     } catch (e) {
       isLoading(false);

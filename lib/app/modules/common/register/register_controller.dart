@@ -9,7 +9,7 @@ import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/login/login_page.dart';
 import 'package:merocanteen/app/modules/common/register/user_entry_controller.dart';
-import 'package:merocanteen/app/modules/user_module/home/user_mainScreen.dart';
+import 'package:merocanteen/app/modules/user_module/student_mainscreen/user_mainScreen.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 import 'package:merocanteen/app/widget/splash_screen.dart';
 
@@ -34,7 +34,9 @@ class RegisterController extends GetxController {
     super.onInit();
   }
 
-  void registerSubmit(String classes) {
+  void registerSubmit(
+    String classes,
+  ) {
     if (registerFromkey.currentState!.validate()) {
       termsAndConditions.value == true
           ? registerUser(classes)
@@ -82,15 +84,7 @@ class RegisterController extends GetxController {
       // Save additional user data to Firestore
     } catch (e) {
       isregisterloading(false);
-      // Handle registration errors
-      CustomSnackbar(
-        backgroundColor: Colors.black,
-        title: 'Error',
-        message: '$e',
-        duration: Duration(milliseconds: 3000),
-        textColor: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // CustomSnackbar.showFailure(context, "Some thing went wrong");
     }
   }
 

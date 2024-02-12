@@ -2,15 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/add%20product/add_product_controller.dart';
-import 'package:merocanteen/app/modules/user_module/home/home_page_controller.dart';
+import 'package:merocanteen/app/modules/user_module/group/view/group.dart';
+import 'package:merocanteen/app/modules/user_module/group/view/group_Creation_view.dart';
+import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
-import 'package:merocanteen/app/widget/ordre_conformation.dart';
+import 'package:merocanteen/app/widget/confirmation_dialog.dart';
+import 'package:merocanteen/app/modules/user_module/add%20product/view/ordre_conformation.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 // Define the reusable product grid widget
@@ -18,18 +21,14 @@ class ProductGrid extends StatelessWidget {
   final String dat;
   ProductGrid({Key? key, required this.dat}) : super(key: key);
 
-  late List<int> quantities;
   // State to maintain quantities of each product
   final logincontroller = Get.put(LoginController());
-  final productContorller = Get.put(HomepageContoller());
+  final productContorller = Get.put(ProductController());
 
   final groupcontroller = Get.put(GroupController());
   final addproductController = Get.put(AddProductController());
   @override
   Widget build(BuildContext context) {
-    final user = logincontroller.user.value;
-    // ignore: invalid_use_of_protected_member
-    final group = groupcontroller.currentGroup.value;
     return GridView.builder(
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
@@ -38,59 +37,38 @@ class ProductGrid extends StatelessWidget {
           mainAxisSpacing: 20.0, // spacing between rows
           crossAxisSpacing: 20.0, // spacing between columns
           childAspectRatio: 0.72),
-      padding: EdgeInsets.all(8.0), // padding around the grid
       itemCount: productContorller
           .allProductResponse.value.response!.length, // total number of items
       itemBuilder: (context, index) {
         return GestureDetector(
           onTap: () async {
-            user!.groupid.isNotEmpty
+            logincontroller
+                    .userDataResponse.value.response!.first.groupid.isNotEmpty
                 ? showDialog(
                     context: context,
                     builder: (BuildContext context) {
                       return OrderConfirmationDialog(
+                        user: logincontroller
+                            .userDataResponse.value.response!.first,
+                        product: productContorller
+                            .allProductResponse.value.response![index],
                         date: dat,
-                        price: productContorller
-                            .allProductResponse.value.response![index].price
-                            .toInt()
-                            .toString(),
-                        image: productContorller
-                            .allProductResponse.value.response![index].image,
-                        onConfirm: () {
-                          addproductController.addItemToOrder(
-                              mealtime: "addproductController.mealTime.value",
-                              classs: user!.classes,
-                              date: dat,
-                              checkout: 'false',
-                              customer: user.name,
-                              groupcod: group != null ? group.groupCode : "",
-                              groupid: user.groupid,
-                              cid: user.userid,
-                              productName: productContorller.allProductResponse
-                                  .value.response![index].name,
-                              price: productContorller.allProductResponse.value
-                                  .response![index].price,
-                              quantity: 1,
-                              productImage: productContorller.allProductResponse
-                                  .value.response![index].image);
-
-                          Get.back();
-                        },
-                        pname: productContorller
-                            .allProductResponse.value.response![index].name,
                       );
                     },
                   )
                 : showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return LogoutConfirmationDialog(
-                        isbutton: false,
+                      return ConfirmationDialog(
+                        isbutton: true,
                         heading: 'You are not in any group',
                         subheading: "Make a group or join a group",
-                        firstbutton: "Ok",
+                        firstbutton: "Create A group",
                         secondbutton: 'Cancle',
-                        onConfirm: () {},
+                        onConfirm: () {
+                          Get.to(() => GroupPage(),
+                              transition: Transition.rightToLeft);
+                        },
                       );
                     },
                   );
@@ -99,7 +77,7 @@ class ProductGrid extends StatelessWidget {
           },
           child: Container(
             decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 203, 200, 200),
+                color: AppColors.lightColor,
                 borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(20),
                     topRight: Radius.circular(20),
@@ -139,12 +117,10 @@ class ProductGrid extends StatelessWidget {
                         children: [
                           Text(
                               "${productContorller.allProductResponse.value.response![index].name}",
-                              style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.w600)),
+                              style: AppStyles.listTileTitle),
                           Text(
                               "Rs ${productContorller.allProductResponse.value.response![index].price.toInt()}/plate",
-                              style: TextStyle(fontSize: 17.sp)),
+                              style: AppStyles.listTilesubTitle),
                         ]),
                   ))
             ]),

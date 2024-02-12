@@ -5,7 +5,7 @@ import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/repository/all_product_respository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
 
-class HomepageContoller extends GetxController {
+class ProductController extends GetxController {
   var isLoading = false.obs;
   final RxList<Product> products = <Product>[].obs;
 

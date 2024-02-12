@@ -71,9 +71,10 @@ class ApiClient {
 
   //--------------api call to update the data-----------
 
-  Future<SingleApiResponse<T>> update<T>({
+  Future<SingleApiResponse<void>> update<T>({
     required T Function(QuerySnapshot) responseType,
     required Map<String, dynamic> filters,
+    required Map<String, dynamic> updateField,
     required String collection,
   }) async {
     try {
@@ -91,12 +92,12 @@ class ApiClient {
       // Update documents
       WriteBatch batch = FirebaseFirestore.instance.batch();
       documentsSnapshot.docs.forEach((doc) {
-        batch.update(doc.reference, {'isCheckout': true});
+        batch.update(doc.reference, updateField);
       });
       await batch.commit();
 
-      // Return a single response based on the provided response type function
-      return SingleApiResponse.completed(responseType(documentsSnapshot));
+      // Return a successful response with completion message
+      return SingleApiResponse.completed("Update successful");
     } catch (e, stackTrace) {
       log("Error occurred: $e\n$stackTrace", error: e);
       return SingleApiResponse.error("Failed to update documents");

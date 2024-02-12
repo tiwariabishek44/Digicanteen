@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class ProfileTile extends StatelessWidget {
@@ -29,12 +30,7 @@ class ProfileTile extends StatelessWidget {
         visualDensity: VisualDensity.adaptivePlatformDensity,
         title: Text(
           title,
-          style: TextStyle(fontSize: 17.sp, fontWeight: FontWeight.w500),
-        ),
-        trailing: Icon(
-          Icons.chevron_right,
-          size: 25.sp,
-          color: Color.fromARGB(255, 173, 186, 159),
+          style: AppStyles.listTileTitle,
         ),
         onTap: onTap,
       ),

@@ -1,20 +1,18 @@
-import 'dart:developer';
-
-import 'package:get_storage/get_storage.dart';
-import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
-import 'package:merocanteen/app/modules/user_module/orders/order_page.dart';
-import 'package:merocanteen/app/modules/user_module/home/homepage.dart';
-import 'package:merocanteen/app/modules/user_module/home/user_screen_controller.dart';
-import 'package:merocanteen/app/config/colors.dart';
-import 'package:merocanteen/app/modules/user_module/profile/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:merocanteen/app/modules/user_module/home/view/homepage.dart';
+import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/view/order_page.dart';
+import 'package:merocanteen/app/modules/user_module/profile/profile_page.dart';
+import 'package:merocanteen/app/modules/user_module/student_mainscreen/user_screen_controller.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class UserMainScreenView extends StatelessWidget {
   UserMainScreenView({Key? key});
 
   final userController = Get.put(UserScreenController());
+  final orderController = Get.put(OrderController()); // Add this line
+
   final List<Widget> pages = [
     MyHomePage(),
     OrderPage(),
@@ -24,48 +22,49 @@ class UserMainScreenView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Obx(
-          () => PageStorage(
-            bucket: userController.bucket,
-            child: userController.currentScreen.value,
-          ),
+      body: Obx(
+        () => PageStorage(
+          bucket: userController.bucket,
+          child: userController.currentScreen.value,
         ),
-        bottomNavigationBar: Obx(
-          () => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              border: Border(
-                top: BorderSide(
-                  color: Color.fromARGB(
-                      255, 210, 207, 207), // Specify your desired border color
-                  width: 0.50, // Specify the border width
-                ),
+      ),
+      bottomNavigationBar: Obx(
+        () => Container(
+          decoration: const BoxDecoration(
+            color: Colors.white,
+            border: Border(
+              top: BorderSide(
+                color: Color.fromARGB(
+                    255, 210, 207, 207), // Specify your desired border color
+                width: 0.50, // Specify the border width
               ),
             ),
-            height: 7.5.h,
-            child: MyBottomNavigationBar(
-              currentIndex: userController.currentTab.value,
-              onTap: (index) {
-                userController.currentTab.value = index;
-                userController.currentScreen.value = pages[index];
-              },
-              items: [
-                MyBottomNavigationBarItem(
-                    nonSelectedicon: Icons.home_outlined,
-                    icon: Icons.home,
-                    label: 'Home'),
-                MyBottomNavigationBarItem(
-                    nonSelectedicon: Icons.shopping_cart_outlined,
-                    icon: Icons.shopping_cart,
-                    label: 'MyOrders'),
-                MyBottomNavigationBarItem(
-                    nonSelectedicon: Icons.settings_outlined,
-                    icon: Icons.settings,
-                    label: 'Settings'),
-              ],
-            ),
           ),
-        ));
+          height: 7.5.h,
+          child: MyBottomNavigationBar(
+            currentIndex: userController.currentTab.value,
+            onTap: (index) {
+              userController.currentTab.value = index;
+              userController.currentScreen.value = pages[index];
+            },
+            items: [
+              MyBottomNavigationBarItem(
+                  nonSelectedicon: Icons.home_outlined,
+                  icon: Icons.home,
+                  label: 'Home'),
+              MyBottomNavigationBarItem(
+                  nonSelectedicon: Icons.shopping_cart_outlined,
+                  icon: Icons.shopping_cart,
+                  label: 'MyOrders'),
+              MyBottomNavigationBarItem(
+                  nonSelectedicon: Icons.settings_outlined,
+                  icon: Icons.settings,
+                  label: 'Settings'),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

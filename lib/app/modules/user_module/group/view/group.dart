@@ -2,13 +2,17 @@ import 'dart:ffi';
 
 import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/friend_list/friend_list_view.dart';
+import 'package:merocanteen/app/modules/user_module/friend_list/view/friend_list_view.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:merocanteen/app/modules/user_module/group/no_group_data.dart';
+import 'package:merocanteen/app/modules/user_module/group/view/group_Creation_view.dart';
 import 'package:get/get.dart';
+import 'package:merocanteen/app/widget/custom_app_bar.dart';
+import 'package:merocanteen/app/widget/custom_loging_widget.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class GroupPage extends StatelessWidget {
   final logincontroller = Get.put(LoginController());
@@ -20,9 +24,11 @@ class GroupPage extends StatelessWidget {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          elevation: 0,
+          backgroundColor: AppColors.backgroundColor,
           title: Text(
             'Remove  $name',
-            style: TextStyle(fontSize: 17),
+            style: AppStyles.listTileTitle,
           ),
           actions: [
             TextButton(
@@ -35,8 +41,7 @@ class GroupPage extends StatelessWidget {
             ),
             GestureDetector(
               onTap: () {
-                groupcontroller.deleteFriendField(userid);
-                groupcontroller.fetchAllStudent();
+                groupcontroller.deleteMember(context, userid);
                 Navigator.of(context).pop();
               },
               child: Container(
@@ -64,15 +69,12 @@ class GroupPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text("Group"),
-        elevation: 1,
-      ),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: CustomAppBar(title: "Group"),
       body: Obx(() {
-        if (logincontroller
-            .userDataResponse.value.response!.first.groupid.isEmpty) {
-          return CommunityCreation();
+        if (logincontroller.userDataResponse.value.response!.first.groupid ==
+            '') {
+          return GroupCreation();
         } else {
           return SingleChildScrollView(
             child: Column(
@@ -80,14 +82,14 @@ class GroupPage extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(15.0),
+                  padding:
+                      EdgeInsets.symmetric(vertical: 3.5.w, horizontal: 3.5.h),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         "${groupcontroller.groupResponse.value.response!.first.groupName} || ${groupcontroller.groupResponse.value.response!.first.groupCode}",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.w700),
+                        style: AppStyles.topicsHeading,
                       ),
                       groupcontroller.groupResponse.value.response!.first
                                   .moderator ==
@@ -97,8 +99,10 @@ class GroupPage extends StatelessWidget {
                               padding: EdgeInsets.only(right: 20.0),
                               child: GestureDetector(
                                   onTap: () {
-                                    GroupController().fetchAllStudent();
-                                    Get.to(() => FriendList());
+                                    Get.to(() => FriendList(
+                                          groupId: groupcontroller.groupResponse
+                                              .value.response!.first.groupId,
+                                        ));
                                   },
                                   child: Icon(Icons.add)),
                             )
@@ -115,115 +119,116 @@ class GroupPage extends StatelessWidget {
                         color: const Color.fromARGB(255, 161, 156, 156),
                       ),
                     ),
-                    child: const Padding(
-                      padding: const EdgeInsets.all(12.0),
+                    child: Padding(
+                      padding: EdgeInsets.all(12.0),
                       child: Text(
                         "All orders placed by group members are grouped together.",
                         maxLines: 2,
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 161, 156, 156),
-                          fontSize: 15.0,
-                        ),
+                        style: AppStyles.listTileTitle,
                       ),
                     ),
                   ),
                 ),
-                // Obx(() {
-                //   if (groupcontroller.groupMembers.value == '') {
-                //     return Container(
-                //       color: AppColors.primaryColor,
-                //     );
-                //   } else {
-                //     return ListView.builder(
-                //       itemCount: groupcontroller.groupMembers.value.length,
-                //       shrinkWrap: true,
-                //       physics: ScrollPhysics(),
-                //       itemBuilder: (BuildContext context, int index) {
-                //         return ListTile(
-                //           title: Text(
-                //               '  ${groupcontroller.groupMembers.value[index].name}'),
-                //           leading: Stack(
-                //             children: [
-                //               Container(
-                //                 decoration: BoxDecoration(
-                //                   shape: BoxShape.circle,
-                //                   color: Colors.white,
-                //                   boxShadow: [
-                //                     BoxShadow(
-                //                       color: Colors.grey.withOpacity(0.5),
-                //                       spreadRadius: 2,
-                //                       blurRadius: 5,
-                //                       offset: Offset(0, 3),
-                //                     ),
-                //                   ],
-                //                 ),
-                //                 child: const CircleAvatar(
-                //                   radius: 23,
-                //                   backgroundColor: Colors.white,
-                //                   child: CircleAvatar(
-                //                     radius: 22,
-                //                     backgroundColor:
-                //                         Color.fromARGB(255, 224, 218, 218),
-                //                     child: Icon(
-                //                       Icons.person,
-                //                       color: Colors.white,
-                //                     ),
-                //                   ),
-                //                 ),
-                //               ),
-                //               Obx(() {
-                //                 if (groupcontroller
-                //                         .currentGroup.value!.moderator ==
-                //                     groupcontroller
-                //                         .groupMembers.value![index].name) {
-                //                   return Positioned(
-                //                     bottom: 0,
-                //                     right: 0,
-                //                     child: CircleAvatar(
-                //                       radius: 7.5,
-                //                       backgroundColor: Color.fromARGB(255, 72,
-                //                           2, 129), // Adjust color as needed
-                //                       child: Icon(
-                //                         Icons.shield_outlined,
-                //                         color: Colors.white,
-                //                         size: 15,
-                //                       ),
-                //                     ),
-                //                   );
-                //                 } else {
-                //                   return Positioned(
-                //                     bottom: 0,
-                //                     right: 0,
-                //                     child: CircleAvatar(
-                //                       radius: 7,
-                //                       backgroundColor: Colors
-                //                           .transparent, // Adjust color as needed
-                //                     ),
-                //                   );
-                //                 }
-                //               })
-                //             ],
-                //           ),
-                //           onTap: () {
-                //             groupcontroller.currentGroup.value!.moderator ==
-                //                     logincontroller.user.value!.name
-                //                 ? groupcontroller
-                //                             .groupMembers.value[index].userid ==
-                //                         logincontroller.user.value!.userid
-                //                     ? null
-                //                     : _showGroupNameDialog(
-                //                         context,
-                //                         "${groupcontroller.groupMembers.value![index].name}",
-                //                         "${groupcontroller.groupMembers.value![index].userid}")
-                //                 : null;
+                Obx(() {
+                  if (groupcontroller.isloading.value) {
+                    return LoadingWidget();
+                  } else {
+                    return ListView.builder(
+                      itemCount: groupcontroller
+                          .groupMemberResponse.value.response!.length,
+                      shrinkWrap: true,
+                      physics: ScrollPhysics(),
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(
+                            '  ${groupcontroller.groupMemberResponse.value.response![index].name}',
+                            style: AppStyles.listTilesubTitle,
+                          ),
+                          leading: Stack(
+                            children: [
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: const CircleAvatar(
+                                  radius: 23,
+                                  backgroundColor: Colors.white,
+                                  child: CircleAvatar(
+                                    radius: 22,
+                                    backgroundColor:
+                                        Color.fromARGB(255, 224, 218, 218),
+                                    child: Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Obx(() {
+                                if (groupcontroller.groupResponse.value
+                                        .response!.first.moderator ==
+                                    groupcontroller.groupMemberResponse.value
+                                        .response![index].name) {
+                                  return Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: CircleAvatar(
+                                      radius: 7.5,
+                                      backgroundColor: Color.fromARGB(255, 72,
+                                          2, 129), // Adjust color as needed
+                                      child: Icon(
+                                        Icons.shield_outlined,
+                                        color: Colors.white,
+                                        size: 15,
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  return Positioned(
+                                    bottom: 0,
+                                    right: 0,
+                                    child: CircleAvatar(
+                                      radius: 7,
+                                      backgroundColor: Colors
+                                          .transparent, // Adjust color as needed
+                                    ),
+                                  );
+                                }
+                              })
+                            ],
+                          ),
+                          onTap: () {
+                            groupcontroller.groupResponse.value.response!.first
+                                        .moderator ==
+                                    logincontroller.userDataResponse.value
+                                        .response!.first.name
+                                ? groupcontroller.groupResponse.value.response!
+                                            .first.moderator ==
+                                        groupcontroller.groupMemberResponse
+                                            .value.response![index].name
+                                    ? null
+                                    : _showGroupNameDialog(
+                                        context,
+                                        "${groupcontroller.groupMemberResponse.value.response![index].name}",
+                                        "${groupcontroller.groupMemberResponse.value.response![index].userid}")
+                                : null;
 
-                //             // Action when the item is tapped
-                //           },
-                //         );
-                //       },
-                //     );
-                //   }
-                // })
+                            // Action when the item is tapped
+                          },
+                        );
+                      },
+                    );
+                  }
+                })
               ],
             ),
           );

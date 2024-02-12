@@ -12,6 +12,8 @@ import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand_supply.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement_controller.dart';
+import 'package:merocanteen/app/repository/order_checout_repository.dart';
+import 'package:merocanteen/app/service/api_client.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 
 class OrderController extends GetxController {
@@ -20,6 +22,7 @@ class OrderController extends GetxController {
   final groupcod = TextEditingController();
   final RxList<OrderResponse> orders = <OrderResponse>[].obs;
   final RxList<OrderResponse> vendorOrder = <OrderResponse>[].obs;
+  var checkoutLoading = false.obs;
 
   var totalamoutn = 0.obs;
   var quantity = 1.obs;
@@ -101,6 +104,31 @@ class OrderController extends GetxController {
         'Failed to delete item from orders. Please try again later.',
         snackPosition: SnackPosition.BOTTOM,
       );
+    }
+  }
+
+//-------student order checkout------------//
+  final checkoutReository =
+      CheckoutRepository(); // Instantiate AddFriendRepository
+
+  Future<void> checkoutGroupOrder(BuildContext context, String groupcod) async {
+    try {
+      checkoutLoading(true);
+      final response = await checkoutReository.orderCheckout(groupcod);
+      if (response.status == ApiStatus.SUCCESS) {
+        log("checkout Succesfully");
+        fetchOrdersByGroupID(groupcod);
+
+        checkoutLoading(false);
+      } else {
+        log("Failed to add friend: ${response.message}");
+        checkoutLoading(false);
+      }
+    } catch (e) {
+      checkoutLoading(false);
+      log('Error while adding friend: $e');
+    } finally {
+      checkoutLoading(false);
     }
   }
 

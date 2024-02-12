@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:merocanteen/app/widget/custom_app_bar.dart';
 import 'package:merocanteen/app/widget/customized_button.dart';
 import 'package:merocanteen/app/widget/customized_textfield.dart';
-import 'package:merocanteen/app/widget/logout_conformation_dialog.dart';
+import 'package:merocanteen/app/widget/confirmation_dialog.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class PriceUpdatePage extends StatelessWidget {

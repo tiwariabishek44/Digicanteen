@@ -2,6 +2,7 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:merocanteen/app/config/style.dart';
 
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -27,18 +28,11 @@ class WelcomeHeading extends StatelessWidget {
                 mainHeading,
                 textAlign:
                     TextAlign.center, // Centers text within the container
-                style: TextStyle(
-                  color: AppColors.secondaryColor,
-                  fontSize: 23.sp, // Use screenutil for font sizing
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppStyles.appbar,
               ),
               Text(
                 subHeading,
-                style: TextStyle(
-                  color: AppColors.secondaryColor,
-                  fontSize: 17.sp, // Use screenutil for font sizing
-                ),
+                style: AppStyles.titleStyle,
               ),
             ],
           ),

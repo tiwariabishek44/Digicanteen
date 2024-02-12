@@ -1,17 +1,17 @@
 import 'dart:developer';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/config/prefs.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/loginoption/login_option_controller.dart';
-import 'package:merocanteen/app/modules/user_module/home/user_mainScreen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
 import 'package:merocanteen/app/repository/get_userdata_repository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
+import 'package:merocanteen/app/widget/custom_snackbar.dart';
 import 'package:merocanteen/app/widget/splash_screen.dart';
 
 class LoginController extends GetxController {
@@ -24,7 +24,6 @@ class LoginController extends GetxController {
   final vendorCode = TextEditingController();
 
   var isloading = false.obs;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final loginFromkey = GlobalKey<FormState>();
   final termsAndConditions = false.obs;
   final vendorLoginFromkey = GlobalKey<FormState>();
@@ -38,27 +37,55 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
-  void loginSubmit() {
+  void loginSubmit(BuildContext context) {
     if (loginFromkey.currentState!.validate()) {
-      login();
+      login(context);
     }
   }
 
   //---------user login----------
-
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
     try {
       isloading(true);
+
+      // Attempt to sign in
       await _auth.signInWithEmailAndPassword(
           email: emailcontroller.text, password: passwordcontroller.text);
 
+      // If successful, save data locally
       saveDataLocally();
       isloading(false);
+    } on FirebaseAuthException catch (e) {
+      isloading(false);
+
+      // Handle FirebaseAuthException (Firebase authentication errors)
+      String errorMessage = 'An error occurred';
+      if (e.code == 'user-not-found') {
+        errorMessage = 'User not found. Please register first.';
+      } else if (e.code == 'wrong-password') {
+        errorMessage = 'Invalid password. Please try again.';
+      } else {
+        errorMessage = 'Login failed. Please try again later.';
+      }
+      CustomSnackbar.authShowFailure(context, errorMessage);
+    } on PlatformException catch (e) {
+      isloading(false);
+
+      // Handle platform exceptions (e.g., no internet connection)
+      if (e.code == 'network_error') {
+        CustomSnackbar.authShowFailure(context, "No internet connection");
+      } else {
+        CustomSnackbar.authShowFailure(context, "An error occurred");
+      }
     } catch (e) {
       isloading(false);
-      // Handle login errors
+
+      // Handle other errors
       print("Login error: $e");
-      Get.snackbar("Login Failed", e.toString());
+      CustomSnackbar.authShowFailure(context, "An unexpected error occurred");
+    } finally {
+      // Turn off loading indicator regardless of success or failure
+      isloading(false);
     }
   }
 
@@ -97,13 +124,12 @@ class LoginController extends GetxController {
   void saveDataLocally() {
     storage.write(userId, _auth.currentUser!.uid);
 
-    storage.write(
-        userType, loginOptionController.isUser.value ? 'student' : 'canteen');
+    storage.write(userType, 'student');
 
     fetchUserData();
 
     log("this is the user login option${storage.read(userType)}");
-    Get.offAll(() => UserMainScreenView());
+    Get.offAll(() => SplashScreen());
   }
 
 //-------to do auto login---------
@@ -145,7 +171,7 @@ class LoginController extends GetxController {
 
       if (vendorCode.text.trim() == '4455') {
         storage.write(userType, "canteen");
-        Get.offAll(() => CanteenMainScreenView());
+        Get.offAll(() => SplashScreen());
         isloading(false);
         vendorCode.clear();
       } else {

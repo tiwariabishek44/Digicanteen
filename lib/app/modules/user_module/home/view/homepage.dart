@@ -2,8 +2,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/user_module/home/home_page_controller.dart';
+import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:merocanteen/app/widget/no_data_widget.dart';
 import 'package:merocanteen/app/widget/product_gridview.dart';
@@ -19,7 +20,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final homepagecontroller = Get.put(HomepageContoller());
+  final homepagecontroller = Get.put(ProductController());
   final loginController = Get.put(LoginController());
 
   Future<void> _refreshData() async {
@@ -69,7 +70,7 @@ class _MyHomePageState extends State<MyHomePage> {
       body: RefreshIndicator(
         onRefresh: () => _refreshData(),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: AppPadding.screenHorizontalPadding,
           child: Center(
             child: Obx(() {
               if (homepagecontroller.isLoading.value) {
@@ -77,27 +78,22 @@ class _MyHomePageState extends State<MyHomePage> {
               } else {
                 return homepagecontroller.allProductResponse.value == null
                     ? NoDataWidget(
-                        message: "There is no news",
+                        message: "There is no items",
                         iconData: Icons.error_outline)
                     : SingleChildScrollView(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
+                              padding: EdgeInsets.only(top: 5.0.h),
                               child: CustomTopBar(),
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 70.w,
-                                child: Text(
-                                  "Today Special",
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
+                            Container(
+                              width: 70.w,
+                              child: Text(
+                                "Today Special",
+                                maxLines: 2,
+                                style: AppStyles.topicsHeading,
                               ),
                             ),
                             Container(
@@ -111,17 +107,12 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(
                               height: 3.h,
                             ),
-                            Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Container(
-                                width: 70.w,
-                                child: Text(
-                                  "Popular Food Items",
-                                  maxLines: 2,
-                                  style: TextStyle(
-                                      fontSize: 22.sp,
-                                      fontWeight: FontWeight.w600),
-                                ),
+                            Container(
+                              width: 70.w,
+                              child: Text(
+                                "Popular Food Items",
+                                maxLines: 2,
+                                style: AppStyles.topicsHeading,
                               ),
                             ),
                             ProductGrid(

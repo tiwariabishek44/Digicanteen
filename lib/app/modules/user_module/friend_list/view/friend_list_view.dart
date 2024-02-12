@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/user_module/friend_list/friend_list_controller.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
+import 'package:merocanteen/app/widget/custom_app_bar.dart';
+import 'package:merocanteen/app/widget/custom_loging_widget.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 
 class FriendList extends StatelessWidget {
+  final String groupId;
+
+  // Constructor with groupId parameter
+  FriendList({Key? key, required this.groupId}) : super(key: key);
+
   final friendListController = Get.put(FriendListController());
   void showAlreadyInGroupDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
+          elevation: 0,
+          contentTextStyle: AppStyles.listTileTitle,
+          backgroundColor: AppColors.backgroundColor,
           title: Text("Sorry"),
-          content: Text("He is already a member of a group."),
+          content: Text("User is already involved in a group."),
         );
       },
     );
@@ -21,16 +33,16 @@ class FriendList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Friend List'),
-      ),
+      backgroundColor: AppColors.backgroundColor,
+      appBar: const CustomAppBar(title: "Friend List"),
       body: Obx(() {
-        if (friendListController.isLoading.value) {
-          return LoadingScreen();
+        if (friendListController.fetchLoading.value ||
+            friendListController.addFriendLoading.value) {
+          return const LoadingWidget();
         } else {
           return ListView.builder(
             itemCount:
-                friendListController.userDataResponse.value.response!.length,
+                friendListController.friendListResponse.value.response!.length,
             itemBuilder: (context, index) {
               return ListTile(
                 leading: Stack(
@@ -63,7 +75,7 @@ class FriendList extends StatelessWidget {
                       ),
                     ),
                     Obx(() {
-                      if (friendListController.userDataResponse.value
+                      if (friendListController.friendListResponse.value
                           .response![index].groupid.isNotEmpty) {
                         return Positioned(
                           bottom: 0,
@@ -94,15 +106,19 @@ class FriendList extends StatelessWidget {
                   ],
                 ),
                 title: Text(
-                    '${friendListController.userDataResponse.value.response![index].name}'),
-                // onTap: () {
-                //  friendListController.userDataResponse.value.response![index].groupid.isNotEmpty
-                //       ? showAlreadyInGroupDialog(context)
-                //       : groupcontroller.addFriends(
-                //           groupcontroller.students.value![index].userid);
-                // },
-                trailing: friendListController
-                            .userDataResponse.value.response![index].groupid ==
+                    '${friendListController.friendListResponse.value.response![index].name}'),
+                onTap: () {
+                  friendListController.friendListResponse.value.response![index]
+                          .groupid.isNotEmpty
+                      ? showAlreadyInGroupDialog(context)
+                      : friendListController.addFriend(
+                          context,
+                          friendListController
+                              .friendListResponse.value.response![index].userid,
+                          groupId);
+                },
+                trailing: friendListController.friendListResponse.value
+                            .response![index].groupid ==
                         null
                     ? Icon(Icons.add)
                     : Text("."),

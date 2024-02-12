@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
@@ -26,7 +27,9 @@ class Classanalytics extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           title: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
@@ -34,11 +37,11 @@ class Classanalytics extends StatelessWidget {
               children: [
                 Text(
                   "Class Analytics",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: AppStyles.appbar,
                 ),
                 Text(
                   formattedDate,
-                  style: TextStyle(fontSize: 16),
+                  style: AppStyles.listTilesubTitle,
                 ),
               ],
             ),
@@ -99,50 +102,47 @@ class Classanalytics extends StatelessWidget {
                               0;
                           String imageUrl =
                               orderController.orders[itemName]![0].productImage;
-                          return Container(
-                            decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 255, 255, 255),
-                                borderRadius: BorderRadius.circular(10),
-                                border: Border.all(
-                                    color: const Color.fromARGB(
-                                        255, 225, 225, 225))),
-                            child: Padding(
-                              padding: EdgeInsets.all(17),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: 8.0),
-                                  Text(
-                                    itemName,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15.0,
+                          return Padding(
+                            padding: EdgeInsets.only(bottom: 2.0.h),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: const Color.fromARGB(
+                                          255, 225, 225, 225))),
+                              child: Padding(
+                                padding: EdgeInsets.all(17),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: 8.0),
+                                    Text(
+                                      itemName,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppStyles.listTileTitle,
                                     ),
-                                  ),
-                                  Spacer(),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        'Orders: $totalOrderQuantity -Plate',
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color:
-                                              Color.fromARGB(255, 35, 68, 68),
+                                    Spacer(),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          'Orders: $totalOrderQuantity -Plate',
+                                          style: AppStyles.listTilesubTitle,
                                         ),
-                                      ),
-                                      Text(
-                                        'Remaning: ${totalOrderQuantity - checkoutQuantity}/plate',
-                                        style: TextStyle(
-                                          fontSize: 14.0,
-                                          color: Color.fromARGB(
-                                              255, 220, 127, 127),
+                                        Text(
+                                          'Remaning: ${totalOrderQuantity - checkoutQuantity}/plate',
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: Color.fromARGB(
+                                                255, 220, 127, 127),
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  )
-                                ],
+                                      ],
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           );

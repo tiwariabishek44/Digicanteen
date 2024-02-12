@@ -5,6 +5,7 @@ import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/vendor_modules/orders/order_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/widget/empty_order.dart';
 import 'package:merocanteen/app/modules/vendor_modules/widget/no_order.dart';
@@ -13,234 +14,175 @@ import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
-class OrderPage extends StatelessWidget {
+class OrderCheckoutPage extends StatelessWidget {
   final ordercontroller = Get.put(OrderController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
       appBar: AppBar(
-        title: Text("Orders"),
+        scrolledUnderElevation: 0,
+        title: Text(
+          "Orders",
+          style: AppStyles.appbar,
+        ),
       ),
-      body: Column(
-        children: [
-          Container(
-              color: Colors.white,
-              child: TextField(
-                onChanged: (value) {
-                  log(value);
-                  ordercontroller.fetchOrdersByGroupID(value!);
-                },
-                controller: ordercontroller.groupcod,
-                decoration: InputDecoration(
-                  prefixIcon: IconButton(
-                    icon: Icon(
-                      Icons.search,
-                      color: Colors.grey,
-                      size: 30,
+      body: Padding(
+        padding: AppPadding.screenHorizontalPadding,
+        child: Column(
+          children: [
+            Container(
+                color: Colors.white,
+                child: TextField(
+                  onChanged: (value) {
+                    log(value);
+                    ordercontroller.fetchOrdersByGroupID(value!);
+                  },
+                  controller: ordercontroller.groupcod,
+                  decoration: InputDecoration(
+                    prefixIcon: IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        color: Colors.grey,
+                        size: 30,
+                      ),
+                      onPressed: () {},
                     ),
-                    onPressed: () {},
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xffE8ECF4), width: 1),
+                        borderRadius: BorderRadius.circular(10)),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: Color(0xffE8ECF4), width: 1),
+                        borderRadius: BorderRadius.circular(10)),
+                    fillColor: const Color(0xffE8ECF4),
+                    filled: true,
+                    hintText: 'Group Code',
+                    hintStyle: TextStyle(color: Colors.black),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                   ),
-                  enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Color(0xffE8ECF4), width: 1),
-                      borderRadius: BorderRadius.circular(10)),
-                  focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          const BorderSide(color: Color(0xffE8ECF4), width: 1),
-                      borderRadius: BorderRadius.circular(10)),
-                  fillColor: const Color(0xffE8ECF4),
-                  filled: true,
-                  hintText: 'Group Code',
-                  hintStyle: TextStyle(color: Colors.black),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              )),
-          Expanded(
-              flex: 9,
-              child: Obx(() {
-                if (ordercontroller.orders.value!.isEmpty) {
-                  return EmptyOrderPage();
-                } else {
-                  if (ordercontroller.isloading.value!) {
-                    return LoadingScreen();
+                )),
+            SizedBox(
+              height: 2.h,
+            ),
+            Expanded(
+                flex: 9,
+                child: Obx(() {
+                  if (ordercontroller.orders.value!.isEmpty) {
+                    return EmptyOrderPage();
                   } else {
-                    if (ordercontroller.orders.value!.isEmpty) {
-                      return NoOrderPage();
+                    if (ordercontroller.isloading.value!) {
+                      return LoadingScreen();
                     } else {
-                      return SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: ordercontroller.orders.length,
-                              itemBuilder: (context, index) {
-                                return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      height: 21.h,
-                                      padding: EdgeInsets.all(8.0),
+                      if (ordercontroller.orders.value!.isEmpty) {
+                        return NoOrderPage();
+                      } else {
+                        return SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                shrinkWrap: true,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemCount: ordercontroller.orders.length,
+                                itemBuilder: (context, index) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: 2.0.h),
+                                    child: Container(
+                                      height: 15.h,
                                       child: Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
                                         children: [
                                           Container(
                                             decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(20)),
-                                            height: 19.h,
-                                            width: 36.w,
-                                            child: CachedNetworkImage(
-                                              imageUrl: ordercontroller
-                                                      .orders[index]
-                                                      .productImage ??
-                                                  '',
-                                              fit: BoxFit.cover,
-                                              errorWidget:
-                                                  (context, url, error) => Icon(
-                                                      Icons.error_outline,
-                                                      size: 40),
+                                              borderRadius:
+                                                  BorderRadius.circular(7),
+                                              color: Colors
+                                                  .white, // Add a background color
+                                            ),
+                                            height: 15.h,
+                                            width: 30.w,
+                                            child: ClipRRect(
+                                              // Use ClipRRect to ensure that the curved corners are applied
+                                              borderRadius:
+                                                  BorderRadius.circular(7),
+                                              child: CachedNetworkImage(
+                                                imageUrl: ordercontroller
+                                                        .orders[index]
+                                                        .productImage ??
+                                                    '',
+                                                fit: BoxFit.cover,
+                                                errorWidget: (context, url,
+                                                        error) =>
+                                                    Icon(Icons.error_outline,
+                                                        size: 40),
+                                              ),
                                             ),
                                           ),
-                                          SizedBox(width: 16.0),
+                                          SizedBox(
+                                            width: 2.w,
+                                          ),
                                           Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Expanded(
-                                                flex: 8,
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    SizedBox(height: 8.0),
-                                                    Text(
-                                                      ordercontroller
-                                                          .orders[index]
-                                                          .productName,
-                                                      maxLines: 1,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: 18.0,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      'Rs.${ordercontroller.orders[index].price.toStringAsFixed(2)}',
-                                                      style: TextStyle(
-                                                        fontSize: 18.0,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${ordercontroller.orders[index].customer}',
-                                                      style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: const Color
-                                                            .fromARGB(
-                                                            255, 134, 94, 94),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${ordercontroller.orders[index].date}',
-                                                      style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: const Color
-                                                            .fromARGB(
-                                                            255, 134, 94, 94),
-                                                      ),
-                                                    ),
-                                                    Text(
-                                                      '${ordercontroller.orders[index].mealtime}',
-                                                      style: TextStyle(
-                                                        fontSize: 14.0,
-                                                        color: const Color
-                                                            .fromARGB(
-                                                            255, 134, 94, 94),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
+                                              Text(
+                                                ordercontroller
+                                                    .orders[index].productName,
+                                                maxLines: 1,
+                                                overflow: TextOverflow.ellipsis,
+                                                style: AppStyles.listTileTitle,
                                               ),
-                                              Expanded(
-                                                flex: 2,
-                                                child: Row(
-                                                  // Adding the quantity controls row
-
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Row(
-                                                      children: [
-                                                        Container(
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          5.0),
-                                                              color: Colors
-                                                                  .grey[200],
-                                                            ),
-                                                            child: Text(
-                                                              "Quantity:",
-                                                              style: TextStyle(
-                                                                  fontSize: 20),
-                                                            )),
-                                                        SizedBox(width: 8.0),
-                                                        Text(
-                                                          "${ordercontroller.orders[index].quantity} /plate", // Replace with actual quantity value
-                                                          style: TextStyle(
-                                                              fontSize: 16.0),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      width: 30,
-                                                    ),
-                                                  ],
-                                                ),
-                                              )
+                                              Text(
+                                                'Rs.${ordercontroller.orders[index].price.toStringAsFixed(2)}',
+                                                style: AppStyles.listTileTitle,
+                                              ),
+                                              Text(
+                                                  '${ordercontroller.orders[index].customer}',
+                                                  style: AppStyles
+                                                      .listTilesubTitle),
+                                              Text(
+                                                '${ordercontroller.orders[index].date}' +
+                                                    '(${ordercontroller.orders[index].mealtime})',
+                                                style:
+                                                    AppStyles.listTilesubTitle,
+                                              ),
+                                              Text(
+                                                '${ordercontroller.orders[index].quantity}-plate',
+                                                style:
+                                                    AppStyles.listTilesubTitle,
+                                              ),
                                             ],
                                           ),
                                         ],
                                       ),
                                     ),
-                                    Divider(
-                                      height: 0.5,
-                                      color: const Color.fromARGB(
-                                          255, 192, 189, 189),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
-                            // CustomizedButton(
-                            //   onPressed: () {
-                            //     FocusScope.of(context).unfocus();
-                            //     ordercontroller.deleteGroupOrder(
-                            //         ordercontroller.groupcod.text.trim());
-                            //   },
-                            //   buttonText:
-                            //       "Check Out(${ordercontroller.groupcod.text})",
-                            //   buttonColor: AppColors.primaryColor,
-                            //   textColor: Colors.white,
-                            // ),
-                          ],
-                        ),
-                      );
+                                  );
+                                },
+                              ),
+                              CustomButton(
+                                  text:
+                                      "Check Out(${ordercontroller.groupcod.text})",
+                                  onPressed: () {
+                                    FocusScope.of(context).unfocus();
+                                    ordercontroller.checkoutGroupOrder(
+                                        context, ordercontroller.groupcod.text);
+                                  },
+                                  isLoading:
+                                      ordercontroller.checkoutLoading.value)
+                            ],
+                          ),
+                        );
+                      }
                     }
                   }
-                }
-              })),
-        ],
+                })),
+          ],
+        ),
       ),
     );
   }

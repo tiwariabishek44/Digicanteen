@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/total_orders_tab.dart';
@@ -31,6 +32,7 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
         appBar: AppBar(
           title: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -39,18 +41,22 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
               children: [
                 Text(
                   "Analytics",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: AppStyles.appbar,
                 ),
                 Text(
                   formattedDate,
-                  style: TextStyle(fontSize: 16),
+                  style: AppStyles.listTilesubTitle,
                 ),
               ],
             ),
           ),
-          bottom: TabBar(
+          bottom: const TabBar(
+            indicatorColor: AppColors.iconColors,
+            labelColor: AppColors.iconColors,
+            indicatorWeight: 1,
+            automaticIndicatorColorAdjustment: true,
             tabs: [
-              Tab(text: 'Total Orders'),
+              Tab(text: 'Total Order'),
               Tab(text: 'Remaning Orders'),
             ],
           ),
