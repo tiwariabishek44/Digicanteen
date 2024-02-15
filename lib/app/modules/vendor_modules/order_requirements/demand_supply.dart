@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/config/style.dart';
-import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/class_reoprt_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';

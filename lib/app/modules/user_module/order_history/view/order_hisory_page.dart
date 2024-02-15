@@ -79,7 +79,9 @@ class OrderHistoryPage extends StatelessWidget {
           if (historyController.isLoading.value) {
             return LoadingWidget();
           } else {
-            if (historyController.orderHistoryResponse.value.response == []) {
+            if (historyController.orderHistoryResponse.value.response == [] ||
+                historyController
+                    .orderHistoryResponse.value.response!.isEmpty) {
               return EmptyCartPage(
                 onClick: _refreshData,
               );
@@ -119,7 +121,9 @@ class OrderHistoryPage extends StatelessWidget {
           if (historyController.isLoading.value) {
             return LoadingWidget();
           } else {
-            if (historyController.orderHistoryResponse.value.response == []) {
+            if (historyController.orderHistoryResponse.value.response == [] ||
+                historyController
+                    .orderHistoryResponse.value.response!.isEmpty) {
               return EmptyCartPage(
                 onClick: _refreshData,
               );
@@ -189,7 +193,7 @@ class OrderHistoryPage extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(top: 1.0.h),
       child: Container(
-        height: 15.h,
+        height: 17.h,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -214,26 +218,56 @@ class OrderHistoryPage extends StatelessWidget {
             SizedBox(
               width: 2.w,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.productName,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppStyles.listTileTitle,
-                ),
-                Text(
-                  'Rs.${item.price.toStringAsFixed(2)}',
-                  style: AppStyles.listTilesubTitle,
-                ),
-                Text('${item.customer}', style: AppStyles.listTilesubTitle),
-                Text(
-                  '${item.date}',
-                  style: AppStyles.listTilesubTitle,
-                ),
-                Text('${item.mealtime}', style: AppStyles.listTilesubTitle),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    item.productName,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: AppStyles.listTileTitle,
+                  ),
+                  Text(
+                    'Rs.${item.price.toStringAsFixed(2)}',
+                    style: AppStyles.listTilesubTitle,
+                  ),
+                  Text('${item.customer}', style: AppStyles.listTilesubTitle),
+                  Text(
+                    '${item.date}',
+                    style: AppStyles.listTilesubTitle,
+                  ),
+                  Text('${item.mealtime}', style: AppStyles.listTilesubTitle),
+                  item.holdDate != '' || item.holdDate.isNotEmpty
+                      ? Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Colors.green,
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0.1.h, horizontal: 2.w),
+                            child: Text("Hold:${item.holdDate}",
+                                style: AppStyles.listTilesubTitle),
+                          ),
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Color.fromARGB(255, 216, 188, 27),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0.1.h, horizontal: 2.w),
+                            child: Text(
+                              "Regular",
+                              style: AppStyles.listTilesubTitle,
+                            ),
+                          ),
+                        )
+                ],
+              ),
             ),
           ],
         ),

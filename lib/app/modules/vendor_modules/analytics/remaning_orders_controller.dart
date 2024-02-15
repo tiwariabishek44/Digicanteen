@@ -1,19 +1,31 @@
-import 'package:carousel_slider/utils.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'dart:developer';
+
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:intl/intl.dart';
 import 'package:merocanteen/app/models/order_response.dart';
-import 'package:nepali_utils/nepali_utils.dart';
+import 'package:merocanteen/app/repository/order_requirement_repository.dart';
+import 'package:merocanteen/app/repository/remaning_orders_reository.dart';
+import 'package:merocanteen/app/service/api_client.dart';
 
 class RemaningOrdersController extends GetxController {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final RemaningOrderRepository remaningOrderRepository =
+      RemaningOrderRepository();
 
-  var isLoading = false.obs;
-  RxList<OrderResponse> orderss =
-      <OrderResponse>[].obs; // RxList to make it reactive
-  RxDouble grandTotal = 0.0.obs; // RxDouble for the grand total
-  List<String> timeSlots = [
+  final Rx<ApiResponse<OrderResponse>> remaningOrderResponse =
+      ApiResponse<OrderResponse>.initial().obs;
+
+  final RxMap<String, int> totalQuantityPerRemaningProduct =
+      <String, int>{}.obs;
+
+//-----------------for the class order report---------------
+  final Rx<ApiResponse<OrderResponse>> cremaningOrderResponse =
+      ApiResponse<OrderResponse>.initial().obs;
+
+  final RxMap<String, int> ctotalQuantityPerRemaningProduct =
+      <String, int>{}.obs;
+
+  var date = ''.obs;
+  final List<String> timeSlots = [
     'All',
     '8:30',
     '9:30',
@@ -22,82 +34,69 @@ class RemaningOrdersController extends GetxController {
     '1:30',
   ];
 
+  final RxBool isLoading = false.obs;
   @override
   void onInit() {
     super.onInit();
-    fetchRemaningOreders('All');
   }
 
-  void fetchRemaningMeal(int index) {
-    fetchRemaningOreders(timeSlots[index]);
+  Future<void> fetchMeal(int index, String date) async {
+    fetchRequirement(timeSlots[index], date);
   }
 
-//--------------fetching the remaning orders---------------------//
-  RxMap<String, List<OrderResponse>> reamaningorders =
-      <String, List<OrderResponse>>{}.obs;
-  RxMap<String, int> totalremaningOrders = <String, int>{}.obs;
-
-  Future<void> fetchRemaningOreders(String mealtime) async {
+  Future<void> fetchRequirement(String mealtime, String dates) async {
     try {
       isLoading(true);
-      DateTime currentDate = DateTime.now();
+      remaningOrderResponse.value = ApiResponse<OrderResponse>.loading();
+      final orderResult =
+          await remaningOrderRepository.getRemaningOrders(mealtime, dates);
+      if (orderResult.status == ApiStatus.SUCCESS) {
+        remaningOrderResponse.value =
+            ApiResponse<OrderResponse>.completed(orderResult.response);
+        log('Orders have been fetched');
+        log("Number of products in the response: " +
+            remaningOrderResponse.value.response!.length.toString());
 
-      // Convert the Gregorian date to Nepali date
-      NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
-
-      // Format the Nepali date as "dd/MM/yyyy("
-      String formattedDate =
-          DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
-
-      QuerySnapshot ordersSnapshot;
-
-      if (mealtime == 'All') {
-        ordersSnapshot = await _firestore
-            .collection('orders')
-            .where('date', isEqualTo: formattedDate)
-            .where('checkout', isEqualTo: 'false')
-            .get();
-      } else {
-        ordersSnapshot = await _firestore
-            .collection('orders')
-            .where("mealtime", isEqualTo: mealtime)
-            .where('date', isEqualTo: formattedDate)
-            .where('checkout', isEqualTo: 'false')
-            .get();
+        // Calculate total quantity after fetching orders
+        calculateTotalQuantity(orderResult.response!);
       }
-
-      reamaningorders.clear();
-
-      ordersSnapshot.docs.forEach((DocumentSnapshot document) {
-        OrderResponse item =
-            OrderResponse.fromJson(document.data() as Map<String, dynamic>);
-
-        if (!reamaningorders.containsKey(item.productName)) {
-          reamaningorders[item.productName] = [item];
-        } else {
-          reamaningorders[item.productName]?.add(item);
-        }
-      });
-
-      calculateRemaningQuantity();
-      isLoading(false);
     } catch (e) {
+      log('Error while getting data: $e');
+    } finally {
       isLoading(false);
-
-      // Handle errors
-      print("Error fetching orders: $e");
     }
   }
 
-  // Calculate total quantity for all products
-  void calculateRemaningQuantity() {
-    totalremaningOrders.clear();
-    reamaningorders.forEach((productName, productOrders) {
-      int totalQuantity = productOrders.fold(
-        0,
-        (sum, order) => sum + order.quantity,
+  final RxList<ProductQuantity> productQuantities = <ProductQuantity>[].obs;
+
+  void calculateTotalQuantity(List<OrderResponse> orders) {
+    totalQuantityPerRemaningProduct.clear();
+
+    orders.forEach((order) {
+      totalQuantityPerRemaningProduct.update(
+        order.productName,
+        (value) => value + order.quantity,
+        ifAbsent: () => order.quantity,
       );
-      totalremaningOrders[productName] = totalQuantity;
     });
+
+    // Convert map to list of ProductQuantity objects
+    productQuantities.value = totalQuantityPerRemaningProduct.entries
+        .map((entry) => ProductQuantity(
+              productName: entry.key,
+              totalQuantity: entry.value,
+            ))
+        .toList();
   }
+}
+
+class ProductQuantity {
+  final String productName;
+
+  final int totalQuantity;
+
+  ProductQuantity({
+    required this.productName,
+    required this.totalQuantity,
+  });
 }

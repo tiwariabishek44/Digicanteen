@@ -24,6 +24,7 @@ class LoginController extends GetxController {
   final vendorCode = TextEditingController();
 
   var isloading = false.obs;
+  var isFetchLoading = false.obs;
   final loginFromkey = GlobalKey<FormState>();
   final termsAndConditions = false.obs;
   final vendorLoginFromkey = GlobalKey<FormState>();
@@ -95,7 +96,7 @@ class LoginController extends GetxController {
       ApiResponse<UserDataResponse>.initial().obs;
   Future<void> fetchUserData() async {
     try {
-      isloading(true);
+      isFetchLoading(true);
       userDataResponse.value = ApiResponse<UserDataResponse>.loading();
       final userDataResult = await userDataRepository.getUserData(
         {
@@ -107,15 +108,17 @@ class LoginController extends GetxController {
         log("----------this is the success t fetch the user data");
         userDataResponse.value =
             ApiResponse<UserDataResponse>.completed(userDataResult.response);
+        isFetchLoading(false);
 
         log(userDataResponse.value.response!.first.classes);
       }
+      isFetchLoading(false);
     } catch (e) {
-      isloading(false);
+      isFetchLoading(false);
 
       log('Error while getting data: $e');
     } finally {
-      isloading(false);
+      isFetchLoading(false);
     }
   }
 

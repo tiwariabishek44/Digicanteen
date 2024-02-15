@@ -98,13 +98,24 @@ class GroupPage extends StatelessWidget {
                           ? Padding(
                               padding: EdgeInsets.only(right: 20.0),
                               child: GestureDetector(
-                                  onTap: () {
-                                    Get.to(() => FriendList(
-                                          groupId: groupcontroller.groupResponse
-                                              .value.response!.first.groupId,
-                                        ));
-                                  },
-                                  child: Icon(Icons.add)),
+                                onTap: () {
+                                  Get.to(() => FriendList(
+                                        groupId: groupcontroller.groupResponse
+                                            .value.response!.first.groupId,
+                                      ));
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  padding: EdgeInsets.all(8.0),
+                                  child: const Icon(
+                                    Icons.person_add,
+                                    color: AppColors.backgroundColor,
+                                  ),
+                                ),
+                              ),
                             )
                           : Container()
                     ],

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/menue/view/price_update.dart';
 
 // Define the reusable product grid widget
 class VendorProductGrid extends StatelessWidget {
@@ -29,6 +30,7 @@ class VendorProductGrid extends StatelessWidget {
           .allProductResponse.value.response!.length, // total number of items
       itemBuilder: (context, index) {
         return GestureDetector(
+          onTap: () {},
           child: Container(
             decoration: const BoxDecoration(
                 color: AppColors.lightColor,

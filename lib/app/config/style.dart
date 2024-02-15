@@ -103,6 +103,7 @@ class AppStyles {
   static TextStyle get mainHeading {
     return GoogleFonts.poppins(
         textStyle: TextStyle(
+      overflow: TextOverflow.fade,
       fontSize: 22.sp,
       color: AppColors.iconColors,
       fontWeight: FontWeight.w700,
@@ -127,6 +128,24 @@ class AppStyles {
         ));
   }
 
+  static TextStyle get listTileTitle1 {
+    return GoogleFonts.lato(
+        fontSize: 17.5.sp,
+        textStyle: const TextStyle(
+          color: Color.fromARGB(221, 255, 255, 255),
+          fontWeight: FontWeight.w600,
+        ));
+  }
+
+  static TextStyle get listTilesubTitle1 {
+    return GoogleFonts.poppins(
+        fontSize: 15.sp,
+        textStyle: const TextStyle(
+          color: Color.fromARGB(255, 2, 49, 4),
+          fontWeight: FontWeight.w500,
+        ));
+  }
+
   static TextStyle get listTilesubTitle {
     return GoogleFonts.poppins(
         fontSize: 15.sp,
@@ -141,6 +160,15 @@ class AppStyles {
         textStyle: TextStyle(
       fontSize: 18.sp,
       color: AppColors.iconColors,
+      fontWeight: FontWeight.w800,
+    ));
+  }
+
+  static TextStyle get topicsHeading1 {
+    return GoogleFonts.lato(
+        textStyle: TextStyle(
+      fontSize: 18.sp,
+      color: AppColors.backgroundColor,
       fontWeight: FontWeight.w800,
     ));
   }

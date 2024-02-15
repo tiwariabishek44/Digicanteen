@@ -4,12 +4,13 @@ import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dar
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:merocanteen/app/modules/vendor_modules/allproducts/homeSCreen.dart';
-import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_controller.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement.dart';
+import 'package:merocanteen/app/modules/vendor_modules/menue/view/menue_view.dart';
+import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/class_reoprt_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/order_requirements/view/order_requirement_view.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
-import 'package:merocanteen/app/modules/vendor_modules/orders/orders_screen.dart';
+import 'package:merocanteen/app/modules/vendor_modules/orders_checkout/orders_screen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/dashboard/dashboard_page.dart';
+import 'package:merocanteen/app/modules/vendor_modules/setting/setting_view.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/main_screen_controller.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -21,7 +22,7 @@ class CanteenMainScreenView extends StatelessWidget {
   final List<Widget> pages = [
     DshBoard(),
     OrderRequirement(),
-    OrderCheckoutPage(),
+    SettingView(),
   ];
 
   @override

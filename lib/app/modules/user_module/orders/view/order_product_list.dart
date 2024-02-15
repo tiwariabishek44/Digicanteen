@@ -9,6 +9,7 @@ import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
+import 'package:merocanteen/app/modules/user_module/orders/view/hold_page.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class OrderPRoductList extends StatelessWidget {
@@ -32,7 +33,7 @@ class OrderPRoductList extends StatelessWidget {
                   child: Stack(
                     children: [
                       Container(
-                        height: 15.h,
+                        height: 17.h,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
@@ -85,16 +86,79 @@ class OrderPRoductList extends StatelessWidget {
                                   '${orderController.orderResponse.value.response![index].quantity}-plate',
                                   style: AppStyles.listTilesubTitle,
                                 ),
+                                SizedBox(
+                                  height: 0.3.h,
+                                ),
+                                orderController.orderResponse.value
+                                                .response![index].holdDate !=
+                                            '' ||
+                                        orderController
+                                            .orderResponse
+                                            .value
+                                            .response![index]
+                                            .holdDate
+                                            .isNotEmpty
+                                    ? Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color: Colors.green,
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0.1.h, horizontal: 2.w),
+                                          child: Text(
+                                              "Hold:${orderController.orderResponse.value.response![index].holdDate}",
+                                              style:
+                                                  AppStyles.listTilesubTitle),
+                                        ),
+                                      )
+                                    : Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                          color:
+                                              Color.fromARGB(255, 216, 188, 27),
+                                        ),
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 0.1.h, horizontal: 2.w),
+                                          child: Text(
+                                            "Regular",
+                                            style: AppStyles.listTilesubTitle,
+                                          ),
+                                        ),
+                                      )
                               ],
                             ),
                           ],
                         ),
                       ),
-                      Positioned(
-                        right: 1.w,
-                        top: 0.h,
-                        child: Icon(Icons.more_vert),
-                      )
+
+                      // Display the more options icon only if the order belongs to the logged-in user
+                      if (orderController
+                              .orderResponse.value.response![index].cid ==
+                          logincontroller
+                              .userDataResponse.value.response!.first.userid)
+                        Positioned(
+                          right: 1.w,
+                          top: 0.h,
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(
+                                  () => HoldPage(
+                                        order: orderController.orderResponse
+                                            .value.response![index],
+                                      ),
+                                  transition: Transition.rightToLeft,
+                                  duration: duration);
+                            },
+                            child: CircleAvatar(
+                                radius: 17.sp,
+                                backgroundImage:
+                                    AssetImage('assets/hold.jpeg')),
+                          ),
+                        ),
                     ],
                   ),
                 );

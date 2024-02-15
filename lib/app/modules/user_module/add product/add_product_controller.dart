@@ -50,6 +50,8 @@ class AddProductController extends GetxController {
         "price": price,
         "quantity": quantity,
         "productImage": productImage,
+        "orderType": 'regular',
+        "holdDate": '',
       };
 
       orderResponse.value = ApiResponse<OrderResponse>.loading();
@@ -64,7 +66,6 @@ class AddProductController extends GetxController {
         orderController.fetchOrders();
         isLoading(false);
 
-        CustomSnackbar.showSuccess(context, 'Order has been placed');
         // Navigate to home page or perform necessary actions upon successful login
         Get.back();
       } else {

@@ -10,11 +10,14 @@ class OrderRequirementRepository {
       filters: mealtime == 'All'
           ? {
               "date": date,
+              'orderType': 'regular',
+
               // Add more filters as needed
             }
           : {
               "date": date,
               "mealtime": mealtime,
+              'orderType': 'regular',
 
               // Add more filters as needed
             },

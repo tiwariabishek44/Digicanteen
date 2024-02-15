@@ -56,6 +56,10 @@ dependencies:
   system_info_plus: ^0.0.5
   google_fonts: ^6.1.0
 
+  esewa_flutter_sdk:
+    path: ./esewa_sdk/eSewa_flutter_sdk/esewa_flutter_sdk
+  nepali_date_picker: ^6.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

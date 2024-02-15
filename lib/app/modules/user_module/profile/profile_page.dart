@@ -4,6 +4,7 @@ import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/user_module/group/view/group.dart';
 import 'package:merocanteen/app/modules/user_module/profile/feed_back_page.dart';
 import 'package:merocanteen/app/modules/user_module/order_history/view/order_hisory_page.dart';
+import 'package:merocanteen/app/modules/user_module/profile/order_holds_view.dart';
 import 'package:merocanteen/app/widget/custom_app_bar.dart';
 import 'package:merocanteen/app/widget/custom_listtile.dart';
 import 'package:merocanteen/app/widget/custom_loging_widget.dart';
@@ -80,21 +81,11 @@ class ProfilePage extends StatelessWidget {
               ),
               ProfileTile(
                 onTap: () {
-                  // Get.to(() => const AllTransctionPage(),
-                  //     transition: Transition.rightToLeft,
-                  // duration: duration);
+                  Get.to(() => OrderHoldsView(),
+                      transition: Transition.rightToLeft, duration: duration);
                 },
-                title: "All Transctions",
-                leadingIcon: const Icon(Icons.attach_money),
-              ),
-              ProfileTile(
-                onTap: () {
-                  // Get.to(() => const AllTransctionPage(),
-                  //     transition: Transition.rightToLeft,
-                  // duration: duration);
-                },
-                title: "Fine",
-                leadingIcon: const Icon(Icons.attach_money),
+                title: "Order Holds ",
+                leadingIcon: const Icon(Icons.stop_circle_outlined),
               ),
               ProfileTile(
                 onTap: () {

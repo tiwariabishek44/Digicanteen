@@ -6,6 +6,7 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/config/style.dart';
+import 'package:merocanteen/app/eSewa/esewa_function.dart';
 import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/user_module/add%20product/add_product_controller.dart';
@@ -32,6 +33,7 @@ class OrderConfirmationDialog extends StatefulWidget {
 class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
   final groupcontroller = Get.put(GroupController());
   final addproductController = Get.put(AddProductController());
+  late final Esewa esewa;
   List<String> timeSlots = [
     '8:30',
     '9:30',
@@ -45,6 +47,8 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
   @override
   void initState() {
     super.initState();
+    esewa = Esewa(addproductController);
+
     // checkTimeAndSetVisibility();
   }
 
@@ -86,14 +90,14 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
       insetPadding: EdgeInsets.zero,
       child: Container(
         height: isMealTimeSelectionVisible
-            ? 70.h
+            ? 80.h
             : MediaQuery.of(context).size.height * 0.4,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
           color: Colors.white,
         ),
         child: Padding(
-          padding: EdgeInsets.only(bottom: 30.0, left: 3.5.w, right: 3.5.w),
+          padding: AppPadding.screenHorizontalPadding,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
@@ -104,8 +108,8 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                 } else {
                   return Column(
                     children: [
-                      const SizedBox(
-                        height: 20,
+                      SizedBox(
+                        height: 3.h,
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -244,9 +248,14 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                           ),
                         ),
                         SizedBox(height: 2.h),
+                        topicRow(
+                            'Subtotal', "Rs. ${widget.product.price.toInt()}"),
+                        topicRow('Platform Fee', 'Rs.1'),
+                        topicRow('Grand Total',
+                            'Rs. ${widget.product.price.toInt() + 1}'),
                         Obx(() => GestureDetector(
                               onTap: () {
-                                addproductController.addItemToOrder(context,
+                                esewa.pay(context,
                                     mealtime: "8:30",
                                     classs: widget.user.classes,
                                     date: widget.date,
@@ -257,9 +266,25 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                                     groupid: widget.user.groupid,
                                     cid: widget.user.userid,
                                     productName: widget.product.name,
-                                    price: widget.product.price,
+                                    price: widget.product.price + 1,
                                     quantity: 1,
                                     productImage: widget.product.image);
+
+                                // addproductController.addItemToOrder(
+                                // context,
+                                //   mealtime: "8:30",
+                                //   classs: widget.user.classes,
+                                //   date: widget.date,
+                                //   checkout: 'false',
+                                //   customer: widget.user.name,
+                                //   groupcod: groupcontroller.groupResponse
+                                //       .value.response!.first.groupCode,
+                                //   groupid: widget.user.groupid,
+                                //   cid: widget.user.userid,
+                                //   productName: widget.product.name,
+                                //   price: widget.product.price,
+                                //   quantity: 1,
+                                //   productImage: widget.product.image);
                               },
 
                               // () {
@@ -327,6 +352,23 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget topicRow(String topic, String subtopic) {
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 0.6.h),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            topic,
+            style: AppStyles.topicsHeading,
+          ),
+          SizedBox(width: 8), //  Add spacing between topic and subtopic
+          Text(subtopic, style: AppStyles.listTilesubTitle1),
+        ],
       ),
     );
   }

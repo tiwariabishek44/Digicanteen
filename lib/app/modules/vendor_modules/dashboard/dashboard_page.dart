@@ -4,15 +4,16 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/vendor_modules/allproducts/homeSCreen.dart';
-import 'package:merocanteen/app/modules/vendor_modules/analytics/analytics_page.dart';
-import 'package:merocanteen/app/modules/vendor_modules/dashboard/class_wise_analysis.dart';
-import 'package:merocanteen/app/modules/vendor_modules/dashboard/order_cancel.dart';
+import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/menue/view/menue_view.dart';
+import 'package:merocanteen/app/modules/vendor_modules/analytics/view/analytics_page.dart';
+import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/view/class_wise_analysis.dart';
+import 'package:merocanteen/app/modules/vendor_modules/orders_holds/view/order_hold_view.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand_supply.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/order_requirement.dart';
+import 'package:merocanteen/app/modules/vendor_modules/order_requirements/view/order_requirement_view.dart';
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
-import 'package:merocanteen/app/modules/vendor_modules/orders/orders_screen.dart';
+import 'package:merocanteen/app/modules/vendor_modules/orders_checkout/orders_screen.dart';
 import 'package:merocanteen/app/widget/confirmation_dialog.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -25,6 +26,8 @@ class DshBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     salseContorlller.fetchOrderss();
     salseContorlller.fetchSalesORders();
+    final homepagecontroller = Get.put(ProductController());
+
     DateTime currentDate = DateTime.now();
 
     NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
@@ -52,45 +55,6 @@ class DshBoard extends StatelessWidget {
             ],
           ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: GestureDetector(
-              onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return ConfirmationDialog(
-                      isbutton: true,
-                      heading: 'Alert',
-                      subheading: "Do you want to logout of the application?",
-                      firstbutton: "Yes",
-                      secondbutton: 'No',
-                      onConfirm: () {
-                        loginContorller.vendorLogOut();
-                      },
-                    );
-                  },
-                );
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                padding: EdgeInsets.all(12.0),
-                child: const Text(
-                  "    Logout    ",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ),
-          )
-        ],
       ),
       // Add the rest of your app content here
 
@@ -186,7 +150,7 @@ class DshBoard extends StatelessWidget {
                   ),
                   buildClickableIcon(
                     icon: Icons.cancel_presentation,
-                    label: 'Order Pospond',
+                    label: 'Orders Hold',
                     onTap: () {
                       // Handle click for Analytics\
                       Get.to(() => OrderCancel(),

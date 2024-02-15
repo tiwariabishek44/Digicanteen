@@ -83,7 +83,7 @@ class FriendList extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 7.5,
                             backgroundColor: Color.fromARGB(
-                                255, 72, 2, 129), // Adjust color as needed
+                                255, 0, 0, 0), // Adjust color as needed
                             child: Icon(
                               Icons.check,
                               color: Colors.white,

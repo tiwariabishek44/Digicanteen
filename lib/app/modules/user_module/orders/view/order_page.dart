@@ -22,14 +22,14 @@ class OrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.backgroundColor,
-      appBar: CustomAppBar(
-        title: "Orders",
-      ),
-      body: RefreshIndicator(
-        onRefresh: () => _refreshData(),
-        child: Padding(
+    return RefreshIndicator(
+      onRefresh: () => _refreshData(),
+      child: Scaffold(
+        backgroundColor: AppColors.backgroundColor,
+        appBar: CustomAppBar(
+          title: "Orders",
+        ),
+        body: Padding(
           padding: AppPadding.screenHorizontalPadding,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,

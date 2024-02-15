@@ -43,7 +43,8 @@ class LoginOptionView extends StatelessWidget {
                 CustomButton(
                     text: 'Continue As Student',
                     onPressed: () {
-                      Get.to(LoginScreen(), transition: Transition.rightToLeft);
+                      Get.to(() => LoginScreen(),
+                          transition: Transition.rightToLeft);
                     },
                     isLoading: false),
                 SizedBox(

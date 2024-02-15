@@ -1,6 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
  package="com.example.merocanteen">
-
+<uses-permission android:name="android.permission.INTERNET"/>
+ 
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 <queries>
@@ -11,6 +12,7 @@
     <application
         android:label="Hamro Canteen"
         android:name="${applicationName}"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"         
         android:icon="@mipmap/ic_launcher">
         <receiver
     android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"

@@ -25,7 +25,10 @@ class OrderRequestContoller extends GetxController {
   ];
 
   final RxBool isLoading = false.obs;
-  final RxBool isMorning = true.obs;
+  @override
+  void onInit() {
+    super.onInit();
+  }
 
   Future<void> fetchMeal(int index, String date) async {
     fetchRequirement(timeSlots[index], date);
@@ -41,7 +44,7 @@ class OrderRequestContoller extends GetxController {
         requirmentResponse.value =
             ApiResponse<OrderResponse>.completed(orderResult.response);
         log('Orders have been fetched');
-         log("Number of products in the response: " +
+        log("Number of products in the response: " +
             requirmentResponse.value.response!.length.toString());
 
         // Calculate total quantity after fetching orders
@@ -54,6 +57,8 @@ class OrderRequestContoller extends GetxController {
     }
   }
 
+  final RxList<ProductQuantity> productQuantities = <ProductQuantity>[].obs;
+
   void calculateTotalQuantity(List<OrderResponse> orders) {
     totalQuantityPerProduct.clear();
 
@@ -65,8 +70,23 @@ class OrderRequestContoller extends GetxController {
       );
     });
 
-    totalQuantityPerProduct.forEach((productName, quantity) {
-      log('Total quantity for $productName: $quantity');
-    });
+    // Convert map to list of ProductQuantity objects
+    productQuantities.value = totalQuantityPerProduct.entries
+        .map((entry) => ProductQuantity(
+              productName: entry.key,
+              totalQuantity: entry.value,
+            ))
+        .toList();
   }
+}
+
+class ProductQuantity {
+  final String productName;
+
+  final int totalQuantity;
+
+  ProductQuantity({
+    required this.productName,
+    required this.totalQuantity,
+  });
 }
