@@ -39,6 +39,7 @@ class SalsesReportController extends GetxController {
           .collection('orders')
           .where('date', isEqualTo: date)
           .where('checkout', isEqualTo: 'true')
+          .where('orderType', isEqualTo: 'regular')
           .get();
 
       salesOrder.clear();

@@ -256,6 +256,7 @@ class _OrderConfirmationDialogState extends State<OrderConfirmationDialog> {
                         Obx(() => GestureDetector(
                               onTap: () {
                                 esewa.pay(context,
+                                    customerImage: widget.user.profilePicture,
                                     mealtime: "8:30",
                                     classs: widget.user.classes,
                                     date: widget.date,

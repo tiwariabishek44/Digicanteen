@@ -27,7 +27,8 @@ class _ClassanalyticsState extends State<Classanalytics> {
     // ignore: deprecated_member_use
     NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
 
-    String formattedDate = DateFormat.yMd().add_jm().format(nepaliDateTime);
+    String formattedDate =
+        DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
     return DefaultTabController(
       length: 2,
       child: Scaffold(

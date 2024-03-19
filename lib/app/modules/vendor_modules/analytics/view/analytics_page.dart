@@ -7,7 +7,7 @@ import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/clas
 import 'package:intl/intl.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/view/total_orders_tab.dart';
 import 'package:merocanteen/app/modules/vendor_modules/analytics/view/total_remaning_orders_tab.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/salse_controller.dart';
 import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
@@ -27,7 +27,8 @@ class _AnalyticsPageState extends State<AnalyticsPage> {
     // ignore: deprecated_member_use
     NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(currentDate);
 
-    String formattedDate = DateFormat.yMd().add_jm().format(nepaliDateTime);
+    String formattedDate =
+        DateFormat('dd/MM/yyyy\'', 'en').format(nepaliDateTime);
     return DefaultTabController(
       length: 2,
       child: Scaffold(

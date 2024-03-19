@@ -8,11 +8,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/vendor_modules/orders_checkout/veodor_order_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/widget/empty_order.dart';
-import 'package:merocanteen/app/modules/vendor_modules/widget/no_order.dart';
-import 'package:merocanteen/app/widget/confirmation_dialog.dart';
-import 'package:merocanteen/app/widget/custom_snackbar.dart';
+
 import 'package:merocanteen/app/widget/customized_button.dart';
-import 'package:merocanteen/app/widget/empty_cart_page.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
@@ -123,7 +120,7 @@ class OrderCheckoutPage extends StatelessWidget {
                   ),
                 )),
             SizedBox(
-              height: 2.h,
+              height: 1.h,
             ),
             Expanded(
                 flex: 9,
@@ -138,6 +135,57 @@ class OrderCheckoutPage extends StatelessWidget {
                       return SingleChildScrollView(
                         child: Column(
                           children: [
+                            Container(
+                              height: 10.h,
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                physics: ScrollPhysics(),
+                                itemCount: ordercontroller
+                                    .orderResponse.value.response!.length,
+                                itemBuilder: (context, index) {
+                                  return GestureDetector(
+                                    child: Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 1.w),
+                                      child: Container(
+                                        height: 10.h,
+                                        width: 10.h,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ),
+                                        child: ClipOval(
+                                          child: CachedNetworkImage(
+                                            imageUrl: ordercontroller
+                                                    .orderResponse
+                                                    .value
+                                                    .response![index]
+                                                    .customerImage ??
+                                                '',
+                                            fit: BoxFit.cover,
+                                            errorWidget:
+                                                (context, url, error) => Icon(
+                                                    Icons.error_outline,
+                                                    size: 40),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
+                            const Divider(
+                              height: 0.5,
+                              thickness: 0.5,
+                              color: Color.fromARGB(221, 93, 90, 90),
+                            ),
+                            SizedBox(
+                              height: 2.h,
+                            ),
                             ListView.builder(
                               shrinkWrap: true,
                               physics: NeverScrollableScrollPhysics(),

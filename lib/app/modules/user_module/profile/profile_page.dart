@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
@@ -37,17 +38,36 @@ class ProfilePage extends StatelessWidget {
                               .userDataResponse.value.response!.first.name,
                           style: AppStyles.mainHeading,
                         )),
-                    Center(
-                      child: Container(
-                        height: 35.sp,
-                        width: 35.sp,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(100),
+                    CircleAvatar(
+                      radius: 12.w,
+                      backgroundColor:
+                          Colors.transparent, // Ensure transparent background
+                      child: CachedNetworkImage(
+                        imageUrl: logincontroller.userDataResponse.value
+                                .response!.first.profilePicture ??
+                            '',
+                        imageBuilder: (context, imageProvider) => Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle, // Apply circular shape
                             image: DecorationImage(
-                              image: AssetImage('assets/person.png'),
-                            )),
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        placeholder: (context, url) =>
+                            CircularProgressIndicator(), // Placeholder widget while loading
+                        errorWidget: (context, url, error) => CircleAvatar(
+                          radius: 21.sp,
+                          child: Icon(
+                            Icons.person,
+                            color: Colors.white,
+                          ),
+                          backgroundColor:
+                              const Color.fromARGB(255, 224, 218, 218),
+                        ),
                       ),
-                    ),
+                    )
                   ],
                 ),
               ),

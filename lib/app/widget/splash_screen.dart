@@ -9,6 +9,7 @@ import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/config/prefs.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
 import 'package:merocanteen/app/modules/common/loginoption/login_option_view.dart';
+import 'package:merocanteen/app/modules/user_module/home/product_controller.dart';
 import 'package:merocanteen/app/modules/user_module/student_mainscreen/user_mainScreen.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
@@ -22,18 +23,20 @@ class _SplashScreenState extends State<SplashScreen> {
   final logincontroller = Get.put(LoginController());
   final storage = GetStorage();
   final groupController = Get.put(GroupController());
+  final homepagecontroller = Get.put(ProductController());
 
   void handleMainScreen() async {
     log("------------ HANDLING MAIN SCREEN -----------");
     if (storage.read(userType) == 'student') {
       await logincontroller.fetchUserData();
       if (logincontroller
-          .userDataResponse.value.response!.first.groupid.isNotEmpty) {
+              .userDataResponse.value.response!.first.groupid.isNotEmpty &&
+          homepagecontroller.allProductResponse.value.response!.isNotEmpty) {
         groupController.fetchGroupData();
       }
 
       logincontroller.userDataResponse.value.response!.isNotEmpty
-          ? Get.offAll(() => UserMainScreenView())
+          ? Get.offAll(() => CanteenMainScreenView())
           : log("some went wrong");
     } else {
       Get.offAll(() => CanteenMainScreenView());

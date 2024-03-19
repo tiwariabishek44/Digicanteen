@@ -1,17 +1,14 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
-import 'package:merocanteen/app/models/users_model.dart';
-import 'package:merocanteen/app/modules/common/login/login_controller.dart';
-import 'package:merocanteen/app/modules/common/login/login_page.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:merocanteen/app/modules/common/register/user_entry_controller.dart';
-import 'package:merocanteen/app/modules/user_module/student_mainscreen/user_mainScreen.dart';
-import 'package:merocanteen/app/widget/custom_snackbar.dart';
-import 'package:merocanteen/app/widget/splash_screen.dart';
 
 class RegisterController extends GetxController {
   final userNameController = Get.put(UserNameController());
@@ -26,19 +23,59 @@ class RegisterController extends GetxController {
   final termsAndConditions = false.obs;
   final isregisterloading = false.obs;
   final registerFromkey = GlobalKey<FormState>();
-  FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  @override
-  void onInit() {
-    super.onInit();
+  var image = File('').obs; // Here's an example using GetX
+
+//-------------TO PICK THE IMAGE FORM THE MOBILE-------------//
+  Future<void> pickImages() async {
+    final picker = ImagePicker();
+
+    await showModalBottomSheet(
+      context: Get.overlayContext!,
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.photo_library),
+                title: Text('Gallery'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final pickedFile =
+                      await picker.pickImage(source: ImageSource.gallery);
+                  if (pickedFile != null) {
+                    image.value = File(pickedFile.path);
+                  }
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.camera_alt),
+                title: Text('Camera'),
+                onTap: () async {
+                  Navigator.of(context).pop();
+                  final pickedFile =
+                      await picker.pickImage(source: ImageSource.camera);
+                  if (pickedFile != null) {
+                    image.value = File(pickedFile.path);
+                  }
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void registerSubmit(
     String classes,
   ) {
     if (registerFromkey.currentState!.validate()) {
-      termsAndConditions.value == true
+      termsAndConditions.value == true && image.value != null
           ? registerUser(classes)
           : Get.snackbar(
               snackPosition: SnackPosition.TOP,
@@ -49,76 +86,53 @@ class RegisterController extends GetxController {
 
   Future<void> registerUser(String classes) async {
     try {
-      log("-----this is abouve $classes");
-
       isregisterloading(true);
-      log("-----this is abouve $classes");
 
-      log("-----this is abouve error");
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: emailcontroller.text,
-        password: passwordcontroller.text,
-      );
+      {
+        Reference storageReference = FirebaseStorage.instance
+            .ref()
+            .child('profilePicture/${DateTime.now()}.png');
+        UploadTask uploadTask = storageReference.putFile(image.value);
+        TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => null);
 
-      await FirebaseFirestore.instance
-          .collection('students')
-          .doc(userCredential.user!.uid)
-          .set({
-        'userid': userCredential.user!.uid, // Saving userid
-        'name': namecontroller.text,
-        'phone': phonenocontroller.text,
-        'email': emailcontroller.text,
-        'groupid': '',
-        'classes': classes,
-      });
-      log("-----this is after error");
-      occupyUsername();
+        // Get download URL from Firebase Storage
+        String imageURL = await taskSnapshot.ref.getDownloadURL();
 
-      isregisterloading(false);
-      log("-----this is isoccupied error");
+//-----------update the user -----------
+        UserCredential userCredential =
+            await _auth.createUserWithEmailAndPassword(
+          email: emailcontroller.text,
+          password: passwordcontroller.text,
+        );
 
-      clearTextControllers();
-      Get.offAll(() => LoginScreen());
+        await FirebaseFirestore.instance
+            .collection('students')
+            .doc(userCredential.user!.uid)
+            .set({
+          'userid': userCredential.user!.uid, // Saving userid
+          'name': namecontroller.text,
+          'phone': phonenocontroller.text,
+          'email': emailcontroller.text,
+          'groupid': '',
+          'classes': classes,
+          'profilePicture': imageURL,
+        });
+        log("User registration successful");
 
-      // Save additional user data to Firestore
-    } catch (e) {
-      isregisterloading(false);
-      // CustomSnackbar.showFailure(context, "Some thing went wrong");
-    }
-  }
-
-  Future<void> occupyUsername() async {
-    try {
-      QuerySnapshot usernameSnapshot = await _firestore
-          .collection('studentusername')
-          .where('username',
-              isEqualTo: userNameController.namecontroller.text.trim())
-          .get();
-
-      if (usernameSnapshot.docs.isNotEmpty) {
-        var doc = usernameSnapshot.docs.first;
-        bool isOccupied = doc['isOccupied'];
-
-        if (!isOccupied) {
-          await _firestore
-              .collection('studentusername')
-              .doc(doc.id)
-              .update({'isOccupied': true});
-          Get.snackbar('Occupy', 'Pin has been occupied',
-              snackPosition: SnackPosition.BOTTOM);
-        } else {
-          Get.snackbar('  Status', 'Pin is already occupied',
-              snackPosition: SnackPosition.BOTTOM);
-        }
-      } else {
-        Get.snackbar('  Status', 'Pin does not exist',
-            snackPosition: SnackPosition.BOTTOM);
+        isregisterloading(false);
+        clearTextControllers();
+        Get.back();
       }
     } catch (e) {
-      print('Error occupying username: $e');
-      Get.snackbar('Error', 'An error occurred while occupying username',
-          snackPosition: SnackPosition.BOTTOM);
+      isregisterloading(false);
+      log("Error during user registration: $e");
+      // Display an error message to the user
+      // You can customize this based on your UI
+      Get.snackbar(
+        "Registration Failed",
+        "An error occurred during registration.",
+        snackPosition: SnackPosition.TOP,
+      );
     }
   }
 

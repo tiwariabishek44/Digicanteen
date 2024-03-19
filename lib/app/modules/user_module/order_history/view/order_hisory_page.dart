@@ -79,9 +79,7 @@ class OrderHistoryPage extends StatelessWidget {
           if (historyController.isLoading.value) {
             return LoadingWidget();
           } else {
-            if (historyController.orderHistoryResponse.value.response == [] ||
-                historyController
-                    .orderHistoryResponse.value.response!.isEmpty) {
+            if (!historyController.isdata.value) {
               return EmptyCartPage(
                 onClick: _refreshData,
               );
@@ -121,9 +119,7 @@ class OrderHistoryPage extends StatelessWidget {
           if (historyController.isLoading.value) {
             return LoadingWidget();
           } else {
-            if (historyController.orderHistoryResponse.value.response == [] ||
-                historyController
-                    .orderHistoryResponse.value.response!.isEmpty) {
+            if (!historyController.isdata.value) {
               return EmptyCartPage(
                 onClick: _refreshData,
               );

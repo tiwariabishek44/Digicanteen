@@ -14,8 +14,11 @@ class OrderResponse {
   final String date; // Store Nepali date as a formatted string
   final String orderType; // Add orderType field
   final String holdDate;
+  final String orderTime;
+  final String customerImage;
 
   OrderResponse({
+    required this.customerImage,
     required this.id, // Update the constructor to include id
     required this.mealtime,
     required this.classs,
@@ -31,6 +34,7 @@ class OrderResponse {
     required this.date,
     required this.orderType, // Add orderType to the constructor
     required this.holdDate,
+    required this.orderTime,
   });
 
   Map<String, dynamic> toMap() {
@@ -50,25 +54,41 @@ class OrderResponse {
       'date': date, // Store formatted Nepali date as a string
       'orderType': orderType, // Add orderType to the map
       'holdDate': holdDate,
+      'orderTime': orderTime,
+      "customerImage": customerImage,
     };
   }
 
   factory OrderResponse.fromJson(Map<String, dynamic> map) {
     return OrderResponse(
-        id: map['id'], // Retrieve id from the map
-        mealtime: map['mealtime'],
-        classs: map['classs'],
-        customer: map['customer'],
-        groupcod: map['groupcod'],
-        groupid: map['groupid'],
-        cid: map['cid'],
-        productName: map['productName'],
-        productImage: map['productImage'],
-        price: map['price'].toDouble(),
-        quantity: map['quantity'],
-        checkout: map['checkout'],
-        date: map['date'], // Retrieve date as a string
-        orderType: map['orderType'], // Retrieve orderType from the map
-        holdDate: map['holdDate']);
+      id: map['id'],
+      mealtime:
+          map['mealtime'] ?? '', // Provide a default value if mealtime is null
+      classs: map['classs'] ?? '', // Provide a default value if classs is null
+      customer:
+          map['customer'] ?? '', // Provide a default value if customer is null
+      groupcod:
+          map['groupcod'] ?? '', // Provide a default value if groupcod is null
+      groupid:
+          map['groupid'] ?? '', // Provide a default value if groupid is null
+      cid: map['cid'] ?? '', // Provide a default value if cid is null
+      productName: map['productName'] ??
+          '', // Provide a default value if productName is null
+      productImage: map['productImage'] ??
+          '', // Provide a default value if productImage is null
+      price: map['price']?.toDouble() ??
+          0.0, // Provide a default value if price is null
+      quantity:
+          map['quantity'] ?? 0, // Provide a default value if quantity is null
+      checkout:
+          map['checkout'] ?? '', // Provide a default value if checkout is null
+      date: map['date'] ?? '', // Provide a default value if date is null
+      orderType: map['orderType'] ??
+          '', // Provide a default value if orderType is null
+      holdDate:
+          map['holdDate'] ?? '', // Provide a default value if holdDate is null
+      orderTime: map['orderTime'] ?? '',
+      customerImage: map['customerImage'] ?? '',
+    );
   }
 }

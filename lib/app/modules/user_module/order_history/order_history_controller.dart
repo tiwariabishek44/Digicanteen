@@ -9,6 +9,7 @@ import 'package:merocanteen/app/service/api_client.dart';
 class HistoryController extends GetxController {
   final loginController = Get.put(LoginController());
   var isLoading = false.obs;
+  var isdata = false.obs;
 
   @override
   void onInit() {
@@ -32,6 +33,7 @@ class HistoryController extends GetxController {
         orderHistoryResponse.value =
             ApiResponse<OrderResponse>.completed(orderResult.response);
         log('----orders is been fetch');
+        isdata(true);
 
         log("this is the all product response  " +
             orderHistoryResponse.value.response!.length.toString());

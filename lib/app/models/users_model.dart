@@ -5,6 +5,7 @@ class UserDataResponse {
   final String phone;
   final String groupid;
   final String classes;
+  final String profilePicture;
 
   UserDataResponse({
     required this.classes,
@@ -13,19 +14,20 @@ class UserDataResponse {
     required this.email,
     required this.phone,
     required this.groupid,
+    required this.profilePicture,
   });
 
   factory UserDataResponse.fromJson(Map<String, dynamic> json) {
     return UserDataResponse(
-      userid:
-          json['userid'] ?? '', // Provide a default value if 'userid' is null
-      name: json['name'] ?? '',
-      email: json['email'] ?? '',
-      phone: json['phone']?.toString() ??
-          '', // Convert to String and provide default value
-      groupid: json['groupid'] ?? '',
-      classes: json['classes'] ?? '',
-    );
+        userid:
+            json['userid'] ?? '', // Provide a default value if 'userid' is null
+        name: json['name'] ?? '',
+        email: json['email'] ?? '',
+        phone: json['phone']?.toString() ??
+            '', // Convert to String and provide default value
+        groupid: json['groupid'] ?? '',
+        classes: json['classes'] ?? '',
+        profilePicture: json['profilePicture'] ?? '');
   }
 
   Map<String, dynamic> toMap() {
@@ -36,6 +38,7 @@ class UserDataResponse {
       'phone': phone,
       'groupid': groupid,
       'classes': classes,
+      'profilePicture': profilePicture,
     };
   }
 }

@@ -11,8 +11,6 @@ import 'package:merocanteen/app/widget/splash_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
-// Disable screenshots and screen recording on Android
-
 void main() async {
   // Initialize the Nepali locale data
   initializeDateFormatting('ne_NP');

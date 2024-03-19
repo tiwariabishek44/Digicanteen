@@ -77,9 +77,17 @@ class ClassReportController extends GetxController {
     productQuantities.value = totalQuantityPerRemaningProduct.entries
         .map((entry) => ProductQuantity(
               className: entry.key,
+              price: calculateTotalPrice(entry.key, orders), // Calculate price
               totalQuantity: entry.value,
             ))
         .toList();
+  }
+
+  int calculateTotalPrice(String className, List<OrderResponse> orders) {
+    return orders
+        .where((order) => order.classs == className)
+        .map((order) => order.quantity * order.price)
+        .fold(0, (previousValue, price) => previousValue + price.toInt());
   }
 
 //-----------------for the class order report---------------
@@ -134,6 +142,7 @@ class ClassReportController extends GetxController {
     remaningproductQuantities.value = ctotalQuantityPerRemaningProduct.entries
         .map((entry) => ProductQuantity(
               className: entry.key,
+              price: calculateTotalPrice(entry.key, orders), // Calculate price
               totalQuantity: entry.value,
             ))
         .toList();
@@ -142,11 +151,13 @@ class ClassReportController extends GetxController {
 
 class ProductQuantity {
   final String className;
+  final int price;
 
   final int totalQuantity;
 
   ProductQuantity({
     required this.className,
+    required this.price,
     required this.totalQuantity,
   });
 }

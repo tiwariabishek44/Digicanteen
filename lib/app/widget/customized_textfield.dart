@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:merocanteen/app/config/colors.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class CustomizedTextfield extends StatelessWidget {
   final TextEditingController myController;
@@ -19,7 +20,7 @@ class CustomizedTextfield extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10.0),
+      padding: EdgeInsets.symmetric(vertical: 0.7.h),
       child: TextFormField(
         validator: validator,
         controller: myController,
@@ -28,7 +29,7 @@ class CustomizedTextfield extends StatelessWidget {
             icon: Icon(
               icon,
               color: AppColors.secondaryColor,
-              size: 30,
+              size: 20.sp,
             ),
             onPressed: () {},
           ),
@@ -43,7 +44,8 @@ class CustomizedTextfield extends StatelessWidget {
           fillColor: Color.fromARGB(255, 255, 255, 255),
           filled: true,
           labelText: hintText,
-          labelStyle: TextStyle(color: AppColors.secondaryColor),
+          labelStyle:
+              TextStyle(color: AppColors.secondaryColor, fontSize: 17.sp),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
           ),

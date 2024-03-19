@@ -27,7 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.backgroundColor,
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        scrolledUnderElevation: 0,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: AppPadding.screenHorizontalPadding,
@@ -51,15 +54,19 @@ class _LoginScreenState extends State<LoginScreen> {
                   hintText: "UserName",
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(10.0),
+                  padding: EdgeInsets.symmetric(vertical: 0.7.h),
                   child: TextFormField(
                     validator: logincontroller.passwordValidator,
                     controller: logincontroller.passwordcontroller,
                     obscureText: !_isPasswordVisible,
                     decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock_outline),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        size: 20.sp,
+                      ),
                       labelText: 'Password',
-                      labelStyle: TextStyle(color: AppColors.secondaryColor),
+                      labelStyle: TextStyle(
+                          color: AppColors.secondaryColor, fontSize: 17.sp),
                       enabledBorder: OutlineInputBorder(
                         borderSide: const BorderSide(
                             color: AppColors.secondaryColor, width: 1),

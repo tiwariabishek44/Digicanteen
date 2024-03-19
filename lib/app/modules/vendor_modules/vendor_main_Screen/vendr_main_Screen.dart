@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:merocanteen/app/modules/vendor_modules/menue/view/menue_view.dart';
 import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/class_reoprt_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/view/order_requirement_view.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/salse_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/orders_checkout/orders_screen.dart';
 import 'package:merocanteen/app/modules/vendor_modules/dashboard/dashboard_page.dart';
 import 'package:merocanteen/app/modules/vendor_modules/setting/setting_view.dart';

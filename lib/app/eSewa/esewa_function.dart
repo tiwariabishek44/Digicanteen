@@ -18,6 +18,7 @@ class Esewa {
 
   pay(
     BuildContext context, {
+    required String customerImage,
     required String classs,
     required String customer,
     required String groupid,
@@ -49,6 +50,7 @@ class Esewa {
           verify(
             result,
             context: context,
+            customerimage: customerImage,
             classs: classs,
             customer: customer,
             groupid: groupid,
@@ -90,6 +92,7 @@ class Esewa {
     required String checkout,
     required String mealtime,
     required String date,
+    required String customerimage,
   }) async {
     try {
       String basicAuth =
@@ -107,6 +110,8 @@ class Esewa {
       http.Response response = await http.get(finalUri, headers: headers);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        log(customerimage);
+
         addProductController.addItemToOrder(
           context,
           mealtime: mealtime,
@@ -121,8 +126,9 @@ class Esewa {
           price: price,
           quantity: 1,
           productImage: productImage,
+          customerImage: customerimage,
         );
-        CustomSnackbar.showSuccess(context, 'Order has been placed');
+        log("--------------${response.body}");
       } else {
         // Handle other status codes if needed
       }

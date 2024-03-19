@@ -2,11 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:merocanteen/app/models/order_response.dart';
 import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/repository/add_order_repository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
+import 'package:nepali_utils/nepali_utils.dart';
 
 class AddProductController extends GetxController {
   final orderController = Get.put(OrderController());
@@ -17,6 +19,7 @@ class AddProductController extends GetxController {
 
   Future<void> addItemToOrder(
     BuildContext context, {
+    required String customerImage,
     required String classs,
     required String customer,
     required String groupid,
@@ -35,6 +38,10 @@ class AddProductController extends GetxController {
       DateTime now = DateTime.now();
       String productId =
           '${now.year}${now.month}${now.day}${now.hour}${now.minute}${now.second}${now.millisecond}';
+      log("--------------this is the order time ${now}");
+
+      NepaliDateTime nepaliDateTime = NepaliDateTime.fromDateTime(now);
+      final dat = DateFormat('HH:mm/dd/MM/yyyy\'', 'en').format(nepaliDateTime);
 
       final newItem = {
         "id": '${productId + customer + productName}',
@@ -52,6 +59,8 @@ class AddProductController extends GetxController {
         "productImage": productImage,
         "orderType": 'regular',
         "holdDate": '',
+        'orderTime': dat,
+        "customerImage": customerImage
       };
 
       orderResponse.value = ApiResponse<OrderResponse>.loading();
@@ -65,9 +74,11 @@ class AddProductController extends GetxController {
         log("the order has been placed");
         orderController.fetchOrders();
         isLoading(false);
+        Get.back();
+
+        CustomSnackbar.showSuccess(context, 'Order has been placed');
 
         // Navigate to home page or perform necessary actions upon successful login
-        Get.back();
       } else {
         isLoading(false);
 

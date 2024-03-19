@@ -9,23 +9,23 @@ import 'package:merocanteen/app/modules/vendor_modules/menue/view/menue_view.dar
 import 'package:merocanteen/app/modules/vendor_modules/analytics/view/analytics_page.dart';
 import 'package:merocanteen/app/modules/vendor_modules/class_wise_analytics/view/class_wise_analysis.dart';
 import 'package:merocanteen/app/modules/vendor_modules/orders_holds/view/order_hold_view.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/demand_supply.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/demand_supply.dart';
 import 'package:merocanteen/app/modules/vendor_modules/order_requirements/view/order_requirement_view.dart';
 import 'package:intl/intl.dart';
-import 'package:merocanteen/app/modules/vendor_modules/order_requirements/salse_controller.dart';
+import 'package:merocanteen/app/modules/vendor_modules/dashboard/salse_controller.dart';
 import 'package:merocanteen/app/modules/vendor_modules/orders_checkout/orders_screen.dart';
 import 'package:merocanteen/app/widget/confirmation_dialog.dart';
 import 'package:nepali_utils/nepali_utils.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 
 class DshBoard extends StatelessWidget {
-  final loginContorller = Get.put(LoginController());
   final salseContorlller = Get.put(SalsesController());
 
   @override
   Widget build(BuildContext context) {
-    salseContorlller.fetchOrderss();
-    salseContorlller.fetchSalesORders();
+    salseContorlller.fetchRequirement();
+
+    salseContorlller.fetchTotalOrder();
     final homepagecontroller = Get.put(ProductController());
 
     DateTime currentDate = DateTime.now();
@@ -63,39 +63,84 @@ class DshBoard extends StatelessWidget {
           padding: AppPadding.screenHorizontalPadding,
           child: Column(
             children: [
-              Obx(() => Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Colors.blue,
-                          Color.fromARGB(255, 219, 183, 183)
-                        ],
-                        begin: Alignment.centerLeft,
-                        end: Alignment.centerRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    height: 20.h,
-                    width: double.infinity,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Daily Sales',
-                            style: AppStyles.topicsHeading,
+              Align(
+                alignment: Alignment.topLeft,
+                child: Text(
+                  "Quick Summary",
+                  style: AppStyles.mainHeading,
+                ),
+              ),
+              Row(
+                children: [
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.iconColors)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 2.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Total Order',
+                                style: AppStyles.listTileTitle,
+                              ),
+                              // Add spacing between the texts
+                              Text(
+                                "Rs. " +
+                                    salseContorlller.totalorderGRandTotal.value
+                                        .toInt()
+                                        .toString(),
+                                style: AppStyles.topicsHeading,
+                              ),
+                            ],
                           ),
-                          SizedBox(height: 8), // Add spacing between the texts
-                          Text(
-                            "Rs. " +
-                                salseContorlller.grandTotal.value
-                                    .toInt()
-                                    .toString(),
-                            style: AppStyles.mainHeading,
+                        ),
+                      )),
+                  SizedBox(
+                    width: 5.w,
+                  ),
+                  Obx(() => Container(
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: AppColors.iconColors)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 12.w, vertical: 2.h),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'Total Sales',
+                                style: AppStyles.listTileTitle,
+                              ),
+                              Text(
+                                "Rs. " +
+                                    salseContorlller.grandTotal.value
+                                        .toInt()
+                                        .toString(),
+                                style: AppStyles.topicsHeading,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      )),
+                ],
+              ),
+              SizedBox(
+                height: 2.h,
+              ),
+              Divider(
+                height: 1.h,
+                thickness: 1.h,
+                color: AppColors.greyColor,
+              ),
+              Align(
+                  alignment: Alignment.topLeft,
+                  child: Text(
+                    "Manager Activity",
+                    style: AppStyles.topicsHeading,
                   )),
               SizedBox(
                 height: 1.h,
