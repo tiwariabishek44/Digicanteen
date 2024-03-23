@@ -23,20 +23,17 @@ class _SplashScreenState extends State<SplashScreen> {
   final logincontroller = Get.put(LoginController());
   final storage = GetStorage();
   final groupController = Get.put(GroupController());
-  final homepagecontroller = Get.put(ProductController());
 
   void handleMainScreen() async {
-    log("------------ HANDLING MAIN SCREEN -----------");
-    if (storage.read(userType) == 'student') {
+    if (storage.read(userType) == student) {
       await logincontroller.fetchUserData();
       if (logincontroller
-              .userDataResponse.value.response!.first.groupid.isNotEmpty &&
-          homepagecontroller.allProductResponse.value.response!.isNotEmpty) {
+          .userDataResponse.value.response!.first.groupid.isNotEmpty) {
         groupController.fetchGroupData();
       }
 
       logincontroller.userDataResponse.value.response!.isNotEmpty
-          ? Get.offAll(() => CanteenMainScreenView())
+          ? Get.offAll(() => UserMainScreenView())
           : log("some went wrong");
     } else {
       Get.offAll(() => CanteenMainScreenView());
@@ -68,40 +65,18 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
 //-------------
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 254, 254, 254),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color.fromARGB(255, 186, 181, 181)
-                        .withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 5,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-                image: DecorationImage(
-                  image: AssetImage('assets/logo.png'),
-                  fit: BoxFit.contain,
-                ),
-              ),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/logo.png',
+              fit: BoxFit.cover,
             ),
-            SpinKitFadingCircle(
-              color: AppColors.primaryColor,
-            )
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

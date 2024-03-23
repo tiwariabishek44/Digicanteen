@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:merocanteen/app/config/colors.dart';
 import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/modules/common/login/login_controller.dart';
+import 'package:merocanteen/app/modules/common/loginoption/login_option_controller.dart';
 import 'package:merocanteen/app/modules/common/register/register.dart';
 import 'package:merocanteen/app/modules/brands/brand_page.dart';
 import 'package:merocanteen/app/modules/user_module/student_mainscreen/user_mainScreen.dart';
@@ -19,6 +20,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final logincontroller = Get.put(LoginController());
+  final loginScreenController = Get.put(LoginScreenController());
 
   bool _isPasswordVisible = false;
   bool _isLoading = false;
@@ -44,7 +46,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 WelcomeHeading(
                   mainHeading: 'Welcome to HamroCanteen',
-                  subHeading: "Login",
+                  subHeading: loginScreenController.isUser.value
+                      ? "Login As Student"
+                      : "Login AS Canteen",
                 ),
                 SizedBox(height: 10),
                 CustomizedTextfield(
@@ -163,15 +167,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.to(() => RegisterPage());
+                        Get.to(() => RegisterPage(),
+                            transition: Transition.rightToLeft,
+                            duration: duration);
                         // Handle navigation to registration page
                         // For example, Navigator.push(context, MaterialPageRoute(builder: (context) => YourRegistrationPage()));
                       },
                       child: Text(
                         "Register",
                         style: TextStyle(
-                          fontSize: 18.sp,
-                          color: Color.fromARGB(255, 243, 124, 33),
+                          fontSize: 17.sp,
+                          color: Colors.red,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

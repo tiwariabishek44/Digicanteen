@@ -19,11 +19,11 @@ void main() async {
   Platform.isAndroid
       ? await Firebase.initializeApp(
           options: const FirebaseOptions(
-          apiKey: "AIzaSyBNYL9dshT-ux0o41Y6GBLe3XwTMvims10",
-          appId: "1:1086541433915:android:aa443d32caa1cea08ea01e",
-          messagingSenderId: "1086541433915",
-          projectId: "merocanteen",
-        ))
+              apiKey: "AIzaSyBNYL9dshT-ux0o41Y6GBLe3XwTMvims10",
+              appId: "1:1086541433915:android:aa443d32caa1cea08ea01e",
+              messagingSenderId: "1086541433915",
+              projectId: "merocanteen",
+              storageBucket: "merocanteen.appspot.com"))
       : await Firebase.initializeApp();
 
   //  // Initialize Firebase

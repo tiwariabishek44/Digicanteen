@@ -74,9 +74,24 @@ class AddProductController extends GetxController {
         log("the order has been placed");
         orderController.fetchOrders();
         isLoading(false);
-        Get.back();
-
-        CustomSnackbar.showSuccess(context, 'Order has been placed');
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              elevation: 0,
+              title: Icon(Icons.check_circle, color: Colors.green, size: 48),
+              content: Text('Order successful!'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Get.back();
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
 
         // Navigate to home page or perform necessary actions upon successful login
       } else {

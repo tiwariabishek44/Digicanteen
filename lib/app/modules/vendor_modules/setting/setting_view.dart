@@ -101,7 +101,7 @@ class SettingView extends StatelessWidget {
                         firstbutton: "Yes",
                         secondbutton: 'No',
                         onConfirm: () {
-                          logincontroller.vendorLogOut();
+                          logincontroller.logout();
                         },
                       );
                     },

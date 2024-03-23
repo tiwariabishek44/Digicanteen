@@ -6,3 +6,6 @@ const refreshToken = 'refreshToken';
 const userType = 'userType';
 const expiresAt = "expiresAt";
 const isBankFormSkipped = 'isBankFormSkipped';
+
+const canteen = "canteen";
+const student = "student";

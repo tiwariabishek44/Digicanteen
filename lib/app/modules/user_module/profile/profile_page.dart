@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:merocanteen/app/widget/profile_tile.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shimmer/shimmer.dart';
 
 class ProfilePage extends StatelessWidget {
   final logincontroller = Get.put(LoginController());
@@ -31,43 +32,65 @@ class ProfilePage extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.only(top: 6.h),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     Obx(() => Text(
                           logincontroller
                               .userDataResponse.value.response!.first.name,
                           style: AppStyles.mainHeading,
                         )),
-                    CircleAvatar(
-                      radius: 12.w,
-                      backgroundColor:
-                          Colors.transparent, // Ensure transparent background
-                      child: CachedNetworkImage(
-                        imageUrl: logincontroller.userDataResponse.value
-                                .response!.first.profilePicture ??
-                            '',
-                        imageBuilder: (context, imageProvider) => Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle, // Apply circular shape
-                            image: DecorationImage(
-                              image: imageProvider,
-                              fit: BoxFit.cover,
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.5),
+                            spreadRadius: 2,
+                            blurRadius: 5,
+                            offset: Offset(0, 3),
+                          ),
+                        ],
+                      ),
+                      child: CircleAvatar(
+                        radius: 25.sp,
+                        backgroundColor: Colors.white,
+                        child: CachedNetworkImage(
+                          progressIndicatorBuilder:
+                              (context, url, downloadProgress) => Opacity(
+                            opacity: 0.8,
+                            child: Shimmer.fromColors(
+                              baseColor: Colors.black12,
+                              highlightColor: Colors.red,
+                              child: Container(),
                             ),
                           ),
-                        ),
-                        placeholder: (context, url) =>
-                            CircularProgressIndicator(), // Placeholder widget while loading
-                        errorWidget: (context, url, error) => CircleAvatar(
-                          radius: 21.sp,
-                          child: Icon(
-                            Icons.person,
-                            color: Colors.white,
+                          imageUrl: logincontroller.userDataResponse.value
+                                  .response!.first.profilePicture ??
+                              '',
+                          imageBuilder: (context, imageProvider) => Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle, // Apply circular shape
+                              image: DecorationImage(
+                                image: imageProvider,
+                                fit: BoxFit.cover,
+                              ),
+                            ),
                           ),
-                          backgroundColor:
-                              const Color.fromARGB(255, 224, 218, 218),
+                          fit: BoxFit.fill,
+                          width: double.infinity,
+                          errorWidget: (context, url, error) => CircleAvatar(
+                            radius: 21.4.sp,
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.white,
+                            ),
+                            backgroundColor:
+                                const Color.fromARGB(255, 224, 218, 218),
+                          ),
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),

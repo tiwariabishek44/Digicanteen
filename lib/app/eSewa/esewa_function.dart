@@ -8,7 +8,7 @@ import 'package:esewa_flutter_sdk/esewa_payment_success_result.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:merocanteen/app/config/eSewa.dart';
-import 'package:merocanteen/app/modules/user_module/add%20product/add_product_controller.dart';
+import 'package:merocanteen/app/modules/user_module/add_order/add_product_controller.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
 
 class Esewa {

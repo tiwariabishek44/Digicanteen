@@ -62,6 +62,7 @@ dependencies:
     path: ./esewa_sdk/eSewa_flutter_sdk/esewa_flutter_sdk
   nepali_date_picker: ^6.0.0
   permission_handler: ^11.3.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

@@ -13,6 +13,7 @@ class OrderController extends GetxController {
   final loginController = Get.put(LoginController());
   var isLoading = false.obs;
   var holdLoading = false.obs;
+  var orderLoded = false.obs;
 
   @override
   void onInit() {
@@ -48,14 +49,17 @@ class OrderController extends GetxController {
             ApiResponse<OrderResponse>.completed(orderResult.response);
         log('----orders is been fetch');
 
-        log("this is the all product response  " +
-            orderResponse.value.response!.length.toString());
+        orderResponse.value.response!.length != 0
+            ? orderLoded(true)
+            : orderLoded(false);
       }
     } catch (e) {
+      orderLoded(false);
       isLoading(false);
 
       log('Error while getting data: $e');
     } finally {
+      orderLoded(false);
       isLoading(false);
     }
   }
@@ -96,7 +100,7 @@ class OrderController extends GetxController {
       isLoading(true);
       holdOrderResponse.value = ApiResponse<OrderResponse>.loading();
       final orderResult = await orderRepository.getHoldOrders(
-          loginController.userDataResponse.value.response!.first.userid);
+          loginController.canteenDataResponse.value.response!.first.userid);
       if (orderResult.status == ApiStatus.SUCCESS) {
         holdOrderResponse.value =
             ApiResponse<OrderResponse>.completed(orderResult.response);

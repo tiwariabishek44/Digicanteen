@@ -15,6 +15,7 @@ import 'package:merocanteen/app/widget/custom_app_bar.dart';
 import 'package:merocanteen/app/widget/custom_loging_widget.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import 'package:shimmer/shimmer.dart';
 
 class GroupPage extends StatelessWidget {
   final logincontroller = Get.put(LoginController());
@@ -173,15 +174,19 @@ class GroupPage extends StatelessWidget {
                                         ),
                                       ],
                                     ),
-                                    
                                     child: CircleAvatar(
                                       radius: 22.sp,
                                       backgroundColor: Colors.white,
                                       child: CachedNetworkImage(
                                         progressIndicatorBuilder:
                                             (context, url, downloadProgress) =>
-                                                SpinKitFadingCircle(
-                                          color: AppColors.secondaryColor,
+                                                Opacity(
+                                          opacity: 0.8,
+                                          child: Shimmer.fromColors(
+                                            baseColor: Colors.black12,
+                                            highlightColor: Colors.red,
+                                            child: Container(),
+                                          ),
                                         ),
                                         imageUrl: groupcontroller
                                                 .groupMemberResponse
@@ -255,8 +260,8 @@ class GroupPage extends StatelessWidget {
                               onTap: () {
                                 groupcontroller.groupResponse.value.response!
                                             .first.moderator ==
-                                        logincontroller.userDataResponse.value
-                                            .response!.first.name
+                                        logincontroller.canteenDataResponse
+                                            .value.response!.first.name
                                     ? groupcontroller.groupResponse.value
                                                 .response!.first.moderator ==
                                             groupcontroller.groupMemberResponse

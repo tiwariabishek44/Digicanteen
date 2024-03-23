@@ -1,14 +1,16 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:merocanteen/app/config/prefs.dart';
+import 'package:merocanteen/app/models/canteen_model.dart';
 import 'package:merocanteen/app/models/users_model.dart';
 import 'package:merocanteen/app/modules/common/loginoption/login_option_controller.dart';
-import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
+import 'package:merocanteen/app/repository/canteen_data_repository.dart';
 import 'package:merocanteen/app/repository/get_userdata_repository.dart';
 import 'package:merocanteen/app/service/api_client.dart';
 import 'package:merocanteen/app/widget/custom_snackbar.dart';
@@ -53,8 +55,55 @@ class LoginController extends GetxController {
       await _auth.signInWithEmailAndPassword(
           email: emailcontroller.text, password: passwordcontroller.text);
 
-      // If successful, save data locally
-      saveDataLocally();
+      if (loginOptionController.isUser.value) {
+        saveDataLocally(context);
+      } else {
+        bool canteenExists = await checkIfCanteenExists(_auth.currentUser!.uid);
+
+        if (canteenExists) {
+          saveDataLocally(context);
+        } else {
+          // Perform both sign-out and display the login failure dialog
+          await _auth.signOut();
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text(
+                  "Login Failed",
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20.0,
+                    color: Colors.red,
+                  ),
+                ),
+                content: Text(
+                  "You are not allowed to login as canteen.",
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: Colors.black,
+                  ),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+      }
+
       isloading(false);
     } on FirebaseAuthException catch (e) {
       isloading(false);
@@ -90,6 +139,26 @@ class LoginController extends GetxController {
     }
   }
 
+//----------------TO CHECK IF THE CANTEEN EXIST OR NOT------------
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Future<bool> checkIfCanteenExists(String userId) async {
+    try {
+      // Query the "canteen" collection using the provided user ID
+      QuerySnapshot querySnapshot = await _firestore
+          .collection('canteen')
+          .where('userid', isEqualTo: userId)
+          .get();
+
+      // Return true if data exists for the user in the "canteen" collection
+      return querySnapshot.docs.isNotEmpty ? true : false;
+    } catch (e) {
+      // Handle errors
+      print("Error checking if canteen exists: $e");
+      return false; // Return false in case of error
+    }
+  }
+
 //---------to fetch the user data------------
   final UserDataRepository userDataRepository = UserDataRepository();
   final Rx<ApiResponse<UserDataResponse>> userDataResponse =
@@ -100,12 +169,11 @@ class LoginController extends GetxController {
       userDataResponse.value = ApiResponse<UserDataResponse>.loading();
       final userDataResult = await userDataRepository.getUserData(
         {
-          'userid': storage.read('userId'),
+          'userid': storage.read(userId),
           // Add more filters as needed
         },
       );
       if (userDataResult.status == ApiStatus.SUCCESS) {
-        log("----------this is the success t fetch the user data");
         userDataResponse.value =
             ApiResponse<UserDataResponse>.completed(userDataResult.response);
         isFetchLoading(false);
@@ -122,22 +190,71 @@ class LoginController extends GetxController {
     }
   }
 
+//-------------fetch the vendor data-----------------
+
+  final CanteenDataRepository canteenDataRepository = CanteenDataRepository();
+  final Rx<ApiResponse<CanteenDataResponse>> canteenDataResponse =
+      ApiResponse<CanteenDataResponse>.initial().obs;
+  Future<void> fetchCanteenData(BuildContext context) async {
+    try {
+      isFetchLoading(true);
+      canteenDataResponse.value = ApiResponse<CanteenDataResponse>.loading();
+      final canteenDataResult = await canteenDataRepository.getCanteenData(
+        {
+          'userid': storage.read(userId),
+          // Add more filters as needed
+        },
+      );
+      if (canteenDataResult.status == ApiStatus.SUCCESS) {
+        canteenDataResponse.value = ApiResponse<CanteenDataResponse>.completed(
+            canteenDataResult.response);
+        isFetchLoading(false);
+      } else {
+        isFetchLoading(false);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text("Login Failed"),
+              content: Text("Sorry, you cannot login."),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      }
+      isFetchLoading(false);
+    } catch (e) {
+      isFetchLoading(false);
+
+      log('Error while getting data: $e');
+    } finally {
+      isFetchLoading(false);
+    }
+  }
+
 //-------- to save data locally
 
-  void saveDataLocally() {
+  void saveDataLocally(BuildContext context) {
     storage.write(userId, _auth.currentUser!.uid);
-
-    storage.write(userType, 'student');
-
-    fetchUserData();
-
+    storage.write(
+        userType, loginOptionController.isUser.value ? student : canteen);
+    loginOptionController.isUser.value
+        ? fetchUserData()
+        : fetchCanteenData(context);
     log("this is the user login option${storage.read(userType)}");
     Get.offAll(() => SplashScreen());
   }
 
 //-------to do auto login---------
   bool autoLogin() {
-    log("AUTO LOGIN");
+    log("AUTO LOGIN  ${storage.read(userType)}");
     if (storage.read(userType) != null) {
       // set a periodic timer to refresh token
       return true;
@@ -150,12 +267,14 @@ class LoginController extends GetxController {
     try {
       await _auth.signOut();
       user.value = null;
+      storage.remove(
+        userId,
+      );
+
       storage.remove(userType);
-      storage.remove(userId);
       Get.offAll(() => SplashScreen());
     } catch (e) {
       // Handle logout errors
-      print("Logout error: $e");
       Get.snackbar("Logout Failed", e.toString());
     }
   }

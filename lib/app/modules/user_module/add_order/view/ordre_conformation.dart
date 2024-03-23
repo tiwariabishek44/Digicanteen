@@ -9,7 +9,7 @@ import 'package:merocanteen/app/config/style.dart';
 import 'package:merocanteen/app/eSewa/esewa_function.dart';
 import 'package:merocanteen/app/models/product_model.dart';
 import 'package:merocanteen/app/models/users_model.dart';
-import 'package:merocanteen/app/modules/user_module/add%20product/add_product_controller.dart';
+import 'package:merocanteen/app/modules/user_module/add_order/add_product_controller.dart';
 import 'package:merocanteen/app/modules/user_module/orders/orders_controller.dart';
 import 'package:merocanteen/app/modules/user_module/group/group_controller.dart';
 import 'package:merocanteen/app/widget/loading_screen.dart';

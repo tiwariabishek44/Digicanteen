@@ -5,6 +5,7 @@ import 'package:merocanteen/app/modules/common/loginoption/login_option_controll
 import 'package:merocanteen/app/modules/common/loginoption/vendor_entry/vendor_entry.dart';
 import 'package:merocanteen/app/modules/vendor_modules/vendor_main_Screen/vendr_main_Screen.dart';
 import 'package:merocanteen/app/widget/customized_button.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 
 class LoginOptionView extends StatelessWidget {
   final loginOptionController = Get.put(LoginScreenController());
@@ -12,48 +13,35 @@ class LoginOptionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Displaying image in the half of the screen height
-          Container(
-            width: 200,
-            height: 200,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(20),
-              image: DecorationImage(
-                image: AssetImage('assets/logo.png'),
-                fit: BoxFit.contain,
-              ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              color: Colors.red,
+              height: 60.h,
+              width: 200.w,
             ),
-          ),
-          // Showing information and buttons for user types
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: [
-                Text(
-                  'Continue as:',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+            Padding(
+              padding: EdgeInsets.only(left: 3.w, right: 3.w, top: 2.h),
+              child: Column(
+                children: [
+                  Text(
+                    'Continue as:',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-                SizedBox(height: 20),
-                CustomButton(
-                    text: 'Continue As Student',
-                    onPressed: () {
-                      Get.to(() => LoginScreen(),
-                          transition: Transition.rightToLeft);
-                    },
-                    isLoading: false),
-                SizedBox(
-                  height: 10,
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  CustomButton(
+                      text: 'Continue As Student',
+                      onPressed: () {
+                        loginOptionController.isUser.value = true;
+                        Get.to(() => LoginScreen(),
+                            transition: Transition.rightToLeft);
+                      },
+                      isLoading: false),
+                  SizedBox(height: 15),
+                  Row(
                     children: <Widget>[
                       Expanded(
                         child: Divider(
@@ -80,21 +68,20 @@ class LoginOptionView extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                CustomButton(
-                    text: 'Continue As Canteen',
-                    onPressed: () {
-                      Get.to(() => const VendorEntro(),
-                          transition: Transition.rightToLeft);
-                    },
-                    isLoading: false),
-              ],
+                  CustomButton(
+                      text: 'Continue As Canteen',
+                      onPressed: () {
+                        loginOptionController.isUser.value = false;
+                        Get.to(() => LoginScreen(),
+                            transition: Transition.rightToLeft);
+                      },
+                      isLoading: false),
+                  SizedBox(height: 10),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

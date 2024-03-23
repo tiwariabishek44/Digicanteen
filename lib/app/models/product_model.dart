@@ -3,12 +3,14 @@ class Product {
   final String name;
   final String image;
   final double price;
+  final bool active; // Added field
 
   Product({
     required this.productId,
     required this.name,
     required this.image,
     required this.price,
+    required this.active, // Added parameter
   });
 
   factory Product.fromJson(Map<String, dynamic> json) {
@@ -17,6 +19,7 @@ class Product {
       name: json['name'] ?? "",
       image: json['image'] ?? "",
       price: json['price']?.toDouble() ?? 0.0,
+      active: json['active'] ?? false, // Added field mapping
     );
   }
 
@@ -26,6 +29,7 @@ class Product {
       'name': name,
       'image': image,
       'price': price,
+      'active': active, // Added field mapping
     };
   }
 }

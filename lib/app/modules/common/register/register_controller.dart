@@ -24,7 +24,6 @@ class RegisterController extends GetxController {
   final isregisterloading = false.obs;
   final registerFromkey = GlobalKey<FormState>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   var image = File('').obs; // Here's an example using GetX
 

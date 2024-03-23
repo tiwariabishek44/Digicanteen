@@ -26,86 +26,25 @@ class OrderHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2, // Number of tabs
-      child: Scaffold(
-        backgroundColor: AppColors.backgroundColor,
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: Text(
-            'Order History',
-            style: AppStyles.appbar,
-          ),
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: GestureDetector(
-                  onTap: _refreshData, child: Icon(Icons.refresh)),
-            )
-          ],
-          bottom: const TabBar(
-            indicatorColor: AppColors.iconColors,
-            labelColor: AppColors.iconColors,
-            indicatorWeight: 1,
-            automaticIndicatorColorAdjustment: true,
-            tabs: [
-              Tab(text: 'Personal Order'),
-              Tab(text: 'Group Order'),
-            ],
-          ),
+    return Scaffold(
+      backgroundColor: AppColors.backgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: Text(
+          'Order History',
+          style: AppStyles.appbar,
         ),
-        body: Padding(
-          padding: AppPadding.screenHorizontalPadding,
-          child: TabBarView(
-            children: [
-              // Personal Order Tab
-              buildPersonalOrderTab(context),
-
-              // Group Order Tab
-              buildGroupOrderTab(context),
-            ],
-          ),
-        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.all(18.0),
+            child: GestureDetector(
+                onTap: _refreshData, child: Icon(Icons.refresh)),
+          )
+        ],
       ),
-    );
-  }
-
-  Widget buildPersonalOrderTab(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: () => _refreshData(),
-      child: SizedBox(
-        width: double.infinity,
-        child: Obx(() {
-          if (historyController.isLoading.value) {
-            return LoadingWidget();
-          } else {
-            if (!historyController.isdata.value) {
-              return EmptyCartPage(
-                onClick: _refreshData,
-              );
-            } else {
-              // Sort orders by date in descending order
-              List<OrderResponse> personalOrders = historyController
-                  .orderHistoryResponse.value.response!
-                  .where((order) =>
-                      order.cid ==
-                      logincontroller
-                          .userDataResponse.value.response!.first.userid)
-                  .toList();
-
-              personalOrders.sort((a, b) => b.date.compareTo(a.date));
-
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: ScrollPhysics(),
-                itemCount: personalOrders.length,
-                itemBuilder: (context, index) {
-                  return buildItemWidget(personalOrders[index]);
-                },
-              );
-            }
-          }
-        }),
+      body: Padding(
+        padding: AppPadding.screenHorizontalPadding,
+        child: buildGroupOrderTab(context),
       ),
     );
   }
